@@ -1,0 +1,12 @@
+.financial-actions {
+    display: flex; 
+    justify-content: flex-end;
+    .mat-raised-button.mat-accent {
+        background-color: #2778BE;
+        font-weight: bold;
+    }
+    .mat-raised-button.close {
+        color: #959595;
+        background-color: #fff;
+    }
+}

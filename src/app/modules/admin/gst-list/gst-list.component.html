@@ -1,0 +1,59 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">GST LIST BY PAN NUMBER ({{gstByPanDetails?.panNumber}}) </div>
+        <!-- CONTENT GOES HERE -->
+        <div class="border-2 border-dashed border-gray-300 rounded-2xl">
+
+            <div class="example-container mat-elevation-z8">
+                <div class="example-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
+                    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+                    <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">
+                        Finder API rate limit has been reached. It will be reset in one minute.
+                    </div>
+                </div>
+
+                <div class="example-table-container">
+
+                    <table mat-table [dataSource]="data" class="example-table" matSort matSortActive="created"
+                        matSortDisableClear matSortDirection="desc">
+
+                        <!-- STATE CODE Column -->
+                        <ng-container matColumnDef="stateCd">
+                            <th mat-header-cell *matHeaderCellDef>State Code</th>
+                            <td mat-cell *matCellDef="let row">{{row?.stateCd}}</td>
+                            <!-- <td mat-cell *matCellDef="let row">
+                                <a [routerLink]="" >Go to page</a>
+                            </td> -->
+                        </ng-container>
+
+                        <!-- GST NUMBER Column -->
+                        <ng-container matColumnDef="gstin">
+                            <th mat-header-cell *matHeaderCellDef>GST Number</th>
+                            <td mat-cell *matCellDef="let row">
+                                <a href="javascript:void(0);" (click)="gstDetailRouter(row.gstin)">{{row?.gstin}}</a>
+                            </td>
+                        </ng-container>
+
+                        <!-- GST STATUS Column -->
+                        <ng-container matColumnDef="authStatus">
+                            <th mat-header-cell *matHeaderCellDef>GST Status</th>
+                            <td mat-cell *matCellDef="let row">{{row?.authStatus}}</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </div>
+
+                <mat-paginator [length]="resultsLength" [pageSize]="resultsLength"
+                    aria-label="Select page of GitHub search results"></mat-paginator>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

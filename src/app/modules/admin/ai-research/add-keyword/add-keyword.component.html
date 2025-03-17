@@ -1,0 +1,17 @@
+<div class="p-6 max-w-md mx-auto bg-white rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold mb-4">Add Keyword</h2>
+    <form [formGroup]="keywordForm" (ngSubmit)="addKeyword()">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Keyword</mat-label>
+        <input matInput placeholder="Enter a keyword" formControlName="keyword" />
+        <mat-error *ngIf="keywordForm.get('keyword')?.invalid && keywordForm.get('keyword')?.touched">
+          Keyword is required
+        </mat-error>
+      </mat-form-field>
+      <div class="mt-6 flex justify-end gap-2">
+        <button mat-button type="button" (click)="closeDialog()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="keywordForm.invalid">Add</button>
+      </div>
+    </form>
+  </div>
+  

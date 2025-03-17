@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>Enter CIN Number</h1>
+<!-- <div mat-dialog-content> -->
+
+<form class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden" [formGroup]="litigationBiDetailsByCinForm"
+    #litigationBiDetailsByCinNgForm="ngForm">
+    <div class="flex">
+        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+            <mat-label>CIN Number</mat-label>
+            <input matInput [placeholder]="'Enter CIN Number'" [formControlName]="'companyId'">
+            <mat-hint>CIN Number</mat-hint>
+            <mat-error *ngIf="litigationBiDetailsByCinForm.get('companyId').hasError('required')">
+                CIN number is required
+            </mat-error>
+        </mat-form-field>
+    </div>
+</form>
+
+<!-- </div>  ADD Tool tip Suggestion-->
+<div mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+    <button mat-button cdkFocusInitial color="primary"
+        [disabled]="litigationBiDetailsByCinForm.invalid" (click)="submitLitigationBiDetails()">Proceed</button>
+</div>
+

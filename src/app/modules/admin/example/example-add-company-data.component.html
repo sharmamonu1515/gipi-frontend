@@ -1,0 +1,41 @@
+<h1 mat-dialog-title>Populate Company Details</h1>
+<!-- <div mat-dialog-content> -->
+
+<form class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden" [formGroup]="mcaDetailsForm"
+    #mcaDetailsNgForm="ngForm">
+    <div class="flex">
+        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+            <mat-label>CIN Number</mat-label>
+            <input matInput [placeholder]="'CIN Number'" [formControlName]="'cin'">
+            <mat-hint>MCA Company CIN Number</mat-hint>
+            <mat-error *ngIf="mcaDetailsForm.get('cin').hasError('required')">
+                CIN Number is required
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <!-- <div class="flex">
+        <img class="w-7 h-7 rounded-full" [src]="signatoryCaptchaDetails?.dataUrl">
+        <button matTooltip="Add New Company Data" mat-fab color="primary"
+            aria-label="Example icon button with a delete icon" (click)="changeSignatoryCaptcha()">
+            <mat-icon>refresh</mat-icon>
+        </button>
+    </div> -->
+    <!-- <div class="flex">
+        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+            <mat-label>Captcha For Signatory Details</mat-label>
+            <input matInput [placeholder]="'Enter Captcha'" [formControlName]="'captcha'">
+            <mat-hint>Captcha For Signatory Details</mat-hint>
+            <mat-error *ngIf="mcaDetailsForm.get('captcha').hasError('required')">
+                Captcha is Required For Signatory Details
+            </mat-error>
+        </mat-form-field>
+    </div> -->
+</form>
+
+<!-- </div>  ADD Tool tip Suggestion-->
+<div mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+    <button mat-button mat-dialog-close cdkFocusInitial color="primary"
+        [disabled]="mcaDetailsForm.invalid" (click)="consolidateMcaData()">Proceed</button>
+</div>
+

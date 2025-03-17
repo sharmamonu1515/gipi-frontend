@@ -1,0 +1,408 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0">
+            <!-- Breadcrumbs -->
+            <div class="flex flex-wrap items-center font-medium">
+                <div>
+                    <a class="whitespace-nowrap text-primary-500">GST</a>
+                </div>
+            </div>
+            <!-- Title -->
+            <div class="mt-2">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    GSTIN/UIN - {{gstDetails?.gstNumbers?.gstin}}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+
+        <div class="flex flex-wrap items-start w-full max-w-400 -m-4">
+
+
+            <fuse-card class="flex flex-col items-center w-full p-8 pb-6 filter-info">
+
+                <img class="w-32 h-32 rounded-full"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSL4lmZWQcr5Uo1Etbb3foHGlF51sZCqsTZAg&usqp=CAU"
+                    alt="Card cover image">
+                <div class="text-2xl font-semibold leading-tight text-center mt-8">{{
+                    gstDetails?.gstNumbers?.firstTabValue?.lgnm }}
+                </div>
+                <div class="text-secondary leading-tight text-center mt-1">{{ gstDetails?.gstNumbers?.gstin }}</div>
+
+                <hr class="w-full border-t mt-8 mb-0">
+
+                <div class="w-full flex items-center justify-between my-4 px-2">
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm font-medium text-secondary">Legal Name of Business</span>
+                        <span class="font-bold">{{ gstDetails?.gstNumbers?.firstTabValue?.lgnm }}</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm font-medium text-secondary">GSTIN / UIN Status</span>
+                        <span class="font-bold">{{ gstDetails?.gstNumbers?.firstTabValue?.sts }}</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm font-medium text-secondary">Trade Name</span>
+                        <span class="font-bold">{{ gstDetails?.gstNumbers?.firstTabValue?.tradeNam }}</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm font-medium text-secondary">Date of Registration</span>
+                        <span class="font-bold">{{ gstDetails?.gstNumbers?.firstTabValue?.rgdt }}</span>
+                    </div>
+                </div>
+
+                <hr class="w-full border-t mt-0 mb-8">
+
+            </fuse-card>
+
+        </div>
+
+    </div>
+
+    <!-- MAIN STEPPER -->
+    <div class="flex-auto pt-6 sm:px-4 sm:pb-4">
+
+        <!-- Tabs -->
+        <mat-tab-group [animationDuration]="'0'" (selectedTabChange)="firstTabSwitch($event)">
+
+            <!-- Tab #1 -->
+            <mat-tab label="Profile">
+
+                <!-- TAB CONTENT GOES HERE -->
+                <div class="flex justify-center border-2 border-dashed border-gray-300 rounded-2xl">
+                    <fuse-card class="flex flex-col items-center w-full p-8 pb-6 filter-info">
+
+                        <hr class="w-full border-t mt-0 mb-8">
+
+                        <div class="w-full flex items-center justify-between my-4 px-2">
+                            <div class="flex flex-col items-center">
+                                <span class="text-sm font-medium text-secondary">Administrative Office</span>
+                                <span class="font-bold">(JURISDICTION - STATE)
+                                    {{gstDetails?.gstNumbers?.firstTabValue?.stj}}</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-sm font-medium text-secondary">Other Office</span>
+                                <span class="font-bold">(JURISDICTION - CENTER)
+                                    {{gstDetails?.gstNumbers?.firstTabValue?.ctj}}</span>
+                            </div>
+                        </div>
+
+                        <hr class="w-full border-t mt-0 mb-8">
+
+                        <div class="w-full flex items-center justify-between my-4 px-2">
+                            <div class="flex flex-col items-center">
+                                <span class="text-sm font-medium text-secondary">Constitution of Business</span>
+                                <span class="font-bold">{{gstDetails?.gstNumbers?.firstTabValue?.ctb}}</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-sm font-medium text-secondary">GSTIN / UIN Status</span>
+                                <span class="font-bold">{{gstDetails?.gstNumbers?.firstTabValue?.sts}}</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-sm font-medium text-secondary">Taxpayer Type</span>
+                                <span class="font-bold">{{gstDetails?.gstNumbers?.firstTabValue?.dty}}</span>
+                            </div>
+                        </div>
+
+                        <hr class="w-full border-t mt-0 mb-8">
+
+
+                        <div class="w-full flex items-center justify-between my-4 px-2">
+                            <div class="flex flex-col items-center">
+                                <span class="text-sm font-medium text-secondary">Annual Aggregate Turnover</span>
+                                <span class="font-bold">{{gstDetails?.gstNumbers?.firstTabValue?.aggreTurnOver}} (For FY
+                                    {{gstDetails?.gstNumbers?.firstTabValue?.aggreTurnOverFY}})</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-sm font-medium text-secondary">Gross Total Income</span>
+                                <span class="font-bold">{{gstDetails?.gstNumbers?.firstTabValue?.gti}} (For FY
+                                    {{gstDetails?.gstNumbers?.firstTabValue?.gtiFY}})</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-sm font-medium text-secondary">% of Tax Payment in Cash</span>
+                                <span
+                                    class="font-bold">{{gstDetails?.gstNumbers?.firstTabValue?.percentTaxInCash}}</span>
+                            </div>
+                        </div>
+
+                        <hr class="w-full border-t mt-0 mb-8">
+
+
+                        <div class="w-full flex items-center justify-between my-4 px-2">
+                            <div class="flex flex-col items-center">
+                                <span class="text-sm font-medium text-secondary">Whether Aadhaar Authenticated?</span>
+                                <span class="font-bold">{{gstDetails?.gstNumbers?.firstTabValue?.adhrVFlag}} (On
+                                    {{gstDetails?.gstNumbers?.firstTabValue?.adhrVdt}})</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-sm font-medium text-secondary">Whether e-KYC Verified?</span>
+                                <span class="font-bold">{{gstDetails?.gstNumbers?.firstTabValue?.ekycVFlag}}</span>
+                            </div>
+                        </div>
+
+                        <hr class="w-full border-t mt-0 mb-8">
+
+
+                    </fuse-card>
+                </div>
+
+            </mat-tab>
+
+            <!-- Tab #2 -->
+            <mat-tab label="Place Of Business">
+
+                <!-- TAB CONTENT GOES HERE -->
+                <div class="flex justify-center border-2 border-dashed border-gray-300 rounded-2xl">
+                    <fuse-card class="flex flex-col items-center w-full p-8 pb-6 filter-info">
+                        <div class="m-8">
+                            <div class="text-2xl font-semibold leading-tight text-center">Place of Business Details
+                            </div>
+
+                            <div class="example-table-container">
+
+                                <table mat-table [dataSource]="placeOfBusinessDetails" class="example-table">
+
+                                    <ng-container matColumnDef="addressType">
+                                        <th mat-header-cell *matHeaderCellDef>Type</th>
+                                        <td mat-cell *matCellDef="let row">{{row?.addressType}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="ntr">
+                                        <th mat-header-cell *matHeaderCellDef>Nature of Business Activities being
+                                            Carried out at Place of Business</th>
+                                        <td mat-cell *matCellDef="let row">{{row?.ntr}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="adr">
+                                        <th mat-header-cell *matHeaderCellDef>Address</th>
+                                        <td mat-cell *matCellDef="let row">{{row?.adr}}</td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="businessPlacesDisplayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: businessPlacesDisplayedColumns;"></tr>
+                                </table>
+                            </div>
+
+                        </div>
+                    </fuse-card>
+                </div>
+
+            </mat-tab>
+
+        </mat-tab-group>
+
+    </div>
+
+    <!-- Dealing In Goods -->
+    <div class="flex-auto p-6 sm:p-10" *ngIf="currentTab === 'profile'">
+
+        <div class="flex flex-wrap items-start w-full max-w-400 -m-4">
+
+            <fuse-card class="flex flex-col w-full filter-article">
+                <div class="m-8">
+                    <div class="text-2xl font-semibold leading-tight text-center">Dealing In Goods</div>
+
+                    <div class="example-table-container">
+
+                        <table mat-table [dataSource]="dealingInGoodsDetails" class="example-table">
+
+                            <ng-container matColumnDef="hsncd">
+                                <th mat-header-cell *matHeaderCellDef>HSN</th>
+                                <td mat-cell *matCellDef="let row">{{row.hsncd}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="gdes">
+                                <th mat-header-cell *matHeaderCellDef>Description</th>
+                                <td mat-cell *matCellDef="let row">{{row?.gdes}}</td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="dealingInGoodsDisplayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: dealingInGoodsDisplayedColumns;"></tr>
+                        </table>
+                    </div>
+
+                </div>
+            </fuse-card>
+
+        </div>
+
+    </div>
+
+    <!-- Dealing In Services -->
+    <div class="flex-auto p-6 sm:p-10" *ngIf="currentTab === 'profile'">
+
+        <div class="flex flex-wrap items-start w-full max-w-400 -m-4">
+
+            <fuse-card class="flex flex-col w-full filter-article">
+                <div class="m-8">
+                    <div class="text-2xl font-semibold leading-tight text-center">Dealing In Services</div>
+
+                    <div class="example-table-container">
+
+                        <table mat-table [dataSource]="dealingInServicesDetails" class="example-table">
+
+                            <ng-container matColumnDef="saccd">
+                                <th mat-header-cell *matHeaderCellDef>HSN</th>
+                                <td mat-cell *matCellDef="let row">{{row.saccd}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="sdes">
+                                <th mat-header-cell *matHeaderCellDef>Description</th>
+                                <td mat-cell *matCellDef="let row">{{row?.sdes}}</td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="dealingInServicesDisplayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: dealingInServicesDisplayedColumns;"></tr>
+                        </table>
+                    </div>
+
+                </div>
+            </fuse-card>
+
+        </div>
+
+    </div>
+
+    <!--Nature Of Core Business Activity & Name of the Proprietor / Director(s) / Promoter(s) -->
+    <div class="flex-auto p-6 sm:p-10" *ngIf="currentTab === 'profile'">
+
+        <div class="flex flex-wrap items-start w-full max-w-400 -m-4">
+
+            <fuse-card class="flex flex-col lg:flex-row max-w-sm lg:max-w-240 filter-pricing">
+                <div class="p-6 sm:p-8 lg:p-10">
+                    <div class="flex items-center mt-10">
+                        <div class="font-medium text-secondary">Name of the Proprietor / Director(s) / Promoter(s)</div>
+                        <div class="flex-auto ml-2 border-b-2"></div>
+                    </div>
+                    <!-- Features -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-y-4 mt-6">
+                        <div class="flex items-center" *ngFor="let items of nameOfProprietorDetails">
+                            <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                            </mat-icon>
+                            <div class="ml-2">{{items}}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 sm:p-8 lg:p-10">
+                    <div class="flex items-center mt-10">
+                        <div class="font-medium text-secondary">Nature of Business Activities</div>
+                        <div class="flex-auto ml-2 border-b-2"></div>
+                    </div>
+                    <!-- Features -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-y-4 mt-6">
+                        <div class="flex items-center" *ngFor="let items of natureOfBusinessActivitiesDetails">
+                            <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                            </mat-icon>
+                            <div class="ml-2">{{items}}</div>
+                        </div>
+                    </div>
+                </div>
+            </fuse-card>
+
+        </div>
+
+    </div>
+
+
+    <!-- FILING STEPPER -->
+    <div class="flex-auto pt-6 sm:px-4 sm:pb-4">
+
+        <!-- Tabs -->
+        <mat-tab-group [animationDuration]="'0'">
+
+            <!-- Tab #1 -->
+            <mat-tab label="Filing Table">
+
+                <!-- TAB CONTENT GOES HERE -->
+                <div class="flex justify-center border-2 border-dashed border-gray-300 rounded-2xl">
+                    <fuse-card class="flex flex-col items-center w-full p-8 pb-6 filter-info">
+                        <div class="m-8" *ngFor="let filing of filingTabsName">
+                            <div class="text-2xl font-semibold leading-tight text-center">Filing details for {{filing}}
+                            </div>
+
+                            <div class="example-table-container">
+
+                                <table mat-table [dataSource]="filingTableDetails[filing]" class="example-table">
+
+                                    <ng-container matColumnDef="fy">
+                                        <th mat-header-cell *matHeaderCellDef>( Financial Year )</th>
+                                        <td mat-cell *matCellDef="let row">{{row?.fy}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="taxp">
+                                        <th mat-header-cell *matHeaderCellDef>( Tax Period )</th>
+                                        <td mat-cell *matCellDef="let row">{{row?.taxp}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="dof">
+                                        <th mat-header-cell *matHeaderCellDef>( Date of Filing )</th>
+                                        <td mat-cell *matCellDef="let row">{{row?.dof}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="status">
+                                        <th mat-header-cell *matHeaderCellDef>( Status )</th>
+                                        <td mat-cell *matCellDef="let row">{{row?.status}}</td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="filingTableDisplayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: filingTableDisplayedColumns;"></tr>
+                                </table>
+                            </div>
+
+                        </div>
+                    </fuse-card>
+                </div>
+
+            </mat-tab>
+
+            <!-- Tab #2 -->
+            <mat-tab label="Liability Table">
+
+                <!-- TAB CONTENT GOES HERE -->
+                <div class="flex justify-center border-2 border-dashed border-gray-300 rounded-2xl">
+                    <fuse-card class="flex flex-col items-center w-full p-8 pb-6 filter-info">
+                        <div class="m-8" *ngFor="let liability of liabilityTabsName">
+                            <div class="text-2xl font-semibold leading-tight text-center">{{liability}}
+                            </div>
+
+                            <div class="example-table-container">
+
+                                <table mat-table [dataSource]="liabilityTableDetails[liability]" class="example-table">
+
+                                    <ng-container matColumnDef="year">
+                                        <th mat-header-cell *matHeaderCellDef>( Financial Year )</th>
+                                        <td mat-cell *matCellDef="let row">{{row?.year}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="taxperiod">
+                                        <th mat-header-cell *matHeaderCellDef>( Tax Period )</th>
+                                        <td mat-cell *matCellDef="let row">{{row?.taxperiod}}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="liab_pct">
+                                        <th mat-header-cell *matHeaderCellDef>( % of Liability Paid )</th>
+                                        <td mat-cell *matCellDef="let row">{{row?.liab_pct}}</td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="liabiltyTableDisplayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: liabiltyTableDisplayedColumns;"></tr>
+                                </table>
+                            </div>
+
+                        </div>
+                    </fuse-card>
+                </div>
+
+            </mat-tab>
+
+        </mat-tab-group>
+
+    </div>
+
+</div>

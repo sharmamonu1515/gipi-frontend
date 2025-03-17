@@ -1,0 +1,43 @@
+.upload-container {
+    margin-bottom: 20px;
+  }
+  
+  table {
+    width: 100%;
+  }
+  
+  th.mat-header-cell, td.mat-cell {
+    text-align: left;
+    padding: 8px;
+  }
+  
+  th.mat-header-cell {
+    background-color: #f1f1f1;
+  }
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.progress-bar-container {
+  width: 80%;
+  margin: 20px auto; /* Center the progress bar horizontally */
+  padding: 10px;
+
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+mat-progress-bar {
+  height: 20px; /* Adjust the height as needed */
+  border-radius: 5px;
+  overflow: hidden; /* Ensure rounded corners for the inner bar */
+}

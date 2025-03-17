@@ -1,0 +1,25 @@
+<div class="p-6 max-w-md mx-auto bg-white rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold mb-4">Add Urls</h2>
+    <form [formGroup]="urlForm" (ngSubmit)="addUrl()">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Label</mat-label>
+        <input matInput placeholder="Enter a Label" formControlName="name" />
+        <mat-error *ngIf="urlForm.get('name')?.invalid && urlForm.get('name')?.touched">
+          Label is required
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Url</mat-label>
+        <input matInput placeholder="Enter a keyword" formControlName="url" />
+        <mat-error *ngIf="urlForm.get('url')?.invalid && urlForm.get('url')?.touched">
+          Url is required
+        </mat-error>
+      </mat-form-field>
+  
+      <div class="mt-6 flex justify-end gap-2">
+        <button mat-button type="button" (click)="closeDialog()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="urlForm.invalid">Add</button>
+      </div>
+    </form>
+  </div>
+  

@@ -1,0 +1,76 @@
+
+<div class="p-4 flex md:flex-nowrap justify-center md:justify-between space-y-6 md:space-y-0 md:space-x-12">
+  <div class="w-full md:w-1/2">
+      <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold">Keyword List</h2>
+          <button
+              (click)="openKeywordDialog()"
+              class="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+              Add Keyword
+          </button>
+      </div>
+
+      <div class="overflow-y-auto max-h-96 min-h-96 border rounded-md shadow-md relative">
+          <table class="w-full border-collapse table-fixed">
+              <thead class="bg-gray-200 sticky top-0 shadow-md z-10">
+                  <tr>
+                      <th class="p-3 text-left w-2/3">Keyword</th>
+                      <th class="p-3 text-center w-1/3">Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let element of keywordsDataSource.data" class="border-b">
+                      <td class="p-3 truncate overflow-hidden break-words">{{ element.keyword }}</td>
+                      <td class="p-3 flex justify-center space-x-2">
+                          <button (click)="openKeywordDialog(element, true)" mat-icon-button color="primary">
+                              <mat-icon>edit</mat-icon>
+                          </button>
+                          <button (click)="deleteKeyword(element.id)" mat-icon-button color="warn">
+                              <mat-icon>delete</mat-icon>
+                          </button>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+  </div>
+
+  <div class="w-full md:w-1/2">
+      <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold">Urls List</h2>
+          <button
+              (click)="openUrlLabelDialog()"
+              class="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+              Add Url
+          </button>
+      </div>
+
+      <div class="overflow-y-auto max-h-96 min-h-96 border rounded-md shadow-md relative">
+          <table class="w-full border-collapse table-fixed">
+              <thead class="bg-gray-200 sticky top-0 shadow-md z-10">
+                  <tr>
+                      <th class="p-3 text-left w-1/3">Label</th>
+                      <th class="p-3 text-left w-1/3">Url</th>
+                      <th class="p-3 text-center w-1/3">Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let element of urlLabelsDataSource.data" class="border-b">
+                      <td class="p-3 truncate overflow-hidden break-words">{{ element.label }}</td>
+                      <td class="p-3 truncate overflow-hidden break-words">{{ element.url }}</td>
+                      <td class="p-3 flex justify-center space-x-2">
+                          <button (click)="openUrlLabelDialog(element, true)" mat-icon-button color="primary">
+                              <mat-icon>edit</mat-icon>
+                          </button>
+                          <button (click)="deleteUrlLabel(element.id)" mat-icon-button color="warn">
+                              <mat-icon>delete</mat-icon>
+                          </button>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+  </div>
+</div>

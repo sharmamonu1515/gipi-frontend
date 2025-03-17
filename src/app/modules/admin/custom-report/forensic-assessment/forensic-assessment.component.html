@@ -1,0 +1,104 @@
+<div class="container mt-6 p-6 bg-white shadow-md rounded-lg w-full">
+    <div class="flex justify-between pb-4 border-b border-gray-200 items-center">
+      <h2 class="text-xl font-semibold text-primary mb-2">Risk Assessment Form</h2>
+      <button 
+          mat-flat-button
+          (click)="saveData()"
+          [disabled]="!hasUnsavedChanges()"
+          class="report-button flex items-center space-x-2 py-2 px-4 rounded-md shadow-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 gap-2"
+      >
+        <span class="text-white font-medium m-2">Save</span>
+        <mat-icon class="text-white">save</mat-icon>
+      </button>
+    </div>
+  
+    <div class="p-2 flex items-center justify-end gap-4">
+      <p class="text-lg font-semibold text-gray-700">
+        Match Found: <span class="text-red-600">{{ matchFoundCount }}</span>
+    </p>
+        <button
+            (click)="addRow()"
+            class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+        >
+            Add Row
+        </button>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full border-collapse border border-gray-300">
+            <thead class="bg-red-800 text-white">
+                <tr class="bg-red-800 text-white">
+                    <th class="border border-gray-300 p-2">Category</th>
+                    <th class="border border-gray-300 p-2">Result</th>
+                    <th class="border border-gray-300 p-2">Tags</th>
+                    <th class="border border-gray-300 p-2">
+                        Recommended Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    *ngFor="let item of riskCategories; let i = index"
+                    class="odd:bg-background even:bg-muted"
+                >
+                    <td class="p-3 border font-medium text-gray-800">
+                        <input
+                            type="text"
+                            [(ngModel)]="item.category"
+                            name="category{{ i }}"
+                            class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                        />
+                    </td>
+
+                    <td class="p-3 border">
+                        <select
+                            [(ngModel)]="item.result"
+                            name="result{{ i }}"
+                            class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground appearance-nonex"
+                            [ngClass]="{
+                                'text-red-600': item.result === 'Match Found',
+                                'text-green-600':
+                                    item.result === 'No Match Found'
+                            }"
+                            (ngModelChange)="updateAction(item)"
+                        >
+                            <option class="text-red-600" value="Match Found">
+                                Match Found
+                            </option>
+                            <option
+                                class="text-green-600"
+                                value="No Match Found"
+                            >
+                                No Match Found
+                            </option>
+                        </select>
+                    </td>
+                    <td class="p-3 border">
+                        <input
+                            type="text"
+                            [(ngModel)]="item.tags"
+                            name="tags{{ i }}"
+                            class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                        />
+                    </td>
+                    <td class="p-3 border relative">
+                        <div class="flex items-center justify-between">
+                            <input
+                                type="text"
+                                [(ngModel)]="item.actions"
+                                name="actions{{ i }}"
+                                class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                            />
+                            <button
+                                matTooltip="Delete Row"
+                                (click)="openDeleteDialog(i)"
+                                class="ml-4 hover:text-red-800 transition"
+                            >
+                                <mat-icon class="text-red-600">close</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

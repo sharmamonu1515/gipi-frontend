@@ -1,0 +1,1821 @@
+
+    <mat-accordion class="container custom-accordion dark:bg-gray-900">
+        <div class="flex justify-end pb-2 border-b border-gray-200 items-center">
+            <button 
+                mat-flat-button
+                (click)="saveData()"
+                [disabled]="!hasUnsavedChanges()"
+                class="report-button flex items-center space-x-2 py-2 px-4 rounded-md shadow-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 gap-2"
+            >
+              <span class="text-white font-medium m-2">Save</span>
+              <mat-icon class="text-white">save</mat-icon>
+            </button>
+        </div>
+        <mat-expansion-panel expanded="true" class="custom-expansion-panel">
+            <mat-expansion-panel-header class="custom-header">
+                <span class="text-lg font-semibold text-primary"
+                    >Financial Highlights & Recommendations</span
+                >
+            </mat-expansion-panel-header>
+                <div class="overflow-x-auto">
+                    <table
+                        class="w-full border-collapse border border-gray-300"
+                    >
+                        <thead>
+                            <tr class="bg-red-800 text-white">
+                                <th class="border border-gray-400 px-4 py-2">
+                                    Field
+                                </th>
+                                <th class="border border-gray-400 px-4 py-2">
+                                    Value
+                                </th>
+                                <th class="border border-gray-400 px-4 py-2">
+                                    Comments
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="
+                                    let item of financialData;
+                                    let i = index let last = last
+                                "
+                                class="odd:bg-background even:bg-muted"
+                            >
+                                <td class="p-3 border font-semibold">
+                                    {{ item.field }}
+                                </td>
+                                <td *ngIf="!last"  class="p-3 border">
+                                   
+                                    <input
+                                        type="text"
+                                        [(ngModel)]="item.value"
+                                        name="value{{ i }}"
+                                        class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                                    />
+                                </td>
+                                <td *ngIf="!last" class="p-3 border">
+                                    <input
+                                        type="text"
+                                        [(ngModel)]="item.comments"
+                                        name="comments{{ i }}"
+                                        class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                                    />
+                                </td>
+                                <td *ngIf="last" colspan="2" class="p-3 border">
+                                    <textarea
+                                        type="text"
+                                        [(ngModel)]="item.comments"
+                                        name="comments{{ i }}"
+                                        placeholder=""
+                                        class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                                    >
+                                    </textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel
+            class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+        >
+            <mat-expansion-panel-header
+                class="custom-header dark:bg-gray-700 dark:text-gray-300"
+            >
+                <span class="text-lg font-semibold text-primary"
+                    >Financial Analyst Observations</span
+                >
+            </mat-expansion-panel-header>
+            <form class="custom-panel-content dark:bg-gray-800">
+                <angular-editor
+                    [(ngModel)]="financialObservations"
+                    [config]="editorConfig"
+                    name="financialObservations"
+                    class="w-full border bg-white"
+                ></angular-editor>
+            </form>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel
+            class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+        >
+            <mat-expansion-panel-header
+                class="custom-header dark:bg-gray-700 dark:text-gray-300"
+            >
+                <span class="text-lg font-semibold text-primary"
+                    >Profit and Loss Account Summary</span
+                >
+            </mat-expansion-panel-header>
+            <div class="p-2 flex justify-end">
+                <mat-form-field appearance="outline" class="w-1/3">
+                    <mat-label>Select Additional Years</mat-label>
+                    <mat-select
+                        [(ngModel)]="profitLossYears"
+                        multiple
+                        (selectionChange)="updateDisplayedYears('profitLoss')"
+                    >
+                        <mat-option
+                            *ngFor="let year of financialYears"
+                            [value]="year"
+                            [disabled]="profitLossYears.length >= 5 && !profitLossYears.includes(year)"
+                        >
+                            {{ year }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full border border-border shadow-md rounded-lg">
+                    <thead>
+                        <tr class="bg-red-800 text-white">
+                            <th  class="border border-gray-300 px-4 py-2">Particulars</th>
+                            <th
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                {{ year }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white">
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Revenue
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year].net_revenue
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Less: Direct Expenditure
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year].direct_expenditure
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Salaries and Wages
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year].salaries_wages
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Gross Profit
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year].gross_profit
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Less: General and Administration Expenses
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <textarea
+                                    [(ngModel)]="
+                                        profitLossData[year]
+                                            .adminstration_expense
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                ></textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Less: Selling and Distribution Expenses
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year]
+                                            .distribution_expense
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Less: Depreciation / Amortization
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year].depreciation
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Less: Non – Operating Expenses
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year].operating_expense
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Operating Profit
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year].operating_profit
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Add: Non-Operating Income
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year]
+                                            .non_operating_income
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Earnings Before Interest and Tax (EBIT)
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="profitLossData[year].ebita"
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Less: Interest Expenditure
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year]
+                                            .interest_expenditure
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Earnings Before Tax (EBT)
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year].earning_before_tax
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Add: Exceptional item
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year].exceptional_item
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Net Profit Before Taxation & After Extraordinary
+                                Items
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year]
+                                            .net_profit_before_tax
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Less: Total Tax Provision
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year].total_tax_provision
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Profit after Tax and Extraordinary Items
+                            </td>
+                            <td
+                                *ngFor="let year of displayProfitLossYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        profitLossData[year].profit_after_tex
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel
+            class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+        >
+            <mat-expansion-panel-header
+                class="custom-header dark:bg-gray-700 dark:text-gray-300"
+            >
+                <span class="text-lg font-semibold text-primary"
+                    >Balance Sheet</span
+                >
+            </mat-expansion-panel-header>
+            <div class="p-2 flex justify-end">
+                <mat-form-field appearance="outline" class="w-1/3">
+                    <mat-label>Select Additional Years</mat-label>
+                    <mat-select
+                        [(ngModel)]="balanceSheetYears"
+                        multiple
+                        (selectionChange)="updateDisplayedYears('balanceSheet')"
+                    >
+                        <mat-option
+                            *ngFor="let year of financialYears"
+                            [value]="year"
+                            [disabled]="balanceSheetYears.length >= 5 && !balanceSheetYears.includes(year)"
+                        >
+                            {{ year }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full border border-border shadow-md rounded-lg">
+                    <thead>
+                        <tr class="bg-red-800 text-white">
+                            <th class="border border-gray-300 px-4 py-2">Liabilities</th>
+                            <th
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                {{ year }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white">
+                        <tr class="bg-gray-200">
+                            <td
+                                [attr.colspan]="balanceSheetYears.length + 1"
+                                class="p-3 border font-semibold text-center"
+                            >
+                                Shareholder's Funds
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Equity Share Capital
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year].share_capital
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Securities Premium
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year]
+                                            .firm_registration_number
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                General Reserves
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year]
+                                            .reserves_and_surplus
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Capital Redemption Reserve
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year].capital_reserve
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Surplus (Deficit) (Retained earnings)
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <textarea
+                                    [(ngModel)]="
+                                        balanceSheetdata[year].retained_earnings
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                ></textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Capital Grants And Subsidies
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year].capital_grants
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Other Comprehensive Income
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year].other_income
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Total Shareholder's Funds
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        subTotalData[year].total_equity
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr class="bg-gray-200">
+                            <td
+                                [attr.colspan]="balanceSheetYears.length + 1"
+                                class="p-3 border font-semibold text-center"
+                            >
+                                Non Current Liabilities
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Debentures And Bonds
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year]
+                                            .long_term_borrowings
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Deferred Tax Liability
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year]
+                                            .deferred_tax_liabilities_net
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Other Provisions
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year]
+                                            .long_term_provisions
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Other Non-Current Liabilities
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year]
+                                            .other_long_term_liabilities
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Total Non-Current Liabilities
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        subTotalData[year]
+                                            .total_non_current_liabilities
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr class="bg-gray-200">
+                            <td
+                                [attr.colspan]="balanceSheetYears.length + 1"
+                                class="p-3 border font-semibold text-center"
+                            >
+                                Current Liabilities and Provision
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Accounts Payables
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year].account_payables
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Creditors for Capital Goods
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year].capital_goods
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Unsecured Loans From Banks / Financial
+                                Institutions
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year].unsecured_loans
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Unsecured Loans from Others
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year]
+                                            .unsecured_loans_others
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Advances from Customers
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year].advance_customers
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Debentures And Bonds
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year].debentures_bonds
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Provisions
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year]
+                                            .short_term_provisions
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Deposits
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year].deposits
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Duties and Taxes Payable
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year].duties_tax
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Other Current Liabilities
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year]
+                                            .other_current_liabilities
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Current Tax Liabilities
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year]
+                                            .current_tax_liabilities
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Total Current Liabilities and Provisions
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        subTotalData[year]
+                                            .total_current_liabilities
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Equity + Liabilities
+                            </td>
+                            <td
+                                *ngFor="let year of displayeBalanceSheetYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        balanceSheetdata[year]
+                                            .given_liabilities_total
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel
+            class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+        >
+            <mat-expansion-panel-header
+                class="custom-header dark:bg-gray-700 dark:text-gray-300"
+            >
+                <span class="text-lg font-semibold text-primary"
+                    >Assets Table</span
+                >
+            </mat-expansion-panel-header>
+            <div class="p-2 flex justify-end">
+                <mat-form-field appearance="outline" class="w-1/3">
+                    <mat-label>Select Additional Years</mat-label>
+                    <mat-select
+                        [(ngModel)]="assetsYears"
+                        multiple
+                        (selectionChange)="updateDisplayedYears('assets')"
+                    >
+                        <mat-option
+                            *ngFor="let year of financialYears"
+                            [value]="year"
+                            [disabled]="assetsYears.length >= 5 && !assetsYears.includes(year)"
+                        >
+                            {{ year }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full border border-border shadow-md rounded-lg">
+                    <thead>
+                        <tr class="bg-red-800 text-white">
+                            <th class="border border-gray-300 px-4 py-2">Assets</th>
+                            <th
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                {{ year }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white">
+                        <tr class="bg-gray-200">
+                            <td
+                                [attr.colspan]="assetsYears.length + 1"
+                                class="p-3 border font-semibold text-center"
+                            >
+                                Fixed Assets
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Land & Buildings
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="assetsData[year].land_building"
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Plant & Equipment
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].plant_equipment
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Transportation Vehicles
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].transportation
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Office Equipment
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].office_equipment
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Computers and Other IT Equipment
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <textarea
+                                    [(ngModel)]="assetsData[year].it_equipment"
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                ></textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Furniture, Fixtures and Fittings
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="assetsData[year].furniture"
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Other Fixed Assets
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="assetsData[year].pan"
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Assets Under Construction
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].under_construction
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                ROUA
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="assetsData[year].roua"
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Other Intangibles (Intangible Assets Under Construction)
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].intangible_assets
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                               Total Fixed Assets
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].total_fixed_assets
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr class="bg-gray-200">
+                            <td
+                                [attr.colspan]="assetsYears.length + 1"
+                                class="p-3 border font-semibold text-center"
+                            >
+                                Non Current Assets
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Investments
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].noncurrent_investments
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Advance for Capital Assets
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].advance_capital
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Deferred Tax Assets
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].deferred_tax_assets_net
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Trade, Security and Other Deposits
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].other_deposits
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Non-Current Assets held for Sale
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year]
+                                            .non_current_assest_for_sale
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Derivative Instruments
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].derivative_instruments
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Other Non-Current Assets
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].other_noncurrent_assets
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Total Non-Current Assets
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].total_noncurrent_assets
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr class="bg-gray-200">
+                            <td
+                                [attr.colspan]="assetsYears.length + 1"
+                                class="p-3 border font-semibold text-center"
+                            >
+                                Current Assets
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Cash & Bank
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].cash_and_bank_balances
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Current investments
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].current_investments
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Inventories
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="assetsData[year].inventories"
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Accounts Receivable
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].amount_receivables
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Prepaid Expenses
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].prepaid_expenses
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Duties and Taxes Receivables
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].duties_receivables
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Deposits
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="assetsData[year].deposits"
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Advances To Suppliers
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].advance_suppliers
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Other Current Assets
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].other_current_assets
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                Total Current Assets
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].total_current_assets
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                class="border border-gray-300 px-4 py-2 font-bold"
+                            >
+                                 Total Assets
+                            </td>
+                            <td
+                                *ngFor="let year of displayAssetsYears"
+                                class="border border-gray-300 px-4 py-2"
+                            >
+                                <input
+                                    [(ngModel)]="
+                                        assetsData[year].total_assets
+                                    "
+                                    class="w-full p-1 border border-gray-300 rounded"
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100">
+            <mat-expansion-panel-header class="custom-header dark:bg-gray-700 dark:text-gray-300">
+                <span class="text-lg font-semibold text-primary">Ratio Analysis</span>
+            </mat-expansion-panel-header>
+        
+            <div class="overflow-x-auto mt-4">
+                <div class="p-2 flex justify-end">
+                    <mat-form-field appearance="outline" class="w-1/3">
+                        <mat-label>Select Additional Years</mat-label>
+                        <mat-select
+                            [(ngModel)]="ratioAnalysisYears"
+                            multiple
+                            (selectionChange)="updateDisplayedYears('ratioAnalysis')"
+                        >
+                            <mat-option
+                                *ngFor="let year of financialYears"
+                                [value]="year"
+                                [disabled]="ratioAnalysisYears.length >= 5 && !ratioAnalysisYears.includes(year)"
+                                >
+                                {{ year }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>                    
+                </div>
+        
+                <table class="w-full border border-border shadow-md rounded-lg">
+                    <thead>
+                        <tr class="bg-red-700 text-white">
+                            <th class="p-3 border">Particulars</th>
+                            <th *ngFor="let year of ratioAnalysisYears" class="p-3 border">
+                                {{ year }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-gray-200">
+                            <td [attr.colspan]="ratioAnalysisYears.length + 1" class="p-3 border font-semibold text-center">
+                                Profitability Ratios
+                            </td>
+                        </tr>
+                        <tr *ngFor="let row of profitabilityRatios">
+                            <td class="p-3 border">{{ row.particulars }}</td>
+                            <td
+                                *ngFor="let year of ratioAnalysisYears; let j = index"
+                                class="p-3 border text-center"
+                            >
+                                <input
+                                    type="text"
+                                    [(ngModel)]="row.values[j]"
+                                    class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                                />
+                            </td>
+                        </tr>
+        
+                    
+                        <tr class="bg-gray-200">
+                            <td [attr.colspan]="ratioAnalysisYears.length + 1" class="p-3 border font-semibold text-center">
+                                Return Ratios
+                            </td>
+                        </tr>
+                        <tr *ngFor="let row of returnRatios">
+                            <td class="p-3 border">{{ row.particulars }}</td>
+                            <td
+                                *ngFor="let year of ratioAnalysisYears; let j = index"
+                                class="p-3 border text-center"
+                            >
+                                <input
+                                    type="text"
+                                    [(ngModel)]="row.values[j]"
+                                    class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                                />
+                            </td>
+                        </tr>
+        
+                        <tr class="bg-gray-200">
+                            <td [attr.colspan]="ratioAnalysisYears.length + 1" class="p-3 border font-semibold text-center">
+                                Liquidity Ratios
+                            </td>
+                        </tr>
+                        <tr *ngFor="let row of liquidityRatios">
+                            <td class="p-3 border">{{ row.particulars }}</td>
+                            <td
+                                *ngFor="let year of ratioAnalysisYears; let j = index"
+                                class="p-3 border text-center"
+                            >
+                                <input
+                                    type="text"
+                                    [(ngModel)]="row.values[j]"
+                                    class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                                />
+                            </td>
+                        </tr>
+        
+                        <tr class="bg-gray-200">
+                            <td [attr.colspan]="ratioAnalysisYears.length + 1" class="p-3 border font-semibold text-center">
+                                Turnover Ratios
+                            </td>
+                        </tr>
+                        <tr *ngFor="let row of trunoverRatios">
+                            <td class="p-3 border">{{ row.particulars }}</td>
+                            <td
+                                *ngFor="let year of ratioAnalysisYears; let j = index"
+                                class="p-3 border text-center"
+                            >
+                                <input
+                                    type="text"
+                                    [(ngModel)]="row.values[j]"
+                                    class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                                />
+                            </td>
+                        </tr>
+        
+                        <tr class="bg-gray-200">
+                            <td [attr.colspan]="ratioAnalysisYears.length + 1" class="p-3 border font-semibold text-center">
+                                Solvency Ratios
+                            </td>
+                        </tr>
+                        <tr *ngFor="let row of solvencyRatios">
+                            <td class="p-3 border">{{ row.particulars }}</td>
+                            <td
+                                *ngFor="let year of ratioAnalysisYears; let j = index"
+                                class="p-3 border text-center"
+                            >
+                                <input
+                                    type="text"
+                                    [(ngModel)]="row.values[j]"
+                                    class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                                />
+                            </td>
+                        </tr>
+        
+                        <tr class="bg-gray-200">
+                            <td [attr.colspan]="ratioAnalysisYears.length + 1" class="p-3 border font-semibold text-center">
+                                Efficiency Ratios
+                            </td>
+                        </tr>
+                        <tr *ngFor="let row of efficiencyRatios">
+                            <td class="p-3 border">{{ row.particulars }}</td>
+                            <td
+                                *ngFor="let year of ratioAnalysisYears; let j = index"
+                                class="p-3 border text-center"
+                            >
+                                <input
+                                    type="text"
+                                    [(ngModel)]="row.values[j]"
+                                    class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                                />
+                            </td>
+                        </tr>
+        
+                        <tr class="bg-gray-200">
+                            <td [attr.colspan]="ratioAnalysisYears.length + 1" class="p-3 border font-semibold text-center">
+                                Working Capital Ratios
+                            </td>
+                        </tr>
+                        <tr *ngFor="let row of workingCapitalRatios">
+                            <td class="p-3 border">{{ row.particulars }}</td>
+                            <td
+                                *ngFor="let year of ratioAnalysisYears; let j = index"
+                                class="p-3 border text-center"
+                            >
+                                <input
+                                    type="text"
+                                    [(ngModel)]="row.values[j]"
+                                    class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                                />
+                            </td>
+                        </tr>
+        
+                        <tr class="bg-gray-200">
+                            <td [attr.colspan]="ratioAnalysisYears.length + 1" class="p-3 border font-semibold text-center">
+                                Altman's Z Score & Du Pont Analysis Score
+                            </td>
+                        </tr>
+                        <tr *ngFor="let row of altmanScore">
+                            <td class="p-3 border">{{ row.particulars }}</td>
+                            <td
+                                *ngFor="let year of ratioAnalysisYears; let j = index"
+                                class="p-3 border text-center"
+                            >
+                                <input
+                                    type="text"
+                                    [(ngModel)]="row.values[j]"
+                                    class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground"
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+

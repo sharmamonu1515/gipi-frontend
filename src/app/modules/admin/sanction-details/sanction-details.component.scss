@@ -1,0 +1,71 @@
+.modal-body {
+  padding: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table tr {
+  height: auto; /* Remove the fixed height */
+  padding: 10px 0;
+  border: none;
+  box-sizing: border-box; /* Changed from unset to border-box */
+}
+
+.table td, .table th {
+  padding: 10px; /* Add padding for better spacing */
+  border: none;
+  vertical-align: top; /* Align the content to the top */
+}
+
+.table td strong {
+  border: none !important;
+}
+
+.table td {
+  width: auto; /* Ensure the width adjusts to content */
+  max-width: 400px; /* Set a maximum width to handle large content */
+  word-wrap: break-word; /* Wrap words to the next line */
+}
+
+.italic {
+  font-style: italic;
+  font-size: 10px;
+  color: black;
+  margin-top: 20px;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header-buttons {
+    display: flex;
+    align-items: center;
+  }
+  
+  .header-buttons .close,
+  .header-buttons .download {
+    background: none;
+    border: none;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+  
+  .header-buttons .close span {
+    font-size: 1.5rem;
+  }
+  
+  .header-buttons .download img {
+    width: 20px;
+    height: 20px;
+  }
+  

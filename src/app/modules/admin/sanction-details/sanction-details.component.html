@@ -1,0 +1,71 @@
+<div  id="sanction-detail">
+<div class="modal-header">
+    <h2 class="modal-title">Sanction Detail</h2>
+    <div class="header-buttons">
+        <button type="button" class="download" (click)="downloadModalAsImage()">
+            <img src="../../../../assets/icons/downloads.png" alt="Download Icon">
+          </button>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      
+    </div>
+  </div>
+  
+  <div class="modal-body" >
+    <table class="table">
+      <tr>
+        <td><strong>ID</strong></td>
+        <td>{{ row.id }}</td>
+      </tr>
+      <tr>
+        <td><strong>Name</strong></td>
+        <td>{{ row.name }}</td>
+      </tr>
+      <tr *ngIf="row.schema">
+        <td><strong>Schema</strong></td>
+        <td>{{ row.schema }}</td>
+      </tr>
+      <tr *ngIf="row.sanctions">
+        <td><strong>Sanctions</strong></td>
+        <td>{{ row.sanctions }}</td>
+      </tr>
+      <tr *ngIf="row.identifiers">
+        <td><strong>Identifiers</strong></td>
+        <td>{{ row.identifiers }}</td>
+      </tr>
+      <tr *ngIf="row.addresses">
+        <td><strong>Addresses</strong></td>
+        <td>{{ row.addresses }}</td>
+      </tr>
+      <tr *ngIf="row.aliases">
+        <td><strong>Aliases</strong></td>
+        <td>{{ row.aliases }}</td>
+      </tr>
+      <tr *ngIf="row.countries">
+        <td><strong>Countries</strong></td>
+        <td>{{ getCountry(row.countries) }}</td>
+      </tr>
+      <tr *ngIf="row.dataset">
+        <td><strong>Dataset</strong></td>
+        <td>{{ row.dataset }}</td>
+      </tr>
+      <tr>
+        <td><strong>First Seen</strong></td>
+        <td>{{ row.first_seen | date: 'dd/MM/yyyy, h:mm a' }}</td>
+      </tr>
+      <tr>
+        <td><strong>Last Seen</strong></td>
+        <td>{{ row.last_seen | date: 'dd/MM/yyyy, h:mm a' }}</td>
+      </tr>
+      <tr>
+        <td><strong>Last Change</strong></td>
+        <td>{{ row.last_change | date: 'dd/MM/yyyy, h:mm a' }}</td>
+      </tr>
+    </table>
+    <div class="italic" style="font-size: 10px; color: black;">
+      *Screening done on {{searchText}} {{today| date: 'dd/MM/yyyy, h:mm a'}}
+    </div>
+  </div>
+  
+</div>

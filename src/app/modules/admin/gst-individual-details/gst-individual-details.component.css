@@ -1,0 +1,14 @@
+.example-table-container {
+    position: relative;
+    min-height: 200px;
+    max-height: 400px;
+    overflow: auto;
+  }
+
+  cards fuse-card {
+    margin: 16px;
+  }
+  
+  table {
+    width: 100%;
+  }

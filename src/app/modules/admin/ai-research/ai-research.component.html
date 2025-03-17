@@ -1,0 +1,255 @@
+<div class="p-4 w-full min-h-[calc(100vh-65px)] bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div class="search-header flex items-center space-x-4 w-full mb-2">
+      <div class="flex-1 min-w-[300px]">
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Search..."
+          (ngModelChange)="onSearchTermChange()"
+          class="w-full mt-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                 bg-white dark:bg-gray-800 
+                 text-gray-900 dark:text-gray-100
+                 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 
+                 h-12"
+        />
+      </div>
+    
+      <div class="w-[250px] min-w-[250px]">
+        <mat-form-field class="w-full mt-4" floatLabel="always">
+          <mat-select
+            [formControl]="keywordsControl"
+            multiple
+            placeholder="Select keywords"
+            class="w-full dark:text-gray-100"
+          >
+            <mat-option class="all-option dark:bg-gray-700 dark:text-gray-100">
+              <mat-checkbox
+                [checked]="isAllSelected"
+                [indeterminate]="isIndeterminate()"
+                (change)="toggleAllSelection()"
+                class="dark:text-gray-100 all-checkbox"
+              >
+                Select All
+              </mat-checkbox>
+            </mat-option>
+            <mat-option
+              *ngFor="let keyword of keywords"
+              [value]="keyword"
+              class="dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
+            >
+              {{ keyword }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    
+      <div class="flex space-x-3 mt-1">
+        <button
+          class="flex items-center px-3 py-6 text-sm font-medium rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-400 h-9"
+          [ngClass]="{
+            'bg-[#5F85FF] text-white hover:bg-[#4E74FF]': searching, 
+            'bg-gray-300 text-gray-500 cursor-not-allowed': !searching
+          }"
+          title="Search"
+          (click)="search()"
+          [disabled]="!searching"
+        >
+          <span class="truncate max-w-[50px] mr-2">Search</span>
+          <span class="border-l border-white">
+            <mat-icon
+              class="text-base"
+              [ngClass]="{ 'text-white': searching, 'text-gray-500': !searching }"
+              >search</mat-icon
+            >
+          </span>
+        </button>
+        
+        <button
+          mat-raised-button
+          color="primary"
+          class="flex items-center px-3 py-6 text-sm font-medium rounded-full shadow focus:outline-none h-9"
+          [ngClass]="{
+            'text-white hover:bg-blue-600': hasSelectedUrls(),
+            'bg-gray-300 text-gray-500 cursor-not-allowed': !hasSelectedUrls()
+          }"
+          [disabled]="!hasSelectedUrls()"
+          (click)="summarizeSelectedUrls()"
+        >
+          <span class="mr-2">Summarize</span>
+          <span class="border-l border-white ml-2">
+            <mat-icon
+              class="text-base"
+              [ngClass]="{ 'text-white': hasSelectedUrls(), 'text-gray-500': !hasSelectedUrls() }"
+              >open_in_new</mat-icon
+            >
+          </span>
+        </button>
+
+        <button
+          class="flex items-center px-3 py-6 text-sm font-medium rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-300 h-9"
+          [ngClass]="{
+            'bg-[#0f172a] text-white hover:bg-[#1e293b]': searchResults.length > 0,
+            'bg-gray-300 text-gray-500 cursor-not-allowed': searchResults.length === 0
+          }"
+          title="Download"
+          (click)="downloadResults()"
+          [disabled]="!searchResults.length"
+        >
+          <span class="mr-2">Download</span>
+          <span class="border-l border-white">
+            <mat-icon
+              class="text-base"
+              [ngClass]="{ 'text-white': searchResults.length > 0, 'text-gray-500': searchResults.length === 0 }"
+              >download</mat-icon
+            >
+          </span>
+        </button>
+      </div>
+    </div>
+    
+    <div class="flex gap-4 flex-wrap border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">
+      <mat-chip-list class="flex flex-wrap gap-4">
+        <mat-chip-option
+          *ngFor="let filter of filterOptions"
+          [selected]="filter.selected"
+          (click)="toggleFilter(filter)"
+          [disabled]="!searching"
+          class="px-4 py-2 mb-1 rounded-full border border-gray-200 
+                 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300
+                 cursor-pointer 
+                 transition-all duration-300 ease-in-out 
+                 hover:bg-gray-100 hover:border-gray-300
+                 dark:hover:bg-gray-600
+                 data-[selected=true]:bg-blue-600 data-[selected=true]:text-white 
+                 data-[selected=true]:border-blue-600
+                 dark:data-[selected=true]:bg-blue-800 mr-2"
+                 [ngStyle]="filter.selected ? { 'background-color': '#0f172a', 'color': '#fff', 'border-color': '#4caf50' } : null"
+        >
+          {{ filter.name }}
+        </mat-chip-option>
+      </mat-chip-list>
+    </div>
+  
+   <div class="search-results" *ngIf="searchResults.length && !isCategoryWise">
+    <div 
+      class="result-item flex items-start p-4 border border-gray-200 dark:border-gray-700 rounded-lg 
+             dark:bg-gray-800 mb-4"
+      *ngFor="let result of searchResults">
+      
+
+      <div class="flex flex-grow items-center">
+        <mat-checkbox
+          [(ngModel)]="result.selected"
+          color="primary"
+          class="mr-4 dark:text-gray-300"
+        ></mat-checkbox>
+        <div class="result-content">
+          <a 
+            [href]="result.url" 
+            target="_blank" 
+            class="result-title text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            {{ result.title }}
+          </a>
+          <div class="result-url text-green-700 dark:text-green-500">{{ result.url }}</div>
+          <div class="result-description text-gray-600 dark:text-gray-300">
+            {{ result.description }}
+          </div>
+        </div>
+      </div>
+  
+
+      <button 
+        mat-icon-button 
+        (click)="scrapeSelectedContent(result.url)"
+        class="ml-auto text-gray-600 dark:text-gray-300"
+        aria-label="Open Details"
+        matTooltip="View Content"
+      >
+        <mat-icon>info</mat-icon>
+      </button>
+    </div>
+  
+    <div class="pagination-controls flex justify-end items-center space-x-4 text-gray-900 dark:text-gray-100">
+      <button
+        mat-button
+        (click)="changePage(currentPage + 1)"
+        [disabled]="currentPage === totalPages"
+        class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md 
+               disabled:opacity-50 dark:text-gray-300"
+      >
+        Load More
+      </button>
+    </div>
+  </div>
+  
+    <mat-accordion
+      class="custom-accordion dark:bg-gray-900"
+      *ngIf="searchResults.length && isCategoryWise"
+    >
+      <mat-expansion-panel
+        *ngFor="let data of searchResults; let i = index"
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+        [expanded]="i === 0"
+      >
+        <mat-expansion-panel-header class="custom-header dark:bg-gray-700 dark:text-gray-300">
+          <mat-panel-title>
+            {{ data.keyword }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+  
+        <div
+          *ngIf="data.results.length; else noResults"
+          class="custom-panel-content dark:bg-gray-800"
+        >
+          <div 
+            class="result-item flex items-start p-4 border border-gray-200 dark:border-gray-700 rounded-lg 
+                   dark:bg-gray-700 mb-4"
+            *ngFor="let result of data.results"
+          >
+          <div class="flex flex-grow items-center">
+            <mat-checkbox
+              [(ngModel)]="result.selected"
+              color="primary"
+              class="mr-4 dark:text-gray-300"
+            ></mat-checkbox>
+            <div class="result-content">
+              <a
+                [href]="result.url"
+                target="_blank"
+                class="result-title text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                {{ result.title }}
+              </a>
+              <div class="result-url text-green-700 dark:text-green-500">
+                {{ result.url }}
+              </div>
+              <div class="result-description text-gray-600 dark:text-gray-300">
+                {{ result.description }}
+              </div>
+            </div>
+            </div>
+            <button 
+            mat-icon-button 
+            (click)="scrapeSelectedContent(result.url)"
+            class="ml-auto text-gray-600 dark:text-gray-300"
+            aria-label="Open Details"
+            matTooltip="View Content"
+          >
+            <mat-icon>info</mat-icon>
+          </button>
+          </div>
+        </div>
+
+        <div class="pagination-controls flex justify-end items-center space-x-4 text-gray-900 dark:text-gray-100">
+            <button
+                mat-button
+                (click)="changeExpansionPage(currentPage + 1,data.keyword)"
+                [disabled]="currentPage === totalPages"
+            >
+                Load More
+            </button>
+        </div>
+      </mat-expansion-panel>
+  </mat-accordion>
+</div>

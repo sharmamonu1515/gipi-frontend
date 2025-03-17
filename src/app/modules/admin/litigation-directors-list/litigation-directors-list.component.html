@@ -1,0 +1,60 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">LITIGATION DIRECTOR DETAILS FOR ({{litigationDirectorsDetails?.name}}). </div>
+        <!-- CONTENT GOES HERE -->
+        <div class="border-2 border-dashed border-gray-300 rounded-2xl">
+
+            <div class="example-container mat-elevation-z8">
+                <div class="example-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
+                    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+                    <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">
+                        Finder API rate limit has been reached. It will be reset in one minute.
+                    </div>
+                </div>
+
+                <div class="example-table-container">
+
+                    <table mat-table [dataSource]="data" class="example-table" matSort matSortActive="created"
+                        matSortDisableClear matSortDirection="desc">
+
+                        <!-- LITIGATION DIRECTORS DIN Column -->
+                        <ng-container matColumnDef="din">
+                            <th mat-header-cell *matHeaderCellDef>DIN</th>
+                            <td mat-cell *matCellDef="let row">{{row?.din}}</td>
+                        </ng-container>
+
+                        <!-- LITIGATION DIRECTORS PAN Column -->
+                        <ng-container matColumnDef="pan">
+                            <th mat-header-cell *matHeaderCellDef>PAN</th>
+                            <td mat-cell *matCellDef="let row">{{row?.pan}}</td>
+                        </ng-container>
+
+                        <!-- LITIGATION DIRECTORS NAME Column -->
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef>Name</th>
+                            <td mat-cell *matCellDef="let row">{{row?.name}}</td>
+                        </ng-container>
+
+                        <!-- LITIGATION DIRECTORS DESIGNATION Column -->
+                        <ng-container matColumnDef="designation">
+                            <th mat-header-cell *matHeaderCellDef>Designation</th>
+                            <td mat-cell *matCellDef="let row">{{row?.designation}}</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </div>
+
+                <mat-paginator [length]="resultsLength" [pageSize]="resultsLength"
+                    aria-label="Select page of GitHub search results"></mat-paginator>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

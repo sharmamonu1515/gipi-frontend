@@ -1,0 +1,112 @@
+.mat-header-cell.setting-table-title {
+    font-size: 20px;
+    text-align: center;
+    font-weight: 600;
+    color: #000000;
+}
+.add-data {
+    display: flex;
+    justify-content: center;
+    float: right;
+    padding: 12px 12px 0px 0px;
+}
+.save-btn {
+    margin-right: 4px;
+    background-color: #5a9122;
+    border-radius: 0;
+    width: auto;
+    height: auto;
+    padding: 10px 30px;
+}
+.mat-fab .mat-button-wrapper {
+    padding: 0;
+}
+.example-table-container .mat-table {
+    overflow: auto hidden;
+}
+.example-table-container .mat-table .mat-header-row,
+.example-table-container .mat-table .mat-row {
+    width: 100vw;
+}
+.setting-date-list-wrap {
+    display: flex;
+    align-items: center;
+}
+mat-header-cell.setting-date-columns-list-header {
+    flex: unset;
+    min-width: 6%;
+}
+mat-cell.setting-date-columns-list.cdk-column-Date-List {
+    flex: unset;
+    padding-right: 15px;
+    overflow: unset;
+}
+.example-table-container .mat-row {
+    border: none;
+}
+
+/** Table CSS*/
+
+/* Structure */
+.example-container {
+    position: relative;
+}
+
+.example-table-container {
+    position: relative;
+    min-height: 200px;
+    max-height: 400px;
+    overflow: auto;
+}
+
+table {
+    width: 100%;
+}
+
+.example-loading-shade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 56px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.example-rate-limit-reached {
+    max-width: 360px;
+    text-align: center;
+}
+
+/* Column Widths */
+.mat-column-number,
+.mat-column-state {
+    max-width: 64px;
+}
+
+.mat-column-created {
+    max-width: 124px;
+}
+
+/** Add Data Button CSS*/
+.add-data {
+    display: flex;
+    justify-content: center;
+    float: right;
+    padding: 12px 12px 0px 0px;
+}
+
+.w-7 {
+    width: 16.75rem !important;
+}
+
+.h-7 {
+    height: 7.75rem !important;
+}
+.example-table-container,
+.example-table-container.setting-table-container {
+    max-height: 630px;
+}

@@ -1,0 +1,51 @@
+<h1 mat-dialog-title>Enter Company Details</h1>
+<!-- <div mat-dialog-content> -->
+
+<form class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden" [formGroup]="gstLoginForm"
+    #gstLoginNgForm="ngForm">
+    <div class="flex">
+        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+            <mat-label>Username</mat-label>
+            <input matInput [placeholder]="'Username'" [formControlName]="'username'">
+            <mat-hint>GST Username ==> <strong>Empliance_2709</strong></mat-hint>
+            <mat-error *ngIf="gstLoginForm.get('username').hasError('required')">
+                Username is required
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div class="flex">
+        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+            <mat-label>Password</mat-label>
+            <input matInput [placeholder]="'Password'" [formControlName]="'password'">
+            <mat-hint>GST Password ==> <strong>Empliance2024@</strong></mat-hint>
+            <mat-error *ngIf="gstLoginForm.get('password').hasError('required')">
+                Password is required
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div class="flex">
+        <img class="w-7 h-7 rounded-full" [src]="gstCaptchaDetails?.dataUrl">
+        <button matTooltip="Add New Company Data" mat-fab color="primary"
+            aria-label="Example icon button with a delete icon" (click)="changeGstCaptcha()">
+            <mat-icon>refresh</mat-icon>
+        </button>
+    </div>
+    <div class="flex">
+        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+            <mat-label>Captcha For GST Login</mat-label>
+            <input matInput [placeholder]="'Enter Captcha'" [formControlName]="'captcha'">
+            <mat-hint>Captcha For GST Login</mat-hint>
+            <mat-error *ngIf="gstLoginForm.get('captcha').hasError('required')">
+                Captcha is Required For GST Login
+            </mat-error>
+        </mat-form-field>
+    </div>
+</form>
+
+<!-- </div>  ADD Tool tip Suggestion-->
+<div mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+    <button mat-button mat-dialog-close cdkFocusInitial color="primary"
+        [disabled]="gstLoginForm.invalid" (click)="gstAuth()">Proceed</button>
+</div>
+

@@ -1,0 +1,79 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">Setting</div>
+        <!-- CONTENT GOES HERE -->
+        <div class="border-2 border-dashed border-gray-300 rounded-2xl">
+            <div class="example-container mat-elevation-z8">
+                <div class="example-table-container setting-table-container">
+                    <mat-table
+                        [dataSource]="dateListDetails"
+                        class="mat-elevation-z8"
+                        style="width: 100%"
+                    >
+                    
+                        <ng-container
+                            *ngFor="let col of displayedColumns"
+                            [matColumnDef]="col"
+                            class="setting-date-table"
+                        >
+                            <mat-header-cell class="setting-table-title" *cdkHeaderCellDef>{{
+                                col
+                            }}</mat-header-cell>
+
+                            <ng-container *matCellDef="let element" id="ft">
+                                <mat-header-cell
+                                    class="setting-date-columns-list-header" 
+                                >
+                                    <b>
+                                        {{ element.columnName }}
+                                    </b>
+                                </mat-header-cell>
+                                :-
+                                <mat-cell
+                                    class="setting-date-columns-list" 
+                                    *ngFor="let el of element?.cells"
+                                >
+                               
+                                    <span>
+                                        <form class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden"  >
+                                            <input type="text"  value="{{el.month}}"  (change)="changeMonth($event,el)" >
+                                             <input type="text"  value="{{el.date}}"  (change)="changeDate($event,el)" >
+                                               
+                                    </form>
+                                    </span>
+                              
+                                </mat-cell>
+                            </ng-container>
+                        </ng-container>
+
+                        <mat-header-row
+                            *matHeaderRowDef="displayedColumns"
+                        ></mat-header-row>
+                        <mat-row
+                            *matRowDef="let row; columns: displayedColumns"
+                        ></mat-row>
+                    </mat-table>
+                </div>
+        
+                <!-- <mat-paginator
+                    [pageSizeOptions]="[5, 10, 25, 100]"
+                    aria-label="Select page of users"
+                ></mat-paginator> -->
+            </div>
+            <div class="add-data">
+                <button
+                    matTooltip="Save"
+                    mat-fab
+                    aria-label="Example save button"
+                    style="margin-right: 4px; background-color: #5a9122"
+                    class="save-btn"
+                    (click)="saveDatedata()"
+                >
+                    save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>Enter Company Details</h1>
+<!-- <div mat-dialog-content> -->
+
+<form class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden" [formGroup]="gstByPanForm"
+    #gstByPanNgForm="ngForm">
+    <div class="flex">
+        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+            <mat-label>PAN Number</mat-label>
+            <input matInput [placeholder]="'Enter PAN Number'" [formControlName]="'panNumber'">
+            <mat-hint>PAN Number</mat-hint>
+            <mat-error *ngIf="gstByPanForm.get('panNumber').hasError('required')">
+                PAN number is required
+            </mat-error>
+        </mat-form-field>
+    </div>
+</form>
+
+<!-- </div>  ADD Tool tip Suggestion-->
+<div mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+    <button mat-button cdkFocusInitial color="primary"
+        [disabled]="gstByPanForm.invalid" (click)="submitPan()">Proceed</button>
+</div>
+

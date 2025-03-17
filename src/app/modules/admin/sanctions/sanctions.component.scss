@@ -1,0 +1,107 @@
+/** Table CSS*/
+
+/* Structure */
+.example-container {
+    position: relative;
+  }
+  
+  .example-table-container {
+    position: relative;
+    min-height: 200px;
+    max-height: 400px;
+    overflow: auto;
+  }
+  
+  table {
+    width: 100%;
+  }
+  
+  .example-loading-shade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 56px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .example-rate-limit-reached {
+    max-width: 360px;
+    text-align: center;
+  }
+  /* country-filter.component.scss */
+.mat-form-field {
+  width: 100%;
+}
+
+  /* Column Widths */
+  .mat-column-number,
+  .mat-column-state {
+    max-width: 64px;
+  }
+  
+  .mat-column-created {
+    max-width: 124px;
+  }
+  
+  /** Add Data Button CSS*/
+  .add-data {
+    display: flex;
+    justify-content: center;
+    float: right;
+    padding: 12px 12px 0px 0px;
+  }
+  
+  .w-7 {
+    width: 16.75rem !important;
+  }
+  
+  .h-7 {
+    height: 7.75rem !important;
+  }
+
+  /* Add this to your component's CSS file or global styles */
+.example-table td, .example-table th {
+  padding: 0 20px; /* Adjust as needed for spacing */
+}
+
+.example-table th {
+  border-right: 1px solid #e0e0e0; /* Optional: adds a border to help visualize spacing */
+}
+
+:host::ng-deep .mat-select-placeholder {
+  -webkit-text-fill-color: black !important; /* Ensure the color is red */
+  color: black !important; /* Fallback for other browsers */
+}
+
+:host::ng-deep .mat-form-field-hide-placeholder .mat-select-placeholder 
+{
+  -webkit-text-fill-color: none !important;
+}
+
+:host::ng-deep .mat-input-element{
+  padding: 10px !important;
+}
+/* General styling for the search bar */
+.search-bar {
+  flex-grow: 1;
+  max-width: 100%;
+}
+
+/* Adjust search bar width for desktop view */
+@media (min-width: 640px) {
+  .search-bar {
+      width: 100%;
+  }
+}
+
+/* Adjust search bar width for mobile view */
+@media (max-width: 639px) {
+  .search-bar {
+      width: 200px;
+  }
+}

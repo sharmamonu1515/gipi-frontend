@@ -1,0 +1,28 @@
+.custom-accordion {
+    margin: 20px 3px;
+}
+
+.custom-expansion-panel {
+    margin-top: 5px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 15px;
+}
+
+.custom-header {
+    height: 50px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.custom-panel-content {
+    padding: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #ffffff;
+    border-top: 1px solid #e0e0e0;
+}
+
+.report-button mat-icon{
+    color: white !important;
+}

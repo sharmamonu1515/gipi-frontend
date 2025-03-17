@@ -1,0 +1,147 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight max-w-52 min-w-48">SANCTION SEARCH</div>
+    
+        <!-- Actions -->
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4 space-x-5 grow">
+            <!-- Search -->
+            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded search-bar min-w-96 ">
+                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'" (click)="getSearch()"></mat-icon>
+                <input 
+                    matInput 
+                    [formControl]="searchInputControl" 
+                    autocomplete="off" 
+                    placeholder="Search People, Companies, Other entities of interest..."
+                    (keyup.enter)="getSearch()">
+            </mat-form-field>
+    
+            <!-- Schema Filter -->
+            <mat-form-field appearance="fill" class="max-w-44">
+                <mat-label></mat-label>
+                <mat-select placeholder="Filter by Schema" multiple [formControl]="schemaForm" (openedChange)="onOpenSchemaChange(multiSchemaSearch)">
+                    <mat-select-trigger>
+                        {{schemaForm.value }}
+                    </mat-select-trigger>
+                    <input #multiSchemaSearch type="text" autocomplete="off" matInput placeholder="Search By Schema" (input)="onSchemaChange($event)" />
+                    <mat-option *ngFor="let schema of filteredSchemas" [value]="schema">{{schema}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+    
+            <!-- Country Filter -->
+            <mat-form-field appearance="fill" class="max-w-44">
+                <mat-label></mat-label>
+                <mat-select placeholder="Filter by Country" multiple [formControl]="countryForm" (openedChange)="onOpenCountryChange(multiUserSearch)">
+                    <mat-select-trigger>
+                        {{countryForm.value }}
+                    </mat-select-trigger>
+                    <input #multiUserSearch type="text" autocomplete="off" matInput placeholder="Search By Country" (input)="onCountryChange($event)" />
+                    <mat-option *ngFor="let country of filteredCountries" [value]="country.code">{{country.value}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    
+      
+      
+      <!-- Table and other content here -->
+      
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <!-- Title -->
+        <!-- <div class="text-4xl font-extrabold tracking-tight">GST DETAILS </div> -->
+        <!-- CONTENT GOES HERE -->
+        <div class="h-400 min-h-400 max-h-400 border-2 border-dashed border-gray-300 rounded-2xl">
+
+            <div class="example-container mat-elevation-z8">
+                <div class="example-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
+                    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+                    <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">
+                        Finder API rate limit has been reached. It will be reset in one minute.
+                    </div>
+                </div>
+
+                <div class="example-table-container">
+
+                    <table mat-table [dataSource]="data" class="example-table" matSort matSortActive="name"
+                        matSortDisableClear matSortDirection="asc">
+
+                        <!-- Schema Column -->
+                        <ng-container matColumnDef="schema">
+                            <th mat-header-cell *matHeaderCellDef>Type</th>
+                            <td mat-cell *matCellDef="let row"  (click)="openPopup(row)">{{row?.schema}}</td>
+                        </ng-container>
+ <!-- Name Column -->
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Name</th>
+                            <td mat-cell *matCellDef="let row"  (click)="openPopup(row)">{{textLimiter(row?.name)}}</td>
+                        </ng-container>
+
+                       
+                   
+
+                        <!-- Countries Column -->
+                        <ng-container matColumnDef="countries">
+                            <th mat-header-cell *matHeaderCellDef  >
+                                Countries
+                            </th>
+                            <td mat-cell *matCellDef="let row"  (click)="openPopup(row)">{{getCountry(row?.countries)}}</td>
+                        </ng-container>
+
+                        <!-- sanctions -->
+                        <ng-container matColumnDef="sanctions">
+                            <th mat-header-cell *matHeaderCellDef  >
+                                Sanctions
+                            </th>
+                            <td mat-cell *matCellDef="let row"  (click)="openPopup(row)">{{textLimiter(row?.sanctions)}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="dataset">
+                            <th mat-header-cell *matHeaderCellDef  >
+                                Dataset
+                            </th>
+                            <td mat-cell *matCellDef="let row"  (click)="openPopup(row)">{{textLimiter(row?.dataset)}}</td>
+                        </ng-container>
+                        <!-- Action Column -->
+                        <!-- <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef> Action </th>
+                            <td mat-cell *matCellDef="let row; let i = index">
+                                <button mat-icon-button color="primary" matTooltip="View GST List"
+                                    (click)="gstListByPan(row._id)">
+                                    <mat-icon class="mat-18">visibility</mat-icon>
+                                </button>
+                                <button mat-icon-button color="primary" matTooltip="Download GST List"
+                                    (click)="exportExcelInOneSheet(row.gstNumbers, row.panNumber)">
+                                    <mat-icon class="mat-18">sim_card_download</mat-icon>
+                                </button>
+                            </td>
+                        </ng-container> -->
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </div>
+
+                <mat-paginator [length]="resultsLength" [pageSize]="pageSize"
+                    aria-label="Select page of GitHub search results"></mat-paginator>
+            </div>
+<!-- 
+            <div class="add-data">
+                <button matTooltip="GST Login" mat-fab aria-label="Example icon button with a delete icon"
+                    (click)="openGstLoginDialog('1000ms', '1000ms')"
+                    style="margin-right: 4px; background-color: #5a9122;">
+                    <mat-icon>login</mat-icon>
+                </button>
+                <button matTooltip="Add GST Details" mat-fab color="primary"
+                    aria-label="Example icon button with a delete icon" (click)="openDialog('1000ms', '1000ms')">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </div> -->
+
+        </div>
+
+    </div>
+
+</div>

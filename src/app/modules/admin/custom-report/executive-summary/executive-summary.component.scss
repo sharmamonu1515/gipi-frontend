@@ -1,0 +1,114 @@
+.custom-accordion {
+    margin: 20px 3px;
+}
+
+.custom-expansion-panel {
+    margin-top: 5px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 15px;
+}
+
+.custom-header {
+    height: 50px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.custom-panel-content {
+    padding: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #ffffff;
+    border-top: 1px solid #e0e0e0;
+}
+
+
+.mat-form-field.risk-low {
+    background-color: #22c55e !important; 
+    color: white !important;
+  }
+  
+  .mat-form-field.risk-moderate {
+    background-color: #facc15 !important; 
+    color: black !important;
+  }
+  
+  .mat-form-field.risk-high {
+    background-color: #fb923c !important; 
+    color: white !important;
+  }
+  
+  .mat-form-field.risk-critical {
+    background-color: #ef4444 !important; 
+    color: white !important;
+  }
+  
+  .mat-form-field.risk-caution {
+    background-color: #9a3412 !important; 
+    color: white !important;
+  }
+  
+  .mat-form-field.no-risk {
+    background-color: #e5e7eb !important;
+    color: black !important;
+  }
+  
+  .mat-form-field.out-of-business {
+    background-color: black !important;
+    color: white !important;
+  }
+  .mat-form-field.risk-low .mat-select-trigger,
+  .mat-form-field.risk-moderate .mat-select-trigger,
+  .mat-form-field.risk-high .mat-select-trigger,
+  .mat-form-field.risk-critical .mat-select-trigger,
+  .mat-form-field.risk-caution .mat-select-trigger,
+  .mat-form-field.no-risk .mat-select-trigger,
+  .mat-form-field.out-of-business .mat-select-trigger {
+    color: inherit !important;
+  }
+  
+::ng-deep .risk-select .mat-select-value {
+    padding: 8px;
+    border-radius: 4px;
+    color: unset !important;
+}
+
+.risk-select{
+    border-radius: 4px !important;
+}
+
+::ng-deep .custom-form-field {
+    .mat-form-field-flex {
+      padding: 0 !important;
+      background-color: transparent !important;
+    }
+
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+
+    .mat-form-field-infix {
+      padding: 0 !important;
+      border-top: none;
+    }
+
+    .mat-select-trigger {
+      height: 60px;
+    }
+
+    .mat-select-value {
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+
+    .mat-form-field-outline {
+      color: #ccc !important;
+    }
+  }
+
+.report-button mat-icon{
+  color: white !important;
+}

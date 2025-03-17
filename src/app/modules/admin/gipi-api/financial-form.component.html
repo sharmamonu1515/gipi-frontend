@@ -1,0 +1,22 @@
+<!-- <ngx-ui-loader [loaderId]="'loader-02'"></ngx-ui-loader> -->
+<button mat-icon-button mat-dialog-close class="mat-grey-100-bg" aria-label="Close Dialog" style="float: right;top:-8px;">
+    <mat-icon>close</mat-icon>
+</button>
+<h1 class="dialog-heading" mat-dialog-title>Financial Form</h1>
+
+<div mat-dialog-content>
+    <div id="forms" class="page-layout simple fullwidth mat-white-bg pt-10 pb-2" fxLayout="column">
+         <form class="row" name="documentForm" novalidate>
+
+            <div class="col-12 p-0 financial-actions">
+                <button mat-raised-button color="accent" class="col-md-2 close mr-2" aria-label="Close" (click)="closeDialog()">
+                    Close
+                </button>
+
+                <button mat-raised-button color="accent" class="col-md-2" aria-label="Submit" (click)="submitData()">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+/* Custom CSS for complex selectors */
+::ng-deep {
+  .mat-select-panel {
+    width: 250px !important;
+    min-width: 250px !important;
+    max-width: 250px !important;
+    margin-top: 50px;
+    margin-left: 22px;
+    transform-origin: 50% 0 0 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .mat-option {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 2em;
+  }
+
+  .all-option .mat-option-pseudo-checkbox {
+    display: none !important;
+  }
+}
+
+.custom-accordion {
+  margin: 20px 3px;
+}
+
+.custom-expansion-panel {
+  margin-top: 5px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 10px;
+}
+
+.custom-header {
+  background-color: #dfe3e4 !important;
+  height: 60px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.custom-panel-content {
+  padding: 15px;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+}

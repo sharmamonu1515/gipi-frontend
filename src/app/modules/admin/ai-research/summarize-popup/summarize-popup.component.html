@@ -1,0 +1,41 @@
+<div mat-dialog-content class="custom-dialog-content">
+    <div *ngIf="data?.summaries?.length; else noSelected">
+        <div *ngFor="let result of data.summaries" class="result-item">
+            <div class="result-content">
+                <a [href]="result.url" target="_blank" class="result-title truncate w-full max-w-full">
+                    {{ result.title || "No title available" }}
+                </a>
+                <div class="scraped-content">
+                    <p><strong>Description:</strong></p>
+                    <div class="textarea-container">
+                        <textarea readonly class="scraped-textarea" [value]="result.summary ">
+                        </textarea>
+
+                        <button
+                            class="copy-button"
+                            mat-icon-button
+                            (click)="copyToClipboard(result.summary || '')"
+                             matTooltip="Copy"
+                        >
+                            <mat-icon>content_copy</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #noSelected>
+        <p>No results selected.</p>
+    </ng-template>
+</div>
+
+<div mat-dialog-actions class="custom-dialog-actions">
+    <button
+        class="close"
+        mat-raised-button
+        color="accent"
+        (click)="closeDialog()"
+    >
+        Close
+    </button>
+</div>

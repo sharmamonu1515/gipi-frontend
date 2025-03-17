@@ -1,0 +1,50 @@
+<h1 mat-dialog-title>Upload File</h1>
+<!-- Progress Bar -->
+<div *ngIf="uploadProgress > 0" class="progress-container">
+  <label>Upload Progress: {{ uploadProgress }}%</label>
+  <progress
+    [value]="uploadProgress"
+    max="100"
+    style="width: 100%;"
+  ></progress>
+</div>
+<form
+  class="details-container flex flex-col p-4 bg-white rounded shadow-md"
+  [formGroup]="fileForm"
+>
+  <!-- Directory Path Input Field -->
+  <mat-form-field appearance="outline">
+    <mat-label>Directory Path</mat-label>
+    <input
+      matInput
+      formControlName="directoryPath"
+      placeholder="Enter directory path"
+    />
+  </mat-form-field>
+
+  <!-- File Upload Section -->
+  <div>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="triggerFileInput()"
+    >
+      Upload File
+    </button>
+    <input
+      type="file"
+      #fileInput
+      style="display: none"
+      (change)="onFileSelected($event)"
+    />
+    <p *ngIf="selectedFile">{{ selectedFile.name }}</p>
+  </div>
+</form>
+
+<!-- Actions -->
+<div mat-dialog-actions class="flex justify-end mt-6">
+  <button mat-stroked-button color="primary" (click)="onSubmit()">
+    Upload
+  </button>
+  <button mat-button mat-dialog-close>Close</button>
+</div>

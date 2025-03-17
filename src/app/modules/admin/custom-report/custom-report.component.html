@@ -1,0 +1,74 @@
+<div class="w-full flex flex-col p-4 mat-elevation-z2">
+    <div
+        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8"
+    >
+        <div class="text-4xl font-extrabold tracking-tight">CUSTOM REPORTS</div>
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <mat-radio-group [(ngModel)]="searchType" class="flex items-center">
+                <mat-radio-button value="cin" class="mr-4">CIN</mat-radio-button>
+                <mat-radio-button value="pan">PAN</mat-radio-button>
+            </mat-radio-group>
+
+            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64 ml-4">
+                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                <input
+                    matInput
+                    [formControl]="cinSearchInputControl"
+                    [autocomplete]="'off'"
+                    [placeholder]="searchType === 'cin' ? 'Search By CIN' : 'Search By PAN'"
+                />
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="rounded-lg p-2 w-full h-14 mat-elevation-z1 mb-4">
+        <mat-tab-group
+            class="w-full custom-tab-group"
+            (selectedTabChange)="loadComponent($event)"
+            [(selectedIndex)]="selectedIndex"
+        >
+            <mat-tab
+                *ngFor="let tab of userTabs; let i = index"
+                label="{{ tab.TabName }}"
+                [disabled]="i === userTabs.length - 1 || !hasSearchedCompany" 
+            >
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+
+    <div class="flex-grow rounded-lg px-6 py-3 mat-elevation-z1 flex flex-col min-h-96">
+        <div class="flex justify-between pb-2 border-b border-gray-200 items-center">
+            <div class="text-sm text-gray-500">
+                <span>Reports</span> 
+                <span class="mx-2">›</span> 
+                <span class="font-medium text-blue-600">{{ userTabs[selectedIndex]?.TabName }}</span>
+            </div>
+            
+            <div class="flex space-x-4">
+                <div class="inline-flex items-center bg-white border border-gray-300 rounded-md shadow-sm h-10 px-2">
+                    <label for="unitSelect" class="text-gray-700 mr-2 font-medium">Display in:</label>
+                    <select id="unitSelect" (change)="onUnitChange($event)" 
+                            class="h-8 bg-transparent text-gray-700 font-medium focus:outline-none">
+                        <option value="INR">INR</option>
+                        <option value="Lakhs">Lakhs</option>
+                        <option value="Crores">Crores</option>
+                    </select>
+                </div>
+                <button 
+                    mat-flat-button
+                    (click)="exportToWord()" 
+                    [disabled]="!canExport()" 
+                    class="report-button flex items-center space-x-2 py-2 px-4 rounded-md shadow-sm gap-2"
+                    [ngClass]="{'bg-green-600 hover:bg-green-700 text-white': canExport(), 'bg-gray-200 hover:bg-gray-300 text-gray-700': !canExport()}"
+                    matTooltip="{{ canExport() ? '' : 'Please visit all tabs once to export the report' }}"
+                    matTooltipShowDelay="300"
+                    [matTooltipDisabled]="canExport()"
+                >
+                    <mat-icon class="{{ canExport() ? 'text-white' : 'text-gray-700' }}" [svgIcon]="'heroicons_solid:save-as'"></mat-icon>
+                    <span class="font-medium m-2">Export Report</span>
+                </button>
+            </div>
+        </div>
+        <div #tabContent class="w-full"></div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+<mat-dialog-content class="popup-container flex flex-col h-full overflow-hidden font-sans">
+
+  <div class="header flex justify-between items-center sticky top-0 bg-white font-bold text-base p-4 truncate z-10 border-b border-gray-300">
+    <span class="truncate w-[70%] max-w-full">{{ data[0]?.content?.title }}</span>
+    <button mat-icon-button (click)="closeDialog()" aria-label="Close" matTooltip="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="flex-grow overflow-y-auto py-2">
+    <div *ngFor="let result of data">
+      <div class="article p-2 text-normal leading-relaxed mb-3 text-justify">
+        {{ result.content.article }}
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>

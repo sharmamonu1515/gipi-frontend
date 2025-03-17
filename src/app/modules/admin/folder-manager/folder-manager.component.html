@@ -1,0 +1,140 @@
+<div class="flex flex-col flex-auto min-w-0">
+  <!-- Header -->
+  <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+    <!-- Title -->
+    <div class="text-4xl font-extrabold tracking-tight">File Manager</div>
+  </div>
+  
+  <div class="flex-auto p-6 sm:p-10">
+    <div class="h-400 min-h-400 max-h-400 border-2 border-dashed border-gray-300 rounded-2xl">
+      <div class="grid-container">
+        <!-- Folders Section -->
+        <mat-card class="section-card" *ngIf="folders[0]?.subfolders?.length">
+          <mat-card-header>
+            <mat-card-title>Folders</mat-card-title>
+            <button mat-raised-button color="primary" *ngIf="folders[0]?.subfolders.length > 4" (click)="viewAll('folder')">
+              View More
+            </button>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="grid">
+              <div class="grid-item" *ngFor="let folder of folders[0].subfolders | slice : 0 : 4">
+                <mat-card (click)="openFolders(folder)">
+                  <mat-card-header>
+                    <mat-card-title>{{ folder.name }}</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <mat-icon class="fileIcon">folder</mat-icon>
+                    <p>{{ folder.subfolders?.length || 0 }} subfolders</p>
+                    <p>{{ folder.files?.length || 0 }} files</p>
+                  </mat-card-content>
+                </mat-card>
+
+                <!-- Subfolders Section -->
+                <mat-card *ngIf="folder.subfolders?.length">
+                  <mat-card-header>
+                    <mat-card-title>Subfolders in {{ folder.name }}</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <div class="grid">
+                      <div class="grid-item" *ngFor="let subfolder of folder.subfolders | slice : 0 : 4">
+                        <mat-card (click)="openFolders(subfolder)">
+                          <mat-card-header>
+                            <mat-card-title>{{ subfolder.name.substring(0,10) }}</mat-card-title>
+                          </mat-card-header>
+                          <mat-card-content>
+                            <mat-icon class="fileIcon">folder</mat-icon>
+                            <p>{{ subfolder.subfolders?.length || 0 }} subfolders</p>
+                            <p>{{ subfolder.files?.length || 0 }} files</p>
+                          </mat-card-content>
+                        </mat-card>
+                      </div>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+ <!-- Folders Section -->
+ <mat-card class="section-card" *ngIf="folders[0]?.subfolders[0]?.subfolders?.length">
+  <mat-card-header>
+    <mat-card-title>Folders</mat-card-title>
+    <button mat-raised-button color="primary" *ngIf="folders[0]?.subfolders[0]?.subfolders?.length > 4" (click)="viewAll('folder')">
+      View More
+    </button>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="grid">
+      <div class="grid-item" *ngFor="let folder of folders[0].subfolders[0]?.subfolders | slice : 0 : 4">
+        <mat-card (click)="openFolders(folder)">
+          <mat-card-header>
+            <mat-card-title>{{ folder.name }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-icon class="fileIcon">folder</mat-icon>
+            <p>{{ folder.subfolders?.length || 0 }} subfolders</p>
+            <p>{{ folder.files?.length || 0 }} files</p>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Subfolders Section -->
+        <mat-card *ngIf="folder.subfolders?.length">
+          <mat-card-header>
+            <mat-card-title>Subfolders in {{ folder.name }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="grid">
+              <div class="grid-item" *ngFor="let subfolder of folder.subfolders | slice : 0 : 4">
+                <mat-card (click)="openFolders(subfolder)">
+                  <mat-card-header>
+                    <mat-card-title>{{ subfolder.name.substring(0,10) }}</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <mat-icon class="fileIcon">folder</mat-icon>
+                    <p>{{ subfolder.subfolders?.length || 0 }} subfolders</p>
+                    <p>{{ subfolder.files?.length || 0 }} files</p>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+        <!-- Files Section -->
+        <mat-card class="section-card" *ngIf="files.length">
+          <mat-card-header>
+            <mat-card-title>Files</mat-card-title>
+            <button mat-raised-button color="primary" *ngIf="files.length > 4" (click)="viewAll('file')">
+              View More
+            </button>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="grid">
+              <div class="grid-item" *ngFor="let file of files | slice : 0 : 4">
+                <mat-card>
+                  <mat-card-header>
+                    <mat-card-title class="fileFolderName">{{ file.name.substring(0,10) }}</mat-card-title>
+                    <mat-icon mat-card-subtitle (click)="openDialog(file)">info</mat-icon>
+                    <mat-icon mat-card-subtitle (click)="deleteFile(file)">delete</mat-icon>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <mat-icon class="fileIcon">insert_drive_file</mat-icon>
+                    <p>{{ file.type }} file</p>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </div>
+  </div>
+</div>

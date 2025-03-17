@@ -1,0 +1,307 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0">
+            <!-- Breadcrumbs -->
+            <div class="flex flex-wrap items-center font-medium">
+                <div>
+                    <a class="whitespace-nowrap text-primary-500">MCA</a>
+                </div>
+            </div>
+            <!-- Title -->
+            <div class="mt-2">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    Company / Signatory Details
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+
+        <div class="flex flex-wrap items-start w-full max-w-400 -m-4">
+
+            <!-- Company Details Card -->
+            <fuse-card class="flex flex-col items-center w-full p-8 pb-6 filter-info">
+
+                <!-- <img class="w-32 h-32 rounded-full" src="assets/images/avatars/male-04.jpg" alt="Card cover image"> -->
+                <img class="w-32 h-32 rounded-full"
+                    src="https://uxwing.com/wp-content/themes/uxwing/download/business-professional-services/company-enterprise-icon.png"
+                    alt="Card cover image">
+                <div class="text-2xl font-semibold leading-tight text-center mt-8">{{
+                    companyDetails?.companyData?.company }}
+                </div>
+                <div class="text-secondary leading-tight text-center mt-1">{{ companyDetails?.companyData?.CIN }}</div>
+                <hr class="w-full border-t mt-8 mb-0">
+                <div class="w-full flex items-center justify-between my-4 px-2">
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm font-medium text-secondary">Class Of Company</span>
+                        <span class="font-bold">{{ companyDetails?.companyData?.classOfCompany }}</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm font-medium text-secondary">Status</span>
+                        <span class="font-bold">{{ companyDetails?.companyData?.llpStatus }}</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm font-medium text-secondary">Listed Or Not</span>
+                        <span *ngIf="companyDetails?.companyData?.whetherListedOrNot === 'N' "
+                            class="font-bold">Unlisted</span>
+                        <span *ngIf="companyDetails?.companyData?.whetherListedOrNot !== 'N' "
+                            class="font-bold">Listed</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm font-medium text-secondary">Date Of Incorporation</span>
+                        <span class="font-bold">{{ companyDetails?.companyData?.dateOfIncorporation }}</span>
+                    </div>
+                </div>
+                <hr class="w-full border-t mt-0 mb-8">
+                <div class="flex items-center mt-10">
+                    <div class="font-medium text-secondary">:: Company Detailed Info ::</div>
+                </div>
+                <!-- Company Details -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-y-4 mt-6">
+                    <div class="flex items-center">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                        </mat-icon>
+                        <div class="ml-2"><strong>ROC Code :: </strong>{{ companyDetails?.companyData?.rocName }}</div>
+                    </div>
+                    <div class="flex items-center">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                        </mat-icon>
+                        <div class="ml-2"><strong>Registration Number :: </strong>{{
+                            companyDetails?.companyData?.registrationNumber
+                            }}</div>
+                    </div>
+                    <div class="flex items-center">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                        </mat-icon>
+                        <div class="ml-2"><strong>Company Category :: </strong>{{
+                            companyDetails?.companyData?.companyCategory
+                            }}</div>
+                    </div>
+                    <div class="flex items-center">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                        </mat-icon>
+                        <div class="ml-2"><strong>Company SubCategory :: </strong>{{
+                            companyDetails?.companyData?.companySubcategory }}</div>
+                    </div>
+                    <div class="flex items-center">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                        </mat-icon>
+                        <div class="ml-2"><strong>Authorised Capital(Rs) :: </strong>{{
+                            companyDetails?.companyData?.authorisedCapital }}</div>
+                    </div>
+                    <div class="flex items-center">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                        </mat-icon>
+                        <div class="ml-2"><strong>Paid up Capital(Rs) :: </strong>{{
+                            companyDetails?.companyData?.paidUpCapital }}</div>
+                    </div>
+                    <div class="flex items-center">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                        </mat-icon>
+                        <div class="ml-2"><strong>Number of Members(Applicable in case of company without Share Capital)
+                                :: </strong>{{ companyDetails?.companyData?.numberOfMembers }}</div>
+                    </div>
+                    <div class="flex items-center">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                        </mat-icon>
+                        <div *ngIf="companyDetails?.companyData?.MCAMDSCompanyAddress?.length === 0" class="ml-2"><strong>Registered Address :: </strong>NA</div>
+                        <div *ngIf="companyDetails?.companyData?.MCAMDSCompanyAddress?.length > 0" class="ml-2"><strong>Registered Address :: </strong>{{
+                            companyDetails?.companyData?.MCAMDSCompanyAddress[0]?.streetAddress }} {{ companyDetails?.companyData?.MCAMDSCompanyAddress[0]?.city }}, {{ companyDetails?.companyData?.MCAMDSCompanyAddress[0]?.state }}, {{ companyDetails?.companyData?.MCAMDSCompanyAddress[0]?.country }}, {{ companyDetails?.companyData?.MCAMDSCompanyAddress[0]?.postalCode }}</div>
+                    </div>
+                    <div class="flex items-center">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                        </mat-icon>
+                        <div class="ml-2"><strong>Date of last AGM :: </strong>{{
+                            companyDetails?.companyData?.dateOfLastAGM
+                            }}</div>
+                    </div>
+                    <div class="flex items-center">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                        </mat-icon>
+                        <div class="ml-2"><strong>Date of Balance Sheet :: </strong>{{
+                            companyDetails?.companyData?.balanceSheetDate }}</div>
+                    </div>
+                    <div class="flex items-center">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                        </mat-icon>
+                        <div class="ml-2"><strong>Email ID :: </strong>{{ companyDetails?.companyData?.emailAddress }}
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:check-circle'">
+                        </mat-icon>
+                        <div *ngIf="companyDetails?.createdAt && !companyDetails?.updatedAt" class="ml-2"><strong>Last
+                                Updated :: </strong>{{ companyDetails?.createdAt | date: 'd MMM
+                            y'
+                            }}</div>
+                        <div *ngIf="companyDetails?.createdAt && companyDetails?.updatedAt" class="ml-2"><strong>Last
+                                Updated :: </strong>{{ companyDetails?.updatedAt | date: 'd MMM
+                            y'
+                            }}</div>
+                    </div>
+                </div>
+            </fuse-card>
+
+        </div>
+
+    </div>
+
+    <div class="flex-auto p-6 sm:p-10">
+
+        <div class="flex flex-wrap items-start w-full max-w-400 -m-4">
+
+            <!-- Charges Detail Cards -->
+            <fuse-card class="flex flex-col w-full filter-article">
+                <div class="m-8">
+                    <div class="text-2xl font-semibold leading-tight text-center">Charges</div>
+
+                    <div *ngIf="companyDetails?.chargesValue?.length === 0" class="mt-4 items-center"
+                        style="color: #3ca93c;">No charges find for the company.</div>
+
+                    <div *ngIf="companyDetails?.chargesValue?.length > 0" class="example-table-container">
+
+                        <table mat-table [dataSource]="companyChargesDetails" class="example-table">
+
+                            <!-- SRN Number -->
+                            <ng-container matColumnDef="SRN">
+                                <th mat-header-cell *matHeaderCellDef>SRN</th>
+                                <td mat-cell *matCellDef="let row">{{row?.SRN}}</td>
+                            </ng-container>
+
+                            <!-- Charges ID -->
+                            <ng-container matColumnDef="chargeId">
+                                <th mat-header-cell *matHeaderCellDef>Charge Id</th>
+                                <td mat-cell *matCellDef="let row">{{row?.chargeId}}</td>
+                            </ng-container>
+
+                            <!-- Assests Under Charges Column -->
+                            <ng-container matColumnDef="chargeHolderName">
+                                <th mat-header-cell *matHeaderCellDef>Assests Under Charges</th>
+                                <td mat-cell *matCellDef="let row">{{row?.chargeHolderName}}</td>
+                            </ng-container>
+
+                            <!-- Charge Amount Column -->
+                            <ng-container matColumnDef="chargeAmount">
+                                <th mat-header-cell *matHeaderCellDef>Charge Amount</th>
+                                <td mat-cell *matCellDef="let row">{{row?.chargeAmount}}</td>
+                            </ng-container>
+
+                            <!-- Date of Creation Column -->
+                            <ng-container matColumnDef="dateOfCreation">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    Date of Creation
+                                </th>
+                                <td mat-cell *matCellDef="let row">{{row?.dateOfCreation}}</td>
+                            </ng-container>
+
+                            <!-- Date of Modification Column -->
+                            <ng-container matColumnDef="dateOfModification">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    Date of Modification
+                                </th>
+                                <td mat-cell *matCellDef="let row">{{row?.dateOfModification}}</td>
+                            </ng-container>
+
+                            <!-- Status Column -->
+                            <ng-container matColumnDef="status">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    Status
+                                </th>
+                                <td mat-cell *matCellDef="let row">{{row?.status}}</td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="chargesDisplayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: chargesDisplayedColumns;"></tr>
+                        </table>
+                    </div>
+
+                </div>
+            </fuse-card>
+
+        </div>
+
+    </div>
+
+    <div class="flex-auto p-6 sm:p-10">
+
+        <div class="flex flex-wrap items-start w-full max-w-400 -m-4">
+
+            <!-- Charges Detail Cards -->
+            <fuse-card class="flex flex-col w-full filter-article">
+                <div class="m-8">
+                    <div class="text-2xl font-semibold leading-tight text-center">MCA Signatory Details</div>
+
+                    <div class="example-table-container">
+
+                        <table mat-table [dataSource]="companySignatoryDetails" class="example-table">
+
+                            <!-- Serial Number Column -->
+                            <ng-container matColumnDef="serialNumber">
+                                <th mat-header-cell *matHeaderCellDef>Sr.No</th>
+                                <td mat-cell *matCellDef="let row">{{row?.serialNumber}}</td>
+                            </ng-container>
+
+                            <!-- DIN Column -->
+                            <ng-container matColumnDef="dinPanValue">
+                                <th mat-header-cell *matHeaderCellDef>DIN/PAN</th>
+                                <td mat-cell *matCellDef="let row">{{row?.dinPanValue}}</td>
+                            </ng-container>
+
+                            <!-- Name Column -->
+                            <ng-container matColumnDef="name">
+                                <th mat-header-cell *matHeaderCellDef>Name</th>
+                                <td mat-cell *matCellDef="let row">{{row?.name}}</td>
+                            </ng-container>
+
+                            <!-- Designation Column -->
+                            <ng-container matColumnDef="designation">
+                                <th mat-header-cell *matHeaderCellDef>Designation</th>
+                                <td mat-cell *matCellDef="let row">{{row?.designation}}</td>
+                            </ng-container>
+
+                            <!-- Appointment Date Column -->
+                            <ng-container matColumnDef="dateOfAppointment">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    Date of Appointment
+                                </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <p *ngIf="row?.dateOfAppointment !== '-' ">{{row?.dateOfAppointment | date: 'd MMM y'}}</p>
+                                    <p *ngIf="row?.dateOfAppointment === '-' ">-</p>
+                                </td>
+                            </ng-container>
+
+                            <!-- Cessation Date Column -->
+                            <ng-container matColumnDef="cessationDate">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    Cessation Date
+                                </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <p *ngIf="row?.cessationDate !== '-' ">{{row?.cessationDate}}</p>
+                                    <p *ngIf="row?.cessationDate === '-' " style="text-align: center;">-</p>
+                                </td>
+                            </ng-container>
+
+                            <!-- Signatory Column -->
+                            <ng-container matColumnDef="signatory">
+                                <th mat-header-cell *matHeaderCellDef>Signatory</th>
+                                <td mat-cell *matCellDef="let row">{{row?.signatory}}</td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="signatoryDisplayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: signatoryDisplayedColumns;"></tr>
+                        </table>
+                    </div>
+
+                </div>
+            </fuse-card>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,60 @@
+<!-- Conditional display based on viewType -->
+<h1 mat-dialog-title>File Details</h1>
+
+<!-- File Details Section (show if viewType is 'file') -->
+<div >
+  <form
+    class="details-container flex flex-col p-4 bg-white rounded shadow-md"
+    [formGroup]="fileForm"
+    #gstByPanNgForm="ngForm"
+  >
+    <!-- File Metadata Section -->
+    <div class="metadata-section flex justify-between items-center border-b pb-4 mb-4">
+      <div>
+        <h2 class="text-lg font-semibold">{{ file.name }}</h2>
+        <p class="text-sm text-gray-500">File Type: {{ file.type }}</p>
+      </div>
+      <div>
+        <button mat-icon-button (click)="getFileUrl(file)">
+          <mat-icon>cloud_download</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Editable Fields Section -->
+    <div class="editable-fields flex-col">
+      <mat-form-field class="w-full">
+        <mat-label>File Name</mat-label>
+        <input
+          matInput
+          placeholder="Enter File Name"
+          formControlName="fileName"
+        />
+        <mat-hint>File Name</mat-hint>
+        <mat-error *ngIf="fileForm.get('fileName').hasError('required')">
+          File Name is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="w-full">
+        <mat-label>Expiry Time in Hours</mat-label>
+        <input
+          matInput
+          type="number"
+          placeholder="Expiry Time in Hours"
+          formControlName="expiresIn"
+        />
+      </mat-form-field>
+    </div>
+  </form>
+
+  <!-- File Actions -->
+  <div mat-dialog-actions class="flex justify-end mt-6">
+    <button mat-stroked-button color="primary" (click)="openFile(file)">
+      Open
+    </button>
+    <button mat-button mat-dialog-close>Close</button>
+  </div>
+</div>
+
+

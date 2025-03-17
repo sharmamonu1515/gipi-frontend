@@ -1,0 +1,31 @@
+.icon-visible {
+    color: black;
+}
+
+::ng-deep .custom-tab-group .mat-tab-label {
+    padding: 0 24px;
+    height: 48px;
+    font-weight: 500;
+}
+
+::ng-deep .custom-tab-group .mat-tab-label-active {
+    opacity: 1;
+    font-weight: 600;
+}
+
+::ng-deep .custom-tab-group .mat-tab-label-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+::ng-deep .custom-tab-group .mat-ink-bar {
+    height: 3px;
+}
+
+::ng-deep .custom-tab-group .cdk-program-focused  {
+    background-color: transparent !important;
+}
+
+.report-button mat-icon{
+    color: white !important;
+}

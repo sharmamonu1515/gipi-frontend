@@ -1,0 +1,1338 @@
+<mat-accordion class="container custom-accordion dark:bg-gray-900">
+    <div class="flex justify-end pb-2 border-b border-gray-200 items-center">
+        <button 
+            mat-flat-button
+            (click)="saveData()"
+            [disabled]="!hasUnsavedChanges()"
+            class="report-button flex items-center space-x-2 py-2 px-4 rounded-md shadow-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 gap-2"
+        >
+          <span class="text-white font-medium m-2">Save</span>
+          <mat-icon class="text-white">save</mat-icon>
+        </button>
+    </div>
+    <mat-expansion-panel
+        expanded="true"
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary"> Details </span>
+        </mat-expansion-panel-header>
+        <h2 class="bg-red-800 text-white text-lg font-semibold text-center p-2">
+            Company Details
+        </h2>
+        <form [formGroup]="companyForm" class="mt-4 space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Company Name</mat-label>
+                    <input matInput formControlName="legal_name" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Report No</mat-label>
+                    <input matInput formControlName="reportNo" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>CIN</mat-label>
+                    <input matInput formControlName="cin" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Age</mat-label>
+                    <input matInput formControlName="age" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Balance Sheet Date</mat-label>
+                    <input matInput formControlName="balanceSheetDate" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Company Status</mat-label>
+                    <input matInput formControlName="status" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Paid-Up Capital</mat-label>
+                    <input matInput formControlName="paidUpCapital" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Company Type</mat-label>
+                    <input matInput formControlName="type" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Profit/(Loss) After Tax</mat-label>
+                    <input matInput formControlName="profitLoss" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Company Sub Category</mat-label>
+                    <input matInput formControlName="subCategory" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Open Charges</mat-label>
+                    <input matInput formControlName="openCharges" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email" type="email" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Director/Signatory</mat-label>
+                    <input matInput formControlName="directorSignatory" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Company Website</mat-label>
+                    <input matInput formControlName="website" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Active Compliance</mat-label>
+                    <input matInput formControlName="activeCompliance" />
+                </mat-form-field>
+                <!-- <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Industry</mat-label>
+                    <input matInput formControlName="industry" />
+                </mat-form-field> -->
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Statutory Registration</mat-label>
+                    <input
+                        matInput
+                        formControlName="statutoryReg"
+                    />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-span-2 w-full">
+                    <mat-label>Company Address</mat-label>
+                    <textarea
+                        matInput
+                        rows="2"
+                        formControlName="companyAddress"
+                    ></textarea>
+                </mat-form-field>
+                <!-- <mat-form-field appearance="outline" class="col-span-2 w-full">
+                    <mat-label>SIC</mat-label>
+                    <input matInput formControlName="sic" rows="2" />
+                </mat-form-field> -->
+                <mat-form-field appearance="outline" class="col-span-2 w-full">
+                    <mat-label>Main Group</mat-label>
+                    <textarea
+                        matInput
+                        rows="2"
+                        formControlName="mainGroup"
+                    ></textarea>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-span-2 w-full">
+                    <mat-label>Sub_Group</mat-label>
+                    <textarea
+                        matInput
+                        rows="2"
+                        formControlName="subGroup"
+                    ></textarea>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Listing</mat-label>
+                    <input matInput formControlName="listing" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Contact No</mat-label>
+                    <textarea
+                        matInput
+                        formControlName="contactNo"
+                        rows="1"
+                    ></textarea>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-span-2 w-full">
+                    <mat-label>Description</mat-label>
+                    <textarea
+                        matInput
+                        rows="3"
+                        formControlName="description"
+                    ></textarea>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-span-2 w-full">
+                    <mat-label>Correspondence Address</mat-label>
+                    <textarea
+                        matInput
+                        rows="2"
+                        formControlName="correspondenceAddress"
+                    ></textarea>
+                </mat-form-field>
+            </div>
+        </form>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary">
+                Operational Details
+            </span>
+        </mat-expansion-panel-header>
+        <h2 class="bg-red-800 text-white text-lg font-semibold text-center p-2">
+            Operational Details
+        </h2>
+
+        <form [formGroup]="operationalForm" class="mt-4 space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Employee across country</mat-label>
+                    <input matInput formControlName="employeeAcross" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Tax Payer</mat-label>
+                    <input matInput formControlName="taxPayer" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>No. of Customers</mat-label>
+                    <input matInput formControlName="customerNo" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Business Group</mat-label>
+                    <input matInput formControlName="businessGroup" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Employees at location</mat-label>
+                    <input matInput formControlName="employeesLocation" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Company Auditor</mat-label>
+                    <input matInput formControlName="companyAuditor" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Type of Customers</mat-label>
+                    <input matInput formControlName="cuatomerTypes" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Other Entities in Group</mat-label>
+                    <input
+                        matInput
+                        formControlName="otherentities"
+                        type="email"
+                    />
+                </mat-form-field>
+            </div>
+        </form>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary">
+                GST Details
+            </span>
+        </mat-expansion-panel-header>
+
+        <div class="overflow-y-auto max-h-80">
+            <table class="w-full border-collapse border border-gray-300">
+                <thead class="bg-red-800 text-white">
+                    <tr>
+                        <th class="border border-gray-300 p-2">GSTIN/UIN</th>
+                        <th class="border border-gray-300 p-2">
+                            GSTIN/UIN Status
+                        </th>
+                        <th class="border border-gray-300 p-2">State</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let row of gstDetails; let i = index"
+                        class="odd:bg-gray-100 even:bg-white"
+                    >
+                        <td class="border border-gray-300 p-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="row.gstin"
+                                class="w-full p-1 border rounded"
+                            />
+                        </td>
+                        <td class="border border-gray-300 p-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="row.status"
+                                class="w-full p-1 border rounded"
+                            />
+                        </td>
+                        <td class="border border-gray-300 p-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="row.state"
+                                class="w-full p-1 border rounded"
+                            />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary">
+                EPFO Filing Details
+            </span>
+        </mat-expansion-panel-header>
+
+        <div *ngFor="let establishment of epfoDataList" class="mb-8">
+            <div class="bg-red-800 text-white px-2">
+                Establishment_Id : {{ establishment.establishment_id }} ({{
+                    establishment?.city
+                }})
+            </div>
+            <div class="overflow-y-auto max-h-80">
+                <table class="w-full border-collapse border border-gray-300">
+                    <thead class="bg-red-800 text-white">
+                        <tr>
+                            <th class="border border-gray-300 p-2 text-sm">
+                                TRRN
+                            </th>
+                            <th class="border border-gray-300 p-2 text-sm">
+                                Wage Month
+                            </th>
+                            <th class="border border-gray-300 p-2 text-sm">
+                                Date of Credit
+                            </th>
+                            <th class="border border-gray-300 p-2 text-sm">
+                                No. of Employees
+                            </th>
+                            <th class="border border-gray-300 p-2 text-sm">
+                                Amount (₹)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            *ngFor="
+                                let detail of getFirst6FilingDetails(
+                                    establishment.filing_details
+                                );
+                                let i = index
+                            "
+                            class="odd:bg-gray-100 even:bg-white dark:odd:bg-gray-700 dark:even:bg-gray-600 dark:text-gray-100"
+                        >
+                            <td class="border border-gray-300 p-2">
+                                <input
+                                    type="text"
+                                    [(ngModel)]="detail.trrn"
+                                    class="w-full p-1 border rounded"
+                                />
+                            </td>
+                            <td class="border border-gray-300 p-2">
+                                <input
+                                    type="text"
+                                    [(ngModel)]="detail.wage_month"
+                                    class="w-full p-1 border rounded"
+                                />
+                            </td>
+                            <td class="border border-gray-300 p-2">
+                                <input
+                                    type="text"
+                                    [(ngModel)]="detail.date_of_credit"
+                                    class="w-full p-1 border rounded"
+                                />
+                            </td>
+                            <td class="border border-gray-300 p-2">
+                                <input
+                                    type="number"
+                                    [(ngModel)]="detail.no_of_employees"
+                                    class="w-full p-1 border rounded text-right"
+                                />
+                            </td>
+                            <td class="border border-gray-300 p-2">
+                                <input
+                                    type="number"
+                                    [(ngModel)]="detail.amount"
+                                    class="w-full p-1 border rounded text-right"
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <div class="text-lg font-semibold text-primary">
+                Key Managerial Persons Current Directors/ Proprietor/Signatories
+            </div>
+        </mat-expansion-panel-header>
+        <div class="overflow-y-auto max-h-80">
+            <table class="w-full border-collapse border border-gray-300">
+                <thead class="bg-red-800 text-white">
+                    <tr>
+                        <th class="border border-gray-300 p-2">
+                            Company Directors/Signatories
+                        </th>
+                        <th class="border border-gray-300 p-2">DIN</th>
+                        <th class="border border-gray-300 p-2">Designation</th>
+                        <th class="border border-gray-300 p-2">
+                            Appointment Date
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let row of keyManagerialPersons; let i = index"
+                        class="odd:bg-gray-100 even:bg-white"
+                    >
+                        <td class="border border-gray-300 p-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="row.companyDirectors"
+                                class="w-full p-1 border rounded"
+                            />
+                        </td>
+                        <td class="border border-gray-300 p-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="row.din"
+                                class="w-full p-1 border rounded"
+                            />
+                        </td>
+                        <td class="border border-gray-300 p-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="row.designation"
+                                class="w-full p-1 border rounded"
+                            />
+                        </td>
+                        <td class="border border-gray-300 p-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="row.appointmentDate"
+                                class="w-full p-1 border rounded"
+                            />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <div class="text-lg font-semibold text-primary">
+                Past Directors / Past Signatories
+            </div>
+        </mat-expansion-panel-header>
+
+        <div class="overflow-y-auto max-h-80">
+            <table class="w-full border-collapse border border-gray-300">
+                <thead class="bg-red-800 text-white">
+                    <tr>
+                        <th class="border border-gray-300 p-2">
+                            Company Directors
+                        </th>
+                        <th class="border border-gray-300 p-2">Director DIN</th>
+                        <th class="border border-gray-300 p-2">Designation</th>
+                        <th class="border border-gray-300 p-2">
+                            Appointment Date
+                        </th>
+                        <th class="border border-gray-300 p-2">
+                            Cessation Date
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let row of pastDirectors; let i = index"
+                        class="odd:bg-gray-100 even:bg-white"
+                    >
+                        <td class="border border-gray-300 p-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="row.companyDirectors"
+                                class="w-full p-1 border rounded"
+                            />
+                        </td>
+                        <td class="border border-gray-300 p-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="row.din"
+                                class="w-full p-1 border rounded"
+                            />
+                        </td>
+                        <td class="border border-gray-300 p-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="row.designation"
+                                class="w-full p-1 border rounded"
+                            />
+                        </td>
+                        <td class="border border-gray-300 p-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="row.appointmentDate"
+                                class="w-full p-1 border rounded"
+                            />
+                        </td>
+                        <td class="border border-gray-300 p-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="row.cessationDate"
+                                class="w-full p-1 border rounded"
+                            />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary"
+                >Credit Rating</span
+            >
+        </mat-expansion-panel-header>
+
+        <div class="overflow-y-auto max-h-80">
+            <table class="w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-red-800 text-white">
+                        <th class="border border-gray-400 px-4 py-2">
+                            Rating Agency
+                        </th>
+                        <th class="border border-gray-400 px-4 py-2">
+                            Rating Date
+                        </th>
+                        <th class="border border-gray-400 px-4 py-2">Rating</th>
+                        <th class="border border-gray-400 px-4 py-2">
+                            Rating Action
+                        </th>
+                        <th class="border border-gray-400 px-4 py-2">
+                            Outlook
+                        </th>
+                        <th class="border border-gray-400 px-4 py-2">
+                            Type of Loan
+                        </th>
+                        <th class="border border-gray-400 px-4 py-2">
+                            Currency
+                        </th>
+                        <th class="border border-gray-400 px-4 py-2">
+                            Amount (₹)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white">
+                    <tr *ngFor="let rating of creditRatings">
+                        <td class="border border-gray-400 px-4 py-2">
+                            {{ rating.rating_agency }}
+                        </td>
+                        <td class="border border-gray-400 px-4 py-2">
+                            {{ rating.rating_date }}
+                        </td>
+                        <td class="border border-gray-400 px-4 py-2">
+                            {{ rating.rating }}
+                        </td>
+                        <td class="border border-gray-400 px-4 py-2">
+                            {{ rating.action }}
+                        </td>
+                        <td class="border border-gray-400 px-4 py-2">
+                            {{ rating.outlook || "-" }}
+                        </td>
+                        <td class="border border-gray-400 px-4 py-2">
+                            {{ rating.type_of_loan }}
+                        </td>
+                        <td class="border border-gray-400 px-4 py-2">
+                            {{ rating.currency }}
+                        </td>
+                        <td class="border border-gray-400 px-4 py-2">
+                            {{ rating.amount | number }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+    class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+>
+    <mat-expansion-panel-header
+        class="custom-header dark:bg-gray-700 dark:text-gray-300"
+    >
+        <span class="text-lg font-semibold text-primary">
+            Ownership Summary
+        </span>
+    </mat-expansion-panel-header>
+    <div class="p-2 flex justify-end">
+        <mat-form-field appearance="outline" class="w-1/3">
+            <mat-label>Select Additional Years</mat-label>
+            <mat-select
+                [(ngModel)]="shareholdingSummaryYears"
+                multiple
+                (selectionChange)="updateDisplayedYears('summary')"
+            >
+                <mat-option
+                    *ngFor="let year of allShareholdingSummaryYears"
+                    [value]="year"
+                    [disabled]="shareholdingSummaryYears.length>=5 && !shareholdingSummaryYears.includes(year)"
+                >
+                    {{ year }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="overflow-y-auto max-h-80">
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-red-800 text-white">
+                    <th class="border border-gray-300 px-4 py-2 w-1/4">
+                        Fields
+                    </th>
+                    <th
+                        *ngFor="
+                            let year of displayedshareholdingSummaryYears
+                        "
+                        class="border border-gray-300 px-4 py-2"
+                    >
+                        {{ year }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white">
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2 font-bold">
+                        Financial Year
+                    </td>
+                    <td
+                        *ngFor="
+                            let year of displayedshareholdingSummaryYears
+                        "
+                        class="border border-gray-300 px-4 py-2"
+                    >
+                        <input
+                            type="text"
+                            [(ngModel)]="
+                                shareholdingSummaryData[year].financial_year
+                            "
+                            class="w-full p-1 border border-gray-300 rounded"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2 font-bold">
+                        Promoter
+                    </td>
+                    <td
+                        *ngFor="
+                            let year of displayedshareholdingSummaryYears
+                        "
+                        class="border border-gray-300 px-4 py-2"
+                    >
+                        <input
+                            [(ngModel)]="
+                                shareholdingSummaryData[year].promoter
+                            "
+                            class="w-full p-1 border border-gray-300 rounded"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2 font-bold">
+                        Public
+                    </td>
+                    <td
+                        *ngFor="
+                            let year of displayedshareholdingSummaryYears
+                        "
+                        class="border border-gray-300 px-4 py-2"
+                    >
+                        <input
+                            [(ngModel)]="
+                                shareholdingSummaryData[year].public
+                            "
+                            class="w-full p-1 border border-gray-300 rounded"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2 font-bold">
+                        Total
+                    </td>
+                    <td
+                        *ngFor="
+                            let year of displayedshareholdingSummaryYears
+                        "
+                        class="border border-gray-300 px-4 py-2"
+                    >
+                        <input
+                            [(ngModel)]="
+                                shareholdingSummaryData[year].total
+                            "
+                            class="w-full p-1 border border-gray-300 rounded"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2 font-bold">
+                        Total Preference Shares
+                    </td>
+                    <td
+                        *ngFor="
+                            let year of displayedshareholdingSummaryYears
+                        "
+                        class="border border-gray-300 px-4 py-2"
+                    >
+                        <input
+                            [(ngModel)]="
+                                shareholdingSummaryData[year]
+                                    .total_preference_shares
+                            "
+                            class="w-full p-1 border border-gray-300 rounded"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2 font-bold">
+                        Total Equity Shares
+                    </td>
+                    <td
+                        *ngFor="
+                            let year of displayedshareholdingSummaryYears
+                        "
+                        class="border border-gray-300 px-4 py-2"
+                    >
+                        <input
+                            [(ngModel)]="
+                                shareholdingSummaryData[year]
+                                    .total_equity_shares
+                            "
+                            class="w-full p-1 border border-gray-300 rounded"
+                        />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</mat-expansion-panel>
+
+<mat-expansion-panel
+    class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+>
+    <mat-expansion-panel-header
+        class="custom-header dark:bg-gray-700 dark:text-gray-300"
+    >
+        <span class="text-lg font-semibold text-primary">
+            Ownership Details(%)
+        </span>
+    </mat-expansion-panel-header>
+    <div class="p-2 flex justify-end">
+        <mat-form-field appearance="outline" class="w-1/3">
+            <mat-label>Select Additional Years</mat-label>
+            <mat-select
+                [(ngModel)]="shareholdingYears"
+                multiple
+                (selectionChange)="updateDisplayedYears('shareholding')"
+            >
+                <mat-option
+                    *ngFor="let year of allShareholdingYears"
+                    [value]="year"
+                    [disabled]="shareholdingYears.length>=5 && !shareholdingYears.includes(year)"
+                >
+                    {{ year }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="overflow-y-auto max-h-80">
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-red-800 text-white">
+                    <th class="border border-gray-300 px-4 py-2">
+                        Stakeholder's
+                    </th>
+                    <th
+                        *ngFor="let year of displayedshareholdingYears"
+                        class="border border-gray-300 px-4 py-2"
+                    >
+                        {{ year }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white">
+                <tr>
+                    <td
+                        [attr.colspan]="
+                            displayedshareholdingYears.length + 1
+                        "
+                        class="border border-gray-300 px-4 py-2 font-bold bg-gray-200 text-center"
+                    >
+                        Promoter
+                    </td>
+                </tr>
+                <tr
+                    *ngFor="
+                        let field of [
+                            'bank_held_percentage_of_shares',
+                            'body_corporate_held_percentage_of_shares',
+                            'central_government_held_percentage_of_shares',
+                            'financial_institutions_held_percentage_of_shares',
+                            'financial_institutions_investors_held_percentage_of_shares',
+                            'foreign_held_other_than_nri_percentage_of_shares',
+                            'government_company_held_percentage_of_shares',
+                            'indian_held_percentage_of_shares',
+                            'insurance_company_held_percentage_of_shares',
+                            'mutual_funds_held_percentage_of_shares',
+                            'nri_held_percentage_of_shares',
+                            'others_held_percentage_of_shares',
+                            'state_government_held_percentage_of_shares',
+                            'venture_capital_held_percentage_of_shares',
+                            'total_percentage_of_shares'
+                        ]
+                    "
+                >
+                    <td class="border border-gray-300 px-4 py-2 font-bold">
+                        {{ formatFieldName(field) }}
+                    </td>
+                    <td
+                        *ngFor="let year of displayedshareholdingYears"
+                        class="border border-gray-300 px-4 py-2"
+                    >
+                        <input
+                            type="text"
+                            [(ngModel)]="
+                                shareholdingData[year].promoter[field]
+                            "
+                            class="w-full p-1 border border-gray-300 rounded"
+                        />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td
+                        [attr.colspan]="
+                            displayedshareholdingYears.length + 1
+                        "
+                        class="border border-gray-300 px-4 py-2 font-bold bg-gray-200 text-center"
+                    >
+                        Public
+                    </td>
+                </tr>
+                <tr
+                    *ngFor="
+                        let field of [
+                            'bank_held_percentage_of_shares',
+                            'body_corporate_held_percentage_of_shares',
+                            'central_government_held_percentage_of_shares',
+                            'financial_institutions_held_percentage_of_shares',
+                            'financial_institutions_investors_held_percentage_of_shares',
+                            'foreign_held_other_than_nri_percentage_of_shares',
+                            'government_company_held_percentage_of_shares',
+                            'indian_held_percentage_of_shares',
+                            'insurance_company_held_percentage_of_shares',
+                            'mutual_funds_held_percentage_of_shares',
+                            'nri_held_percentage_of_shares',
+                            'others_held_percentage_of_shares',
+                            'state_government_held_percentage_of_shares',
+                            'venture_capital_held_percentage_of_shares',
+                            'total_percentage_of_shares'
+                        ]
+                    "
+                >
+                    <td class="border border-gray-300 px-4 py-2 font-bold">
+                        {{ formatFieldName(field) }}
+                    </td>
+                    <td
+                        *ngFor="let year of displayedshareholdingYears"
+                        class="border border-gray-300 px-4 py-2"
+                    >
+                        <input
+                            type="text"
+                            [(ngModel)]="
+                                shareholdingData[year].public[field]
+                            "
+                            class="w-full p-1 border border-gray-300 rounded"
+                        />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary">
+                Particulars of Holding, Subsidiary, Associate Companies & Joint
+                Ventures
+            </span>
+        </mat-expansion-panel-header>
+
+        <div class="overflow-y-auto max-h-80">
+            <ng-container *ngFor="let entity of entityTypes">
+                <div>
+                    <div class="bg-red-800 text-white p-2 font-semibold">
+                        {{ entity.type }}
+                    </div>
+
+                    <table
+                        class="w-full border-collapse border border-gray-300 mb-4"
+                    >
+                        <thead class="bg-red-800 text-white">
+                            <tr>
+                                <th class="border border-gray-300 p-2">
+                                    Name of the company
+                                </th>
+                                <th class="border border-gray-300 p-2">
+                                    CIN / FCRN
+                                </th>
+                                <th class="border border-gray-300 p-2">
+                                    % Of shares held
+                                </th>
+                                <th class="border border-gray-300 p-2">
+                                    Status
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let row of entity.companies"
+                                class="odd:bg-gray-100 even:bg-white"
+                            >
+                                <td class="border border-gray-300 p-2">
+                                    <input
+                                        type="text"
+                                        [(ngModel)]="row.legal_name"
+                                        class="w-full p-1 border rounded"
+                                    />
+                                </td>
+                                <td class="border border-gray-300 p-2">
+                                    <input
+                                        type="text"
+                                        [(ngModel)]="row.cin"
+                                        class="w-full p-1 border rounded"
+                                    />
+                                </td>
+                                <td class="border border-gray-300 p-2">
+                                    <input
+                                        type="text"
+                                        [(ngModel)]="
+                                            row.share_holding_percentage
+                                        "
+                                        class="w-full p-1 border rounded"
+                                    />
+                                </td>
+                                <td class="border border-gray-300 p-2">
+                                    <input
+                                        type="text"
+                                        [(ngModel)]="row.status"
+                                        class="w-full p-1 border rounded"
+                                    />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </ng-container>
+        </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary">
+                MCA Filings
+            </span>
+        </mat-expansion-panel-header>
+        <div class="p-2 flex items-center justify-end gap-4">
+            <button
+                (click)="addRow('mca')"
+                class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            >
+                Add Row
+            </button>
+            <mat-form-field appearance="outline" class="w-1/3">
+                <mat-label>Select Additional Years</mat-label>
+                <mat-select
+                    [(ngModel)]="mcaYears"
+                    multiple
+                    (selectionChange)="updateDisplayedYears('mca')"
+                >
+                    <mat-option *ngFor="let year of allMcaYears" [value]="year" [disabled]="mcaYears.length >= 5 && !mcaYears.includes(year)">
+                        {{ year }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="overflow-y-auto max-h-80">
+            <table class="w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-red-800 text-white">
+                        <th class="border border-gray-300 px-4 py-2">
+                            Particulars
+                        </th>
+                        <th
+                            *ngFor="let column of displayedMcaYears"
+                            class="border border-gray-400 px-4 py-2 bg-red-800 text-white"
+                        >
+                            {{ column }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white">
+                    <tr *ngFor="let charge of mcaFiling; let i = index">
+                        <td class="border border-gray-300 px-4 py-2 font-bold">
+                            <input
+                                type="text"
+                                [(ngModel)]="charge.particulars"
+                                class="w-full p-2 border border-gray-300 rounded-md"
+                            />
+                        </td>
+                        <td *ngFor="let year of displayedMcaYears; let last = last" class="border border-gray-400 px-4 py-2 relative">
+                            <div class="flex items-center justify-between">
+                                <input type="text" [(ngModel)]="charge.data[year]" class="w-full p-2 border border-gray-300 rounded-md" />
+        
+                                <button *ngIf="last" matTooltip="Delete Row" (click)="openDeleteDialog(i,'mca')" 
+                                class="ml-4 text-red-600 hover:text-red-800 transition">
+                                    <mat-icon class="text-red-600">close</mat-icon>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary">
+                Key Managerial Person Information
+            </span>
+        </mat-expansion-panel-header>
+        <div *ngFor="let director of directorsData" class="director-section">
+            <div class="bg-red-800 text-white">
+                Company Director: {{ director.name }}
+            </div>
+            <div class="bg-black text-white">
+                Other Directorship/Potential Related Entity
+            </div>
+            <div class="overflow-y-auto max-h-80">
+                <table class="w-full border-collapse border border-gray-300">
+                    <thead class="bg-red-800 text-white">
+                        <tr>
+                            <th class="border border-gray-300 p-2">CIN/FCRN</th>
+                            <th class="border border-gray-300 p-2">
+                                Current Company
+                            </th>
+                            <th class="border border-gray-300 p-2">
+                                Appointment Date
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            *ngFor="
+                                let row of director.network.companies;
+                                let i = index
+                            "
+                            class="odd:bg-gray-100 even:bg-white"
+                        >
+                            <td class="border border-gray-300 p-2">
+                                <input
+                                    type="text"
+                                    [(ngModel)]="row.cin"
+                                    class="w-full p-1 border rounded"
+                                />
+                            </td>
+                            <td class="border border-gray-300 p-2">
+                                <input
+                                    type="text"
+                                    [(ngModel)]="row.legal_name"
+                                    class="w-full p-1 border rounded"
+                                />
+                            </td>
+                            <td class="border border-gray-300 p-2">
+                                <input
+                                    type="text"
+                                    [(ngModel)]="
+                                        row.date_of_appointment_for_current_designation
+                                    "
+                                    class="w-full p-1 border rounded"
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary">
+                Bank Wise Charges (Total: {{ totalUniqueCharges }})
+            </span>
+        </mat-expansion-panel-header>
+
+        <div class="p-2 flex justify-end gap-4 mb-2">
+            <label class="flex items-center cursor-pointer">
+                <span class="mr-2 text-sm">Include Satisfied Charges</span>
+                <mat-slide-toggle
+                    [(ngModel)]="showSatisfied"
+                    (change)="filterData()"
+                >
+                </mat-slide-toggle>
+            </label>
+
+            <!-- <button
+                (click)="addRow('bankCharges')"
+                class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            >
+                Add Row
+            </button> -->
+        </div>
+
+        <div class="overflow-y-auto max-h-80">
+            <table class="w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-red-800 text-white">
+                        <th class="border border-gray-400 px-4 py-2">
+                            Charge Holder
+                        </th>
+                        <th class="border border-gray-400 px-4 py-2">
+                            Amount (Rs in Crore)
+                        </th>
+                        <th class="border border-gray-400 px-4 py-2">
+                            Creation Date
+                        </th>
+                        <th class="border border-gray-400 px-4 py-2">
+                            Last Modification Date
+                        </th>
+                        <th class="border border-gray-400 px-4 py-2">
+                            Date Of Satisfaction
+                        </th>
+                        <th class="border border-gray-400 px-4 py-2">
+                            Assets Under Charge
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white">
+                    <tr *ngFor="let charge of filteredCharges; let i = index">
+                        <td class="border border-gray-300 px-4 py-2 font-bold">
+                            <input
+                                type="text"
+                                [(ngModel)]="charge.holder_name"
+                                class="w-full p-2 border border-gray-300 rounded-md"
+                            />
+                        </td>
+                        <td class="border border-gray-400 px-4 py-2">
+                            <input
+                                type="number"
+                                [(ngModel)]="charge.amount"
+                                class="w-full p-2 border border-gray-300 rounded-md text-center"
+                            />
+                        </td>
+                        <td class="border border-gray-400 px-4 py-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="charge.creation_date"
+                                class="w-full p-2 border border-gray-300 rounded-md text-center"
+                            />
+                        </td>
+                        <td class="border border-gray-400 px-4 py-2">
+                            <input
+                                type="text"
+                                [(ngModel)]="charge.filing_date"
+                                class="w-full p-2 border border-gray-300 rounded-md text-center"
+                            />
+                        </td>
+                        <td class="border border-gray-400 px-4 py-2">
+                            <input
+                                type="text"
+                                [ngModel]="
+                                    charge.status === 'Satisfaction'
+                                        ? charge.satisfaction_date
+                                        : ''
+                                "
+                                (ngModelChange)="
+                                    charge.status === 'Satisfaction'
+                                        ? (charge.satisfaction_date = $event)
+                                        : null
+                                "
+                                class="w-full p-2 border border-gray-300 rounded-md text-center"
+                            />
+                        </td>
+                        <td class="border border-gray-400 px-4 py-2">
+                            <textarea
+                                [(ngModel)]="charge.property_particulars"
+                                class="w-full p-2 border border-gray-300 rounded-md"
+                            ></textarea>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary">
+                Auditor Details
+            </span>
+        </mat-expansion-panel-header>
+
+        <div class="p-2 flex justify-end">
+            <mat-form-field appearance="outline" class="w-1/3">
+                <mat-label>Select Additional Years</mat-label>
+                <mat-select
+                    [(ngModel)]="auditorYears"
+                    multiple
+                    (selectionChange)="updateDisplayedYears('auditor')"
+                >
+                    <mat-option
+                        *ngFor="let year of allAuditorYears"
+                        [value]="year"
+                        [disabled]="auditorYears.length >= 5 && !auditorYears.includes(year)"
+                    >
+                        {{ year }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="overflow-y-auto max-h-80">
+            <table class="w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-red-800 text-white">
+                        <th class="border border-gray-300 px-4 py-2 w-1/4">
+                            Element Name/Years
+                        </th>
+                        <th
+                            *ngFor="let year of displayedAuditorYears"
+                            class="border border-gray-300 px-4 py-2"
+                        >
+                            {{ year }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white">
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2 font-bold">
+                            Audit Firm Name
+                        </td>
+                        <td
+                            *ngFor="let year of displayedAuditorYears"
+                            class="border border-gray-300 px-4 py-2"
+                        >
+                            <input
+                                [(ngModel)]="auditData[year].auditor_firm_name"
+                                class="w-full p-1 border border-gray-300 rounded"
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2 font-bold">
+                            Registration Number
+                        </td>
+                        <td
+                            *ngFor="let year of displayedAuditorYears"
+                            class="border border-gray-300 px-4 py-2"
+                        >
+                            <input
+                                [(ngModel)]="
+                                    auditData[year].firm_registration_number
+                                "
+                                class="w-full p-1 border border-gray-300 rounded"
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2 font-bold">
+                            Auditor Name
+                        </td>
+                        <td
+                            *ngFor="let year of displayedAuditorYears"
+                            class="border border-gray-300 px-4 py-2"
+                        >
+                            <input
+                                [(ngModel)]="auditData[year].auditor_name"
+                                class="w-full p-1 border border-gray-300 rounded"
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2 font-bold">
+                            Membership Number
+                        </td>
+                        <td
+                            *ngFor="let year of displayedAuditorYears"
+                            class="border border-gray-300 px-4 py-2"
+                        >
+                            <input
+                                [(ngModel)]="auditData[year].membership_number"
+                                class="w-full p-1 border border-gray-300 rounded"
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2 font-bold">
+                            Auditor Address
+                        </td>
+                        <td
+                            *ngFor="let year of displayedAuditorYears"
+                            class="border border-gray-300 px-4 py-2"
+                        >
+                            <textarea
+                                [(ngModel)]="auditData[year].address"
+                                class="w-full p-1 border border-gray-300 rounded"
+                            ></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2 font-bold">
+                            PAN
+                        </td>
+                        <td
+                            *ngFor="let year of displayedAuditorYears"
+                            class="border border-gray-300 px-4 py-2"
+                        >
+                            <input
+                                [(ngModel)]="auditData[year].pan"
+                                class="w-full p-1 border border-gray-300 rounded"
+                            />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </mat-expansion-panel>
+</mat-accordion>

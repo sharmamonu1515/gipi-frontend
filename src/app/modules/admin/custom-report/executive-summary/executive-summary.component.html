@@ -1,0 +1,301 @@
+<mat-accordion class="container custom-accordion dark:bg-gray-900">
+    <div class="flex justify-end pb-2 border-b border-gray-200 items-center">
+        <button 
+            mat-flat-button
+            (click)="saveData()"
+            [disabled]="!hasUnsavedChanges()"
+            class="report-button flex items-center space-x-2 py-2 px-4 rounded-md shadow-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 gap-2"
+        >
+          <span class="text-white font-medium m-2">Save</span>
+          <mat-icon class="text-white">save</mat-icon>
+        </button>
+    </div>
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+        expanded="true"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary"
+                >Executive Summary</span
+            >
+        </mat-expansion-panel-header>
+
+        <form [formGroup]="executiveForm" class="mt-4">
+            <div class="flex gap-4 items-center">
+                <label>Risk Band</label>
+                <mat-form-field
+                    appearance="outline"
+                    class="flex-1 custom-form-field"
+                >
+                    <mat-select
+                        formControlName="riskBand"
+                        (selectionChange)="updateRiskBandColor($event.value)"
+                        [ngClass]="riskBandColor"
+                        [ngStyle]="{
+                            'background-color': riskBandColor,
+                            'color': riskBandColor === '#ffffff' ? '#000000' : '#ffffff'
+                        }"
+                        class="risk-select"
+                    >
+                        <mat-option
+                            *ngFor="let option of riskOptions"
+                            [value]="option.value"
+                        >
+                            {{ option.label }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <h3 class="font-bold text-lg text-center pt-2">Analyst Comment</h3>
+            <div class="mt-4">
+                <mat-label class="font-bold text-lg">About Entity</mat-label>
+                <angular-editor
+                    formControlName="aboutEntity"
+                    [config]="editorConfig"
+                    class="w-full border bg-white"
+                ></angular-editor>
+            </div>
+
+            <div class="mt-4">
+                <mat-label class="font-bold text-lg"
+                    >Management Assessment</mat-label
+                >
+                <angular-editor
+                    formControlName="managementAssessment"
+                    [config]="editorConfig"
+                    class="w-full border bg-white"
+                ></angular-editor>
+            </div>
+
+            <div class="mt-4">
+                <mat-label class="font-bold text-lg"
+                    >Operational Assessment</mat-label
+                >
+                <angular-editor
+                    formControlName="operationalAssessment"
+                    [config]="editorConfig"
+                    class="w-full border bg-white"
+                ></angular-editor>
+            </div>
+            <div class="mt-4">
+                <mat-label class="font-bold text-lg"
+                    >Financial Assessment</mat-label
+                >
+                <angular-editor
+                    formControlName="financialAssessment"
+                    [config]="editorConfig"
+                    name="financialAssessment"
+                    class="w-full border bg-white"
+                ></angular-editor>
+            </div>
+            <div class="mt-4">
+                <mat-label class="font-bold text-lg"
+                    >Legal/Compliance Assessment</mat-label
+                >
+                <angular-editor
+                    formControlName="complianceAssessment"
+                    [config]="editorConfig"
+                    name="complianceAssessment"
+                    class="w-full border bg-white"
+                ></angular-editor>
+            </div>
+            <div class="mt-4">
+                <mat-label class="font-bold text-lg"
+                    >Other Comments & Disclaimer</mat-label
+                >
+                <angular-editor
+                    formControlName="commentsDisclaimer"
+                    [config]="editorConfig"
+                    name="commentsDisclaimer"
+                    class="w-full border bg-white"
+                ></angular-editor>
+            </div>
+        </form>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary"
+                >Background Risk Bands</span
+            >
+        </mat-expansion-panel-header>
+
+        <form [formGroup]="colourBandForm" class="mt-4">
+            <table
+                class="w-full border-collapse border border-gray-300 shadow-lg"
+            >
+                <thead class="bg-gray-200 text-gray-700">
+                    <tr>
+                        <th class="border p-3 text-left w-1/4">
+                            Band Particulars
+                        </th>
+                        <th class="border p-3 text-left">
+                            Our Evaluation Criteria
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let band of riskOptions">
+                        <td
+                            class="border p-3 font-semibold text-center"
+                            [ngStyle]="{
+                                'background-color': band.color,
+                                'color': band.color === '#ffffff' ? '#000000' : '#ffffff'
+                            }"
+                        >
+                            {{ band.label }}
+                        </td>
+
+                        <td class="border p-3 bg-white">
+                            <textarea
+                                [formControlName]="band.value"
+                                class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                                placeholder="Enter evaluation criteria"
+                            >
+                            </textarea>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary"
+                >Sustainibility Score</span
+            >
+        </mat-expansion-panel-header>
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse border border-gray-300">
+                <thead class="bg-red-800 text-white">
+                    <tr class="bg-red-800 text-white">
+                        <th class="p-3 border">Parameters</th>
+                        <th class="p-3 border">Weightage</th>
+                        <th class="p-3 border">Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of sustainabilityData; let i = index">
+                        <td class="p-3 border font-semibold">
+                            {{ item.parameter }}
+                            <span *ngIf="item.parameter === 'Overriding Factors'">
+                              * (Comprehensive credit, issuance of shares, significant arbitration proceeding)
+                          </span>
+                        </td>
+                        <td
+                            *ngIf="item.parameter !== 'Risk Score Range'"
+                            class="p-3 border text-center"
+                        >
+                            {{ item.weight }}
+                        </td>
+
+                        <td
+                            *ngIf="item.parameter !== 'Risk Score Range'"
+                            class="p-3 border text-center font-semibold"
+                        >
+                            <input
+                                *ngIf="
+                                    item.parameter !== 'Sub-Total' &&
+                                    item.parameter !==
+                                        'Partner Sustainability Score'
+                                "
+                                type="text"
+                                [(ngModel)]="item.score"
+                                name="score{{ item.parameter }}"
+                                (input)="updateSubtotal()"
+                                class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground text-center"
+                            />
+
+                            <span *ngIf="item.parameter === 'Sub-Total'">
+                                {{ item.score }}
+                            </span>
+                            <span
+                                *ngIf="
+                                    item.parameter ===
+                                    'Partner Sustainability Score'
+                                "
+                            >
+                                {{ item.score }}
+                            </span>
+                        </td>
+                        <td
+                            *ngIf="item.parameter === 'Risk Score Range'"
+                            colspan="2"
+                            class="p-3 border text-center font-semibold text-white"
+                            [ngClass]="
+                                getRiskDetails(getPartnerSustainabilityScore())
+                                    ?.color || ''
+                            "
+                        >
+                            {{
+                                getRiskDetails(getPartnerSustainabilityScore())
+                                    ?.label || ""
+                            }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
+    >
+        <mat-expansion-panel-header
+            class="custom-header dark:bg-gray-700 dark:text-gray-300"
+        >
+            <span class="text-lg font-semibold text-primary"
+                >Sustainability Risk Bands</span
+            >
+        </mat-expansion-panel-header>
+        <table class="w-full border-collapse border border-gray-300 shadow-lg">
+            <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                    <th class="border p-3 text-left">Score Range</th>
+                    <th class="border p-3 text-left w-1/4">
+                        Performance Indicator
+                    </th>
+                    <th class="border p-3 text-left">
+                        Our Evaluation Criteria
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let band of sustainabilityriskBands">
+                    <td class="border p-3 text-center">
+                        {{ band.score }}
+                    </td>
+                    <td
+                        class="border p-3 font-semibold text-center"
+                        [ngStyle]="{
+                            'background-color': band.color,
+                            color: '#FFFFFF'
+                        }"
+                    >
+                        {{ band.label }}
+                    </td>
+
+                    <td class="border p-3 bg-white">
+                        <textarea
+                            [(ngModel)]="band.value"
+                            class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                            placeholder="Enter evaluation criteria"
+                        >
+                        </textarea>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </mat-expansion-panel>
+</mat-accordion>
