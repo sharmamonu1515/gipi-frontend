@@ -4,7 +4,8 @@
 
 export const environment = {
     production: false,
-    baseURI: 'https://finder.empliance.in'
+    baseURI: 'https://finder.empliance.in',
+    newBaseURI: 'http://127.0.0.1:4000',
 };
 
 /*

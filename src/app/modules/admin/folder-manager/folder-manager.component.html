@@ -93,8 +93,8 @@
                   </mat-card-header>
                   <mat-card-content>
                     <mat-icon class="fileIcon">folder</mat-icon>
-                    <p>{{ subfolder.subfolders?.length || 0 }} subfolders</p>
-                    <p>{{ subfolder.files?.length || 0 }} files</p>
+                    <p>{{ subfolder?.subfolders?.length ?? 0 }} subfolders</p>
+                    <p>{{ subfolder?.files?.length ?? 0 }} files</p>
                   </mat-card-content>
                 </mat-card>
               </div>

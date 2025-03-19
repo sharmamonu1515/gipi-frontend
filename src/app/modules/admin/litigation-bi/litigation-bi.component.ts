@@ -16,18 +16,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./litigation-bi.component.css']
 })
 export class LitigationBiComponent implements OnInit, AfterViewInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+
   displayedColumns: string[] = ['updatedAt', 'entityId', 'name', 'action'];
   data: [] = [];
 
   resultsLength = 0;
   isLoadingResults = true;
   isRateLimitReached = false;
+  fileDownloadlink: string = '';
   searchInputControl: UntypedFormControl = new UntypedFormControl();
   private _unsubscribeAll: Subject<any> = new Subject<any>();
-  fileDownloadlink = ''
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
   constructor(
     public dialog: MatDialog,
     private apiService: LitigationBiService,
