@@ -92,6 +92,7 @@ export const appRoutes: Route[] = [
             {path: 'folders', loadChildren: () => import('app/modules/admin/folder-manager/folder-manager.module').then(m => m.FolderManagerModule)},
             {path: 'entity', loadChildren: () => import('app/modules/admin/entity-search/entity-search.module').then(m => m.EntitySearchModule)},
             {path: 'ubo', loadChildren: () => import('app/modules/admin/ubo/ubo.module').then(m => m.UBOModule)},
+            {path: 'sbo', loadChildren: () => import('app/modules/admin/sbo/sbo.module').then(m => m.SBOModule)},
         ]
     }
 ];

@@ -9,25 +9,23 @@ import {
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { UBOService } from './ubo.service';
+import { SBOService } from './sbo.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
-    selector: 'app-ubo',
-    templateUrl: './ubo.component.html',
-    styleUrls: ['./ubo.component.scss'],
+    selector: 'app-sbo',
+    templateUrl: './sbo.component.html',
+    styleUrls: ['./sbo.component.scss'],
 })
-export class UBOComponent implements OnInit {
+export class SBOComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
     displayedColumns: string[] = [
         'entityId',
-        'entityName',
-        'coverage',
-        'finYear',
-        'totalEquityShares',
+        'companyName',
+        'lastDownloaded',
         'actions',
     ];
     dataSource = new MatTableDataSource<any>([]);
@@ -40,11 +38,11 @@ export class UBOComponent implements OnInit {
 
     constructor(
         public dialog: MatDialog,
-        private apiService: UBOService
+        private apiService: SBOService
     ) {}
 
     ngOnInit(): void {
-        this.fetchUBOData();
+        this.fetchSBOData();
 
         // Apply filtering when search input changes
         this.searchInputControl.valueChanges.subscribe((value) => {
@@ -57,7 +55,7 @@ export class UBOComponent implements OnInit {
         exitAnimationDuration: string
     ): void {
         this.dialog
-            .open(UBODialogComponent, {
+            .open(SBODialogComponent, {
                 width: '50%',
                 enterAnimationDuration,
                 exitAnimationDuration,
@@ -69,58 +67,58 @@ export class UBOComponent implements OnInit {
             });
     }
 
-    fetchUBOData(
+    fetchSBOData(
         page: number = 1,
         limit: number = 20,
         search: string = ''
     ): void {
         this.isLoadingResults = true;
-        this.apiService.getAllUBOs(page, limit, search.trim()).subscribe(
+        this.apiService.getAllSBOs(page, limit, search.trim()).subscribe(
             (response) => {
-                this.dataSource.data = response.data.ubos; // Update table data
+                this.dataSource.data = response.data.sbos; // Update table data
                 this.resultsLength = response.data.pagination.totalRecords; // Set total records count
                 this.isLoadingResults = false;
             },
             (error) => {
-                console.error('Error fetching entity data:', error);
+                console.error('Error fetching SBO data:', error);
                 this.isLoadingResults = false;
             }
         );
     }
 
     onPageChange(event: PageEvent): void {
-        this.fetchUBOData(event.pageIndex + 1, event.pageSize);
+        this.fetchSBOData(event.pageIndex + 1, event.pageSize);
     }
 
     applyFilter(filterValue: string): void {
       const trimmedValue = filterValue.trim();
       if (trimmedValue.length > 3) {
-          this.fetchUBOData(1, this.pageSize, trimmedValue);
+          this.fetchSBOData(1, this.pageSize, trimmedValue);
       }
   }
 }
 
 // ADD Litigation BI Details By CIN //
 @Component({
-    selector: 'ubo-dialog',
-    templateUrl: './ubo-dialog.component.html',
+    selector: 'sbo-dialog',
+    templateUrl: './sbo-dialog.component.html',
 })
-export class UBODialogComponent implements OnInit {
-    @ViewChild('UBODialogNGForm') UBODialogNGForm: NgForm;
+export class SBODialogComponent implements OnInit {
+    @ViewChild('SBODialogNGForm') SBODialogNGForm: NgForm;
 
     formFieldHelpers: string[] = [''];
-    UBODialogForm: UntypedFormGroup;
+    SBODialogForm: UntypedFormGroup;
 
     constructor(
-        public dialogRef: MatDialogRef<UBODialogComponent>,
+        public dialogRef: MatDialogRef<SBODialogComponent>,
         private _formBuilder: UntypedFormBuilder,
-        private apiService: UBOService,
+        private apiService: SBOService,
         private _snackBar: MatSnackBar
     ) {}
 
     ngOnInit(): void {
         // Create the MCA Details form
-        this.UBODialogForm = this._formBuilder.group({
+        this.SBODialogForm = this._formBuilder.group({
             companyId: ['', [Validators.required]],
         });
     }
@@ -132,10 +130,10 @@ export class UBODialogComponent implements OnInit {
         return this.formFieldHelpers.join(' ');
     }
 
-    getUBODetails(): void {
+    getSBODetails(): void {
         this.apiService
-            .getUBODetails(
-                this.UBODialogForm.get('companyId').value
+            .getSBODetails(
+                this.SBODialogForm.get('companyId').value
             )
             .subscribe(
                 (response) => {

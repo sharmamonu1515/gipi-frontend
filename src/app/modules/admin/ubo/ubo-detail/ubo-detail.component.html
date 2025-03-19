@@ -24,7 +24,7 @@
                 </div>
 
                 <!-- Company Details -->
-                <div class="example-table-container">
+                <div class="example-table-container table-responsive">
                     <table mat-table [dataSource]="dataSource" class="example-table" matSort matSortActive="created"
                         matSortDisableClear matSortDirection="desc" class="w-100">
 
@@ -71,60 +71,69 @@
                 <!-- Beneficial Owners ThroughBen2 -->
                 <div class="example-table-container my-4" *ngFor="let beneData of dataSource.data[0]?.beneficialOwnersThroughBen2">
                     <div class="text-4xl font-extrabold tracking-tight py-2">Beneficial Owners ThroughBen2 > {{ beneData.sbo }}</div>
-                    <table class="mat-table cdk-table mat-sort w-100">
-                        <tbody>
-                            <tr *ngFor="let col of getBene2ColumnsToDisplay()">
-                                <th class="mat-header-cell cdk-header-cell">{{ humanizeCamelCase(col) }}</th>
-                                <td class="mat-cell cdk-cell">{{ getBene2ColumnValue(beneData, col) }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="mat-table cdk-table mat-sort w-100">
+                            <tbody>
+                                <tr *ngFor="let col of getBene2ColumnsToDisplay()">
+                                    <th class="mat-header-cell cdk-header-cell">{{ humanizeCamelCase(col) }}</th>
+                                    <td class="mat-cell cdk-cell">{{ getBene2ColumnValue(beneData, col) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
                     <div class="example-table-container my-4" *ngIf="beneData.sboId.typeOfMember">
                         <div class="text-4xl font-extrabold tracking-tight py-2">Beneficial Owners ThroughBen2 > {{ beneData.sbo }} > Type Of Member</div>
-                        <table mat-table [dataSource]="beneData.sboId.typeOfMember" class="example-table" matSort matSortActive="created"
-                        matSortDisableClear matSortDirection="desc" class="w-100">
+                        <div class="table-responsive">
+                            <table mat-table [dataSource]="beneData.sboId.typeOfMember" class="example-table" matSort matSortActive="created"
+                            matSortDisableClear matSortDirection="desc" class="w-100">
 
-                            <ng-container *ngFor="let column of bene2TeamMemberDisplayedColumns" [matColumnDef]="column">
-                                <th mat-header-cell *matHeaderCellDef> {{ humanizeCamelCase(column) }} </th>
-                                <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
-                            </ng-container>
+                                <ng-container *ngFor="let column of bene2TeamMemberDisplayedColumns" [matColumnDef]="column">
+                                    <th mat-header-cell *matHeaderCellDef> {{ humanizeCamelCase(column) }} </th>
+                                    <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+                                </ng-container>
 
-                            <tr mat-header-row *matHeaderRowDef="bene2TeamMemberDisplayedColumns"></tr>
-                            <tr mat-row *matRowDef="let row; columns: bene2TeamMemberDisplayedColumns;"></tr>
-                        </table>
+                                <tr mat-header-row *matHeaderRowDef="bene2TeamMemberDisplayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: bene2TeamMemberDisplayedColumns;"></tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Nested Shareholding Pattern > Individual Shareholders -->
                 <div class="example-table-container my-4">
                     <div class="text-4xl font-extrabold tracking-tight py-2">Nested Shareholding Pattern > Individual Shareholders</div>
-                    <table mat-table [dataSource]="dataSource.data[0]?.nestedShareholdingPattern.individualShareholders" class="example-table" matSort matSortActive="created"
-                    matSortDisableClear matSortDirection="desc" class="w-100">
-
-                        <ng-container *ngFor="let column of individualShareholdersDisplayedColumns" [matColumnDef]="column">
-                            <th mat-header-cell *matHeaderCellDef> {{ humanizeCamelCase(column) }} </th>
-                            <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
-                        </ng-container>
-
-                        <tr mat-header-row *matHeaderRowDef="individualShareholdersDisplayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: individualShareholdersDisplayedColumns;"></tr>
-                    </table>
+                    <div class="table-responsive">
+                        <table mat-table [dataSource]="dataSource.data[0]?.nestedShareholdingPattern.individualShareholders" class="example-table" matSort matSortActive="created"
+                        matSortDisableClear matSortDirection="desc" class="w-100">
+    
+                            <ng-container *ngFor="let column of individualShareholdersDisplayedColumns" [matColumnDef]="column">
+                                <th mat-header-cell *matHeaderCellDef> {{ humanizeCamelCase(column) }} </th>
+                                <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+                            </ng-container>
+    
+                            <tr mat-header-row *matHeaderRowDef="individualShareholdersDisplayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: individualShareholdersDisplayedColumns;"></tr>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- Nested Shareholding Pattern > Company Shareholders -->
                 <div class="example-table-container my-4">
                     <div class="text-4xl font-extrabold tracking-tight py-2">Nested Shareholding Pattern > Company Shareholders</div>
-                    <table mat-table [dataSource]="dataSource.data[0]?.nestedShareholdingPattern.companyShareholders" class="example-table" matSort matSortActive="created"
-                    matSortDisableClear matSortDirection="desc" class="w-100">
-
-                        <ng-container *ngFor="let column of companyShareholdersDisplayedColumns" [matColumnDef]="column">
-                            <th mat-header-cell *matHeaderCellDef> {{ humanizeCamelCase(column) }} </th>
-                            <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
-                        </ng-container>
-
-                        <tr mat-header-row *matHeaderRowDef="companyShareholdersDisplayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: companyShareholdersDisplayedColumns;"></tr>
-                    </table>
+                    <div class="table-responsive">
+                        <table mat-table [dataSource]="dataSource.data[0]?.nestedShareholdingPattern.companyShareholders" class="example-table" matSort matSortActive="created"
+                        matSortDisableClear matSortDirection="desc" class="w-100">
+    
+                            <ng-container *ngFor="let column of companyShareholdersDisplayedColumns" [matColumnDef]="column">
+                                <th mat-header-cell *matHeaderCellDef> {{ humanizeCamelCase(column) }} </th>
+                                <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+                            </ng-container>
+    
+                            <tr mat-header-row *matHeaderRowDef="companyShareholdersDisplayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: companyShareholdersDisplayedColumns;"></tr>
+                        </table>
+                    </div>
                 </div>
                 
             </div>

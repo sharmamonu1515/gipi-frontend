@@ -8,19 +8,19 @@ const BASE_URI = environment.newBaseURI;
 @Injectable({
     providedIn: 'root',
 })
-export class UBOService {
+export class SBOService {
     constructor(private _httpClient: HttpClient) {}
 
     get accessToken(): string {
         return localStorage.getItem('accessToken') ?? '';
     }
 
-    getAllUBOs(
+    getAllSBOs(
         page: number,
         limit: number,
         search: string = ''
     ): Observable<any> {
-        const requestUrl = `${BASE_URI}/ubo/list?page=${page}&limit=${limit}&search=${encodeURIComponent(
+        const requestUrl = `${BASE_URI}/sbo/list?page=${page}&limit=${limit}&search=${encodeURIComponent(
             search
         )}`;
 
@@ -31,8 +31,8 @@ export class UBOService {
         });
     }
 
-    getUBODetails(companyId: string): Observable<any> {
-        const requestUrl = `${BASE_URI}/ubo/search`;
+    getSBODetails(companyId: string): Observable<any> {
+        const requestUrl = `${BASE_URI}/sbo/search`;
         return this._httpClient.post<any>(
             requestUrl,
             {
@@ -46,7 +46,7 @@ export class UBOService {
         );
     }
 
-    getUBOById(id: string): Observable<any> {
-        return this._httpClient.get<any>(`${BASE_URI}/ubo/${id}`);
+    getSBOById(id: string): Observable<any> {
+        return this._httpClient.get<any>(`${BASE_URI}/sbo/${id}`);
     }
 }
