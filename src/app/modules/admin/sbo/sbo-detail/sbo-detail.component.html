@@ -53,7 +53,7 @@
                         <table class="mat-table cdk-table mat-sort w-100">
                             <tbody>
                                 <tr *ngFor="let col of uboColumnsToDisplay">
-                                    <th class="mat-header-cell cdk-header-cell">{{ humanizeCamelCase(col) }}</th>
+                                    <th class="mat-header-cell cdk-header-cell">{{ utils.humanizeCamelCase(col) }}</th>
                                     <td class="mat-cell cdk-cell">{{ uboData.data.sboinfo[col] }}</td>
                                 </tr>
                             </tbody>
@@ -68,7 +68,7 @@
                                 <table class="mat-table cdk-table mat-sort w-100">
                                     <tbody>
                                         <tr *ngFor="let sboCol of getsboColumnsToDisplay()">
-                                            <th class="mat-header-cell cdk-header-cell">{{ humanizeCamelCase(sboCol) }}</th>
+                                            <th class="mat-header-cell cdk-header-cell">{{ utils.humanizeCamelCase(sboCol) }}</th>
                                             <td class="mat-cell cdk-cell">{{ getColumnValue(sboData, sboCol) }}</td>
                                         </tr>
                                     </tbody>
@@ -82,7 +82,7 @@
                                     matSortDisableClear matSortDirection="desc" class="w-100">
             
                                         <ng-container *ngFor="let column of bene2TeamMemberDisplayedColumns" [matColumnDef]="column">
-                                            <th mat-header-cell *matHeaderCellDef> {{ humanizeCamelCase(column) }} </th>
+                                            <th mat-header-cell *matHeaderCellDef> {{ utils.humanizeCamelCase(column) }} </th>
                                             <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
                                         </ng-container>
             
@@ -102,8 +102,15 @@
                             <table class="mat-table cdk-table mat-sort w-100">
                                 <tbody>
                                     <tr *ngFor="let metaCol of metaDataColumnsToDisplay">
-                                        <th class="mat-header-cell cdk-header-cell">{{ humanizeCamelCase(metaCol) }}</th>
-                                        <td class="mat-cell cdk-cell">{{ uboData.metadata[metaCol] }}</td>
+                                        <th class="mat-header-cell cdk-header-cell">{{ utils.humanizeCamelCase(metaCol) }}</th>
+                                        <td class="mat-cell cdk-cell">
+                                            <ng-container *ngIf="utils.isLink(uboData.metadata[metaCol]); else normalText">
+                                              <a [href]="uboData.metadata[metaCol]" download target="_blank" rel="noopener noreferrer">Download</a>
+                                            </ng-container>
+                                            <ng-template #normalText>
+                                              {{ uboData.metadata[metaCol] }}
+                                            </ng-template>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

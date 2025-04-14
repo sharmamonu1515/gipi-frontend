@@ -38,46 +38,42 @@
                 </div>
 
                 <div class="example-table-container">
-
-                    <table mat-table [dataSource]="dataSource" class="example-table" matSort matSortActive="created"
-                        matSortDisableClear matSortDirection="desc" class="w-100">
+                    <table mat-table [dataSource]="dataSource" class="example-table" class="w-100">
 
                         <!-- Entity ID Column -->
                         <ng-container matColumnDef="entityId">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Entity ID </th>
+                            <th mat-header-cell *matHeaderCellDef> Entity ID </th>
                             <td mat-cell *matCellDef="let element"> {{ element.entityId }} </td>
                         </ng-container>
 
                         <!-- Name Column -->
                         <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+                            <th mat-header-cell *matHeaderCellDef> Name </th>
                             <td mat-cell *matCellDef="let element"> {{ element.name }} </td>
                         </ng-container>
 
-                        <!-- Name Column -->
-                        <ng-container matColumnDef="totalCases">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Cases </th>
-                            <td mat-cell *matCellDef="let element"> {{ element.totalCases }} </td>
+                        <!-- Pans Column -->
+                        <ng-container matColumnDef="pans">
+                            <th mat-header-cell *matHeaderCellDef> PANs </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.basicDetails.pans.join(', ') }} </td>
                         </ng-container>
 
                         <!-- Location Column -->
                         <ng-container matColumnDef="location">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Location </th>
+                            <th mat-header-cell *matHeaderCellDef> Location </th>
                             <td mat-cell *matCellDef="let element"> {{ element.basicDetails.location }} </td>
                         </ng-container>
 
                         <!-- Status Column -->
                         <ng-container matColumnDef="status">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                            <th mat-header-cell *matHeaderCellDef> Status </th>
                             <td mat-cell *matCellDef="let element"> {{ element.basicDetails.status }} </td>
                         </ng-container>
 
-                        <!-- Actions Column -->
-                        <ng-container matColumnDef="actions">
-                            <th mat-header-cell *matHeaderCellDef> Actions </th>
-                            <td mat-cell *matCellDef="let element">
-                                <button mat-button (click)="viewDetails(element)">View</button>
-                            </td>
+                        <!-- Status Column -->
+                        <ng-container matColumnDef="createdAt">
+                            <th mat-header-cell *matHeaderCellDef> Created </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.createdAt | date }} </td>
                         </ng-container>
 
                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

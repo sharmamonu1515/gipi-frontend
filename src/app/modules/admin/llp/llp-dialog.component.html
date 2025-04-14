@@ -1,0 +1,28 @@
+<h1 mat-dialog-title>Search LLP Details</h1>
+
+<form [formGroup]="LLPDialogForm" class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden">
+    <!-- Entity ID Input -->
+    <mat-form-field appearance="fill">
+        <mat-label>Entity ID</mat-label>
+        <input matInput formControlName="entityId" placeholder="Enter Entity ID">
+        <mat-error *ngIf="LLPDialogForm.get('entityId').hasError('required')">
+            Entity ID is required
+        </mat-error>
+    </mat-form-field>
+
+    <!-- Financial Years Multi-Select -->
+    <mat-form-field appearance="fill" *ngIf="financialYears.length > 0">
+        <mat-label>Select Financial Years</mat-label>
+        <mat-select formControlName="financialYears" multiple>
+            <mat-option *ngFor="let year of financialYears" [value]="year">
+                {{ year }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+</form>
+
+<div mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-button color="primary" (click)="getLLPDetails()" [disabled]="LLPDialogForm.invalid">Search</button>
+</div>

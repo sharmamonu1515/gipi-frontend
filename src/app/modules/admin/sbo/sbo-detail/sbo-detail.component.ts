@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SBOService } from '../sbo.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { FuseUtilsService } from '@fuse/services/utils';
 
 export interface PeriodicElement {
     numOfMembers: string;
@@ -65,30 +66,30 @@ export class UboDetailComponent implements OnInit {
     ];
 
     uboColumnsToDisplay: string[] = [
-        "copNumber",
-        "entityIdOfHldRepComp",
-        "membershipNum",
-        "numberOfSbo",
-        "purposeOfFiling",
-        "whtrAssOrFel",
-        "whtrChangeInSboUnderSec90",
-        "whtrDeclnOfHldRepComp",
-        "whtrDeclnOfSboUnderSec90",
-        "whtrSignedByCaOrCsOrCostAcc",
+        'copNumber',
+        'entityIdOfHldRepComp',
+        'membershipNum',
+        'numberOfSbo',
+        'purposeOfFiling',
+        'whtrAssOrFel',
+        'whtrChangeInSboUnderSec90',
+        'whtrDeclnOfHldRepComp',
+        'whtrDeclnOfSboUnderSec90',
+        'whtrSignedByCaOrCsOrCostAcc',
     ];
 
     metaDataColumnsToDisplay: string[] = [
-        "companyID",
-        "categoryCode",
-        "documentName",
-        "dateOfFiling",
-        "formId",
-        "type",
-        "docId",
-        "lastUpdated",
-        "docLink",
-        "excelLink",
-        "attachmentLink",
+        'companyID',
+        'categoryCode',
+        'documentName',
+        'dateOfFiling',
+        'formId',
+        'type',
+        'docId',
+        'lastUpdated',
+        'docLink',
+        'excelLink',
+        'attachmentLink',
     ];
 
     sboColumnsToDisplay: BeneColumns = {
@@ -124,29 +125,29 @@ export class UboDetailComponent implements OnInit {
     };
 
     bene2TeamMemberDisplayedColumns: string[] = [
-      "city",
-      "country",
-      "dateOfEntryOfNameInRegister",
-      "emailIdOfMember",
-      "entityIdOfMember",
-      "entityIdOfMorcOrMouh",
-      "entityIdOfUltHldCompOfBodyCorpOrBodyCorp",
-      "line1",
-      "line2",
-      "majStakeInMorcOrMouh",
-      "nameOfMorcOrMouh",
-      "nameOfTheMember",
-      "nameOfUltHldCompOfBodyCorpOrBodyCorp",
-      "pincode",
-      "sboHldByControl",
-      "sboHldByDividend",
-      "sboHldByInfluence",
-      "sboHldByVirOfShares",
-      "sboHldByVirOfVoting",
-      "state",
-      "statusOfSbo",
-      "typeOfMember",
-      "whtrIndSboIsPartnerOfTheMember",
+        'city',
+        'country',
+        'dateOfEntryOfNameInRegister',
+        'emailIdOfMember',
+        'entityIdOfMember',
+        'entityIdOfMorcOrMouh',
+        'entityIdOfUltHldCompOfBodyCorpOrBodyCorp',
+        'line1',
+        'line2',
+        'majStakeInMorcOrMouh',
+        'nameOfMorcOrMouh',
+        'nameOfTheMember',
+        'nameOfUltHldCompOfBodyCorpOrBodyCorp',
+        'pincode',
+        'sboHldByControl',
+        'sboHldByDividend',
+        'sboHldByInfluence',
+        'sboHldByVirOfShares',
+        'sboHldByVirOfVoting',
+        'state',
+        'statusOfSbo',
+        'typeOfMember',
+        'whtrIndSboIsPartnerOfTheMember',
     ];
 
     individualShareholdersDisplayedColumns: string[] = [
@@ -168,7 +169,8 @@ export class UboDetailComponent implements OnInit {
 
     constructor(
         private route: ActivatedRoute,
-        private apiService: SBOService
+        private apiService: SBOService,
+        private utils: FuseUtilsService,
     ) {}
 
     ngOnInit(): void {
@@ -182,15 +184,6 @@ export class UboDetailComponent implements OnInit {
         this.expandedBene2Rows[index] = !this.expandedBene2Rows[index];
     }
 
-    humanizeCamelCase(text: string): string {
-        return text
-            .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space between lowercase and uppercase
-            .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2') // Handle consecutive uppercase letters
-            .replace(/\s+/g, ' ') // Remove extra spaces
-            .trim() // Remove leading/trailing spaces
-            .replace(/^./, (char) => char.toUpperCase()); // Capitalize the first letter
-    }
-
     getsboColumnsToDisplay(): string[] {
         return Object.keys(this.sboColumnsToDisplay);
     }
@@ -202,8 +195,8 @@ export class UboDetailComponent implements OnInit {
 
     getUboDetails(id: string): void {
         this.isLoading = true;
-        this.apiService.getSBOById(id).subscribe(
-            (response) => {
+        this.apiService.getSBOById(id).subscribe({
+            next: (response) => {
                 if (response && response.data) {
                     this.dataSource.data = [response.data]; // Convert object to array
                     this.beneficialOwnersThroughBen2DataSource.data =
@@ -211,14 +204,14 @@ export class UboDetailComponent implements OnInit {
                 } else {
                     this.dataSource.data = [];
                 }
-
-                this.isLoading = false;
             },
-            (error) => {
+            error: (error) => {
                 console.error('Error fetching SBO details:', error);
                 this.errorMessage = 'Failed to fetch SBO details.';
+            },
+            complete: () => {
                 this.isLoading = false;
-            }
-        );
+            },
+        });
     }
 }

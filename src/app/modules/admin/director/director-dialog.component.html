@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>Director Details</h1>
+<!-- <div mat-dialog-content> -->
+
+<form class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden" [formGroup]="DirectorDialogForm"
+    #DirectorDialogNGForm="ngForm">
+    <div class="flex">
+        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+            <mat-label>DIN or PAN</mat-label>
+            <input matInput [placeholder]="'Enter DIN or PAN'" [formControlName]="'id'">
+            <mat-hint>DIN or PAN</mat-hint>
+            <mat-error *ngIf="DirectorDialogForm.get('id').hasError('required')">
+                DIN or PAN is required
+            </mat-error>
+        </mat-form-field>
+    </div>
+</form>
+
+<!-- </div>  ADD Tool tip Suggestion-->
+<div mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+    <button mat-button cdkFocusInitial color="primary"
+        [disabled]="DirectorDialogForm.invalid" (click)="getDirectorDetails()">Proceed</button>
+</div>
+

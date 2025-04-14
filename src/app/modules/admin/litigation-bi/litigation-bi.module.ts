@@ -12,18 +12,26 @@ import { FuseAlertModule } from '@fuse/components/alert';
 import { FuseCardModule } from '@fuse/components/card';
 import { SharedModule } from 'app/shared/shared.module';
 import { MaterialManualModule } from 'material.component';
+import { LitigationBiDetailComponent } from './litigation-bi-detail/litigation-bi-detail.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 
 const litigationBiRoutes: Route[] = [
   {
-    path: 'litigation-bi-list',
+    path: 'litigation-bi',
     component: LitigationBiComponent
+  },
+  {
+    path: 'litigation-bi/:id',
+    component: LitigationBiDetailComponent
   }
 ];
 
 @NgModule({
   declarations: [
     LitigationBiComponent,
-    LitigationBiAddDataComponent
+    LitigationBiAddDataComponent,
+    LitigationBiDetailComponent
   ],
   imports: [
     CommonModule,

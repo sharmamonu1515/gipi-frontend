@@ -1,0 +1,84 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div
+        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">Logs</div>
+        <!-- Actions -->
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <!-- Search -->
+            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64">
+                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
+                    [placeholder]="'Search...'">
+            </mat-form-field>
+            <!-- Add product button -->
+            <!-- <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createProduct()">
+                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                <span class="ml-2 mr-1">Add</span>
+            </button> -->
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <!-- Title -->
+        <!-- <div class="text-4xl font-extrabold tracking-tight">GST DETAILS </div> -->
+        <!-- CONTENT GOES HERE -->
+        <div class="">
+
+            <div class="example-container mat-elevation-z8">
+                <div class="example-loading-shade" *ngIf="isLoadingResults">
+                    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+                </div>
+
+                <div class="example-table-container">
+
+                    <table mat-table [dataSource]="dataSource" class="example-table" matSort matSortActive="created"
+                        matSortDisableClear matSortDirection="desc" class="w-100">
+
+                        <ng-container matColumnDef="userId">
+                            <th mat-header-cell *matHeaderCellDef > User ID </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.userId }} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="apiType">
+                            <th mat-header-cell *matHeaderCellDef > API </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.apiType }} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="responseTime">
+                            <th mat-header-cell *matHeaderCellDef >Response Time (in seconds) </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.responseTime / 1000 | number:'1.2-2' }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="dateTime">
+                            <th mat-header-cell *matHeaderCellDef > Date & Time </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.dateTime | date:'MMM d, y h:mm a' }} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="mode">
+                            <th mat-header-cell *matHeaderCellDef >Mode </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.mode | titlecase }} </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </div>
+
+                <mat-paginator
+                    [length]="resultsLength"
+                    [pageSize]="pageSize"
+                    [pageSizeOptions]="[10, 20, 50]"
+                    (page)="onPageChange($event)">
+                </mat-paginator>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

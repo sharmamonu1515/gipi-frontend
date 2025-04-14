@@ -12,6 +12,7 @@ import { MatSort } from '@angular/material/sort';
 import { SBOService } from './sbo.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-sbo',
@@ -36,10 +37,7 @@ export class SBOComponent implements OnInit {
     resultsLength: number = 0;
     pageSize: number = 20;
 
-    constructor(
-        public dialog: MatDialog,
-        private apiService: SBOService
-    ) {}
+    constructor(public dialog: MatDialog, private apiService: SBOService) {}
 
     ngOnInit(): void {
         this.fetchSBOData();
@@ -61,10 +59,7 @@ export class SBOComponent implements OnInit {
                 exitAnimationDuration,
                 disableClose: true,
             })
-            .afterClosed()
-            .subscribe((result) => {
-                window.location.reload();
-            });
+            .afterClosed();
     }
 
     fetchSBOData(
@@ -91,11 +86,11 @@ export class SBOComponent implements OnInit {
     }
 
     applyFilter(filterValue: string): void {
-      const trimmedValue = filterValue.trim();
-      if (trimmedValue.length > 3) {
-          this.fetchSBOData(1, this.pageSize, trimmedValue);
-      }
-  }
+        const trimmedValue = filterValue.trim();
+        if (trimmedValue.length > 3 || trimmedValue.length === 0) {
+            this.fetchSBOData(1, this.pageSize, trimmedValue);
+        }
+    }
 }
 
 // ADD Litigation BI Details By CIN //
@@ -113,7 +108,8 @@ export class SBODialogComponent implements OnInit {
         public dialogRef: MatDialogRef<SBODialogComponent>,
         private _formBuilder: UntypedFormBuilder,
         private apiService: SBOService,
-        private _snackBar: MatSnackBar
+        private _snackBar: MatSnackBar,
+        private router: Router,
     ) {}
 
     ngOnInit(): void {
@@ -132,25 +128,29 @@ export class SBODialogComponent implements OnInit {
 
     getSBODetails(): void {
         this.apiService
-            .getSBODetails(
-                this.SBODialogForm.get('companyId').value
-            )
-            .subscribe(
-                (response) => {
+            .getSBODetails(this.SBODialogForm.get('companyId').value)
+            .subscribe({
+                next: (response) => {
                     this._snackBar.open(response.message, 'Close', {
                         horizontalPosition: 'center',
                         verticalPosition: 'top',
                         panelClass: ['mat-toolbar', 'mat-primary'],
                     });
-                    this.dialogRef.close(true); // Pass true to indicate data was fetched
+
+                    this.router.navigate([
+                        '/sbo/sbo',
+                        response.data.entityId,
+                    ]);
+
+                    this.dialogRef.close(true);
                 },
-                (error) => {
+                error: (error) => {
                     this._snackBar.open(error.message, 'Close', {
                         horizontalPosition: 'center',
                         verticalPosition: 'top',
                         panelClass: ['mat-toolbar', 'mat-warn'],
                     });
-                }
-            );
+                },
+            });
     }
 }

@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>AML Sanctions Screening</h1>
+<!-- <div mat-dialog-content> -->
+
+<form class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden" [formGroup]="AMLDialogForm"
+    #AMLDialogNGForm="ngForm">
+    <div class="flex">
+        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+            <mat-label>Name</mat-label>
+            <input matInput [placeholder]="'Enter Name'" [formControlName]="'name'">
+            <mat-hint>Name</mat-hint>
+            <mat-error *ngIf="AMLDialogForm.get('name').hasError('required')">
+                Name is required
+            </mat-error>
+        </mat-form-field>
+    </div>
+</form>
+
+<!-- </div>  ADD Tool tip Suggestion-->
+<div mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+    <button mat-button cdkFocusInitial color="primary"
+        [disabled]="AMLDialogForm.invalid" (click)="getAMLDetails()">Proceed</button>
+</div>
+

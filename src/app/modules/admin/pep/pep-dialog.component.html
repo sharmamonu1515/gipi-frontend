@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>PEP Details</h1>
+<!-- <div mat-dialog-content> -->
+
+<form class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden" [formGroup]="PEPDialogForm"
+    #PEPDialogNGForm="ngForm">
+    <div class="flex">
+        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+            <mat-label>Name</mat-label>
+            <input matInput [placeholder]="'Enter Name'" [formControlName]="'name'">
+            <mat-hint>Name</mat-hint>
+            <mat-error *ngIf="PEPDialogForm.get('name').hasError('required')">
+                Name is required
+            </mat-error>
+        </mat-form-field>
+    </div>
+</form>
+
+<!-- </div>  ADD Tool tip Suggestion-->
+<div mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+    <button mat-button cdkFocusInitial color="primary"
+        [disabled]="PEPDialogForm.invalid" (click)="getPEPDetails()">Proceed</button>
+</div>
+

@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { EntitySearchService } from './entity-search.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
@@ -20,15 +20,14 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class EntitySearchComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatSort) sort: MatSort;
 
     displayedColumns: string[] = [
         'entityId',
         'name',
-        'totalCases',
+        'pans',
+        'createdAt',
         'status',
         'location',
-        'actions',
     ];
     dataSource = new MatTableDataSource<any>([]);
 
@@ -63,29 +62,27 @@ export class EntitySearchComponent implements OnInit {
                 exitAnimationDuration,
                 disableClose: true,
             })
-            .afterClosed()
-            .subscribe((result) => {
-                window.location.reload();
-            });
+            .afterClosed();
     }
 
     fetchEntityData(
         page: number = 1,
         limit: number = 20,
-        search: string = ''
+        search: string = '',
     ): void {
         this.isLoadingResults = true;
-        this.apiService.getAllEntities(page, limit, search.trim()).subscribe(
-            (response) => {
+        this.apiService.getAllEntities(page, limit, search.trim()).subscribe({
+            next: (response) => {
                 this.dataSource.data = response.data.companies; // Update table data
                 this.resultsLength = response.data.pagination.totalRecords; // Set total records count
-                this.isLoadingResults = false;
             },
-            (error) => {
+            error: (error) => {
                 console.error('Error fetching entity data:', error);
+            },
+            complete: () => {
                 this.isLoadingResults = false;
             }
-        );
+        });
     }
 
     onPageChange(event: PageEvent): void {
@@ -94,7 +91,7 @@ export class EntitySearchComponent implements OnInit {
 
     applyFilter(filterValue: string): void {
       const trimmedValue = filterValue.trim();
-      if (trimmedValue.length > 3) {
+      if (trimmedValue.length > 3 || trimmedValue.length === 0) {
           this.fetchEntityData(1, this.pageSize, trimmedValue);
       }
   }
@@ -144,7 +141,9 @@ export class EntitySearchDialogComponent implements OnInit {
                         verticalPosition: 'top',
                         panelClass: ['mat-toolbar', 'mat-primary'],
                     });
-                    this.dialogRef.close(true); // Pass true to indicate data was fetched
+                    this.dialogRef.close(true);
+
+                    window.location.reload();
                 },
                 (error) => {
                     this._snackBar.open(error.message, 'Close', {

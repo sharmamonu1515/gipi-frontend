@@ -13,6 +13,8 @@ import { FuturisticLayoutModule } from 'app/layout/layouts/vertical/futuristic/f
 import { ThinLayoutModule } from 'app/layout/layouts/vertical/thin/thin.module';
 import { SettingsModule } from 'app/layout/common/settings/settings.module';
 import { SharedModule } from 'app/shared/shared.module';
+import { TablePopupComponent } from './common/table-popup/table-popup.component';
+import { TablePopupModule } from './common/table-popup/table-popup.module';
 
 const layoutModules = [
     // Empty
@@ -40,6 +42,7 @@ const layoutModules = [
     imports     : [
         SharedModule,
         SettingsModule,
+        TablePopupModule,
         ...layoutModules
     ],
     exports     : [

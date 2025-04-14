@@ -12,6 +12,7 @@ import { MatSort } from '@angular/material/sort';
 import { UBOService } from './ubo.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-ubo',
@@ -38,10 +39,7 @@ export class UBOComponent implements OnInit {
     resultsLength: number = 0;
     pageSize: number = 20;
 
-    constructor(
-        public dialog: MatDialog,
-        private apiService: UBOService
-    ) {}
+    constructor(public dialog: MatDialog, private apiService: UBOService) {}
 
     ngOnInit(): void {
         this.fetchUBOData();
@@ -63,10 +61,7 @@ export class UBOComponent implements OnInit {
                 exitAnimationDuration,
                 disableClose: true,
             })
-            .afterClosed()
-            .subscribe((result) => {
-                window.location.reload();
-            });
+            .afterClosed();
     }
 
     fetchUBOData(
@@ -75,17 +70,18 @@ export class UBOComponent implements OnInit {
         search: string = ''
     ): void {
         this.isLoadingResults = true;
-        this.apiService.getAllUBOs(page, limit, search.trim()).subscribe(
-            (response) => {
+        this.apiService.getAllUBOs(page, limit, search.trim()).subscribe({
+            next: (response) => {
                 this.dataSource.data = response.data.ubos; // Update table data
                 this.resultsLength = response.data.pagination.totalRecords; // Set total records count
+            },
+            error: (error) => {
+                console.error('Error fetching entity data:', error);
+            },
+            complete: () => {
                 this.isLoadingResults = false;
             },
-            (error) => {
-                console.error('Error fetching entity data:', error);
-                this.isLoadingResults = false;
-            }
-        );
+        });
     }
 
     onPageChange(event: PageEvent): void {
@@ -93,11 +89,11 @@ export class UBOComponent implements OnInit {
     }
 
     applyFilter(filterValue: string): void {
-      const trimmedValue = filterValue.trim();
-      if (trimmedValue.length > 3) {
-          this.fetchUBOData(1, this.pageSize, trimmedValue);
-      }
-  }
+        const trimmedValue = filterValue.trim();
+        if (trimmedValue.length > 3 || trimmedValue.length === 0) {
+            this.fetchUBOData(1, this.pageSize, trimmedValue);
+        }
+    }
 }
 
 // ADD Litigation BI Details By CIN //
@@ -115,7 +111,8 @@ export class UBODialogComponent implements OnInit {
         public dialogRef: MatDialogRef<UBODialogComponent>,
         private _formBuilder: UntypedFormBuilder,
         private apiService: UBOService,
-        private _snackBar: MatSnackBar
+        private _snackBar: MatSnackBar,
+        private router: Router,
     ) {}
 
     ngOnInit(): void {
@@ -134,25 +131,29 @@ export class UBODialogComponent implements OnInit {
 
     getUBODetails(): void {
         this.apiService
-            .getUBODetails(
-                this.UBODialogForm.get('companyId').value
-            )
-            .subscribe(
-                (response) => {
+            .getUBODetails(this.UBODialogForm.get('companyId').value)
+            .subscribe({
+                next: (response) => {
                     this._snackBar.open(response.message, 'Close', {
                         horizontalPosition: 'center',
                         verticalPosition: 'top',
                         panelClass: ['mat-toolbar', 'mat-primary'],
                     });
+
+                    this.router.navigate([
+                        '/ubo/ubo',
+                        response.data.entityId,
+                    ]);
+
                     this.dialogRef.close(true); // Pass true to indicate data was fetched
                 },
-                (error) => {
+                error: (error) => {
                     this._snackBar.open(error.message, 'Close', {
                         horizontalPosition: 'center',
                         verticalPosition: 'top',
                         panelClass: ['mat-toolbar', 'mat-warn'],
                     });
-                }
-            );
+                },
+            });
     }
 }

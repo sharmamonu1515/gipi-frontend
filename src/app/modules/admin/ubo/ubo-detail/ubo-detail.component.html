@@ -75,7 +75,7 @@
                         <table class="mat-table cdk-table mat-sort w-100">
                             <tbody>
                                 <tr *ngFor="let col of getBene2ColumnsToDisplay()">
-                                    <th class="mat-header-cell cdk-header-cell">{{ humanizeCamelCase(col) }}</th>
+                                    <th class="mat-header-cell cdk-header-cell">{{ utils.humanizeCamelCase(col) }}</th>
                                     <td class="mat-cell cdk-cell">{{ getBene2ColumnValue(beneData, col) }}</td>
                                 </tr>
                             </tbody>
@@ -89,7 +89,7 @@
                             matSortDisableClear matSortDirection="desc" class="w-100">
 
                                 <ng-container *ngFor="let column of bene2TeamMemberDisplayedColumns" [matColumnDef]="column">
-                                    <th mat-header-cell *matHeaderCellDef> {{ humanizeCamelCase(column) }} </th>
+                                    <th mat-header-cell *matHeaderCellDef> {{ utils.humanizeCamelCase(column) }} </th>
                                     <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
                                 </ng-container>
 
@@ -108,7 +108,7 @@
                         matSortDisableClear matSortDirection="desc" class="w-100">
     
                             <ng-container *ngFor="let column of individualShareholdersDisplayedColumns" [matColumnDef]="column">
-                                <th mat-header-cell *matHeaderCellDef> {{ humanizeCamelCase(column) }} </th>
+                                <th mat-header-cell *matHeaderCellDef> {{ utils.humanizeCamelCase(column) }} </th>
                                 <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
                             </ng-container>
     
@@ -126,7 +126,7 @@
                         matSortDisableClear matSortDirection="desc" class="w-100">
     
                             <ng-container *ngFor="let column of companyShareholdersDisplayedColumns" [matColumnDef]="column">
-                                <th mat-header-cell *matHeaderCellDef> {{ humanizeCamelCase(column) }} </th>
+                                <th mat-header-cell *matHeaderCellDef> {{ utils.humanizeCamelCase(column) }} </th>
                                 <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
                             </ng-container>
     

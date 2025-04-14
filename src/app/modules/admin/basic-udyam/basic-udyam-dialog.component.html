@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Search Basic Udyam Detail</h1>
+
+<form [formGroup]="basicUdyamForm" class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden">
+    <mat-form-field appearance="fill">
+        <mat-label>Entity ID</mat-label>
+        <input matInput formControlName="entityId" placeholder="Enter Entity ID">
+        <mat-error *ngIf="basicUdyamForm.get('entityId').hasError('required')">
+            Entity ID is required
+        </mat-error>
+    </mat-form-field>
+</form>
+
+<div mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-button color="primary" (click)="onSubmit()" [disabled]="basicUdyamForm.invalid">Search</button>
+</div>

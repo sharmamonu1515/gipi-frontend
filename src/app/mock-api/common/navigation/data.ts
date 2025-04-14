@@ -61,19 +61,11 @@ export const defaultNavigation: FuseNavigationItem[] = [
         icon : 'api',
         link : '/gipi/gipi-api',
         disabled: isDisabled()
-    },
-    {
-        id   : 'litigation_bi_api',
-        title: 'Litigation BI',
-        type : 'basic',
-        icon : 'api',
-        link : '/litigation-bi/litigation-bi-list',
-        disabled: isDisabled()
     },{
         id   : 'sanction_list',
         title: 'SANCTION SEARCH',
         type : 'basic',
-        icon : 'api',
+        icon : 'search',
         link : '/sanctions/sanction-list',
         disabled: isDisabled()
     }
@@ -81,16 +73,121 @@ export const defaultNavigation: FuseNavigationItem[] = [
         id   : 'sanction_uploader',
         title: 'SANCTIONS UPLOADER',
         type : 'basic',
-        icon : 'api',
+        icon : 'cloud_upload',
         link : '/sanctions/sanction-uploader',
         disabled: isDisabled()
     },{
         id   : 'file_manager',
         title: 'FILE MANAGER',
         type : 'basic',
-        icon : 'api',
+        icon : 'list',
         link : '/files/file-manager',
         disabled: isDisabled()
+    },
+    {
+        id   : 'karza',
+        title: 'Karza',
+        type : 'collapsable',
+        icon : 'api',
+        disabled: isDisabled(),
+        children: [
+            {
+                id : 'entity',
+                title: 'Entity',
+                type : 'basic',
+                icon : 'add_business',
+                link : '/entity/search',
+                disabled: isDisabled(),
+            },
+            {
+                id : 'litigation_bi',
+                title: 'Litigation BI',
+                type : 'basic',
+                icon : 'business_center',
+                link : '/litigation-bi/litigation-bi',
+                disabled: isDisabled(),
+            },
+            {
+                id : 'litigation_bi_settings',
+                title: 'Litigation BI Settings',
+                type : 'basic',
+                icon : 'settings',
+                link : '/karza-settings',
+                disabled: isDisabled(),
+            },
+            {
+                id : 'ubo',
+                title: 'Ultimate Beneficial Owner Identification',
+                type : 'basic',
+                icon : 'account_circle',
+                link : '/ubo/ubo',
+                disabled: isDisabled(),
+            },
+            {
+                id : 'sbo',
+                title: 'Significant Beneficial Ownership',
+                type : 'basic',
+                icon : 'verified_user',
+                link : '/sbo/sbo',
+                disabled: isDisabled(),
+            },
+            {
+                id : 'director_details',
+                title: 'Director Details',
+                type : 'basic',
+                icon : 'admin_panel_settings',
+                link : '/director/director',
+                disabled: isDisabled(),
+            },
+            {
+                id : 'peer_comparison',
+                title: 'Peer Comparison',
+                type : 'basic',
+                icon : 'compare',
+                link : '/peer-comparison/peer-comparison',
+                disabled: isDisabled(),
+            },
+            {
+                id : 'basic_udyam_details',
+                title: 'Basic Udyam Details',
+                type : 'basic',
+                icon : 'details',
+                link : '/basic-udyam/basic-udyam',
+                disabled: isDisabled(),
+            },
+            {
+                id : 'financial_summary_llp',
+                title: 'Financial Summary LLP',
+                type : 'basic',
+                icon : 'payments',
+                link : '/llp/llp',
+                disabled: isDisabled(),
+            },
+            {
+                id : 'pep',
+                title: 'PEP Details',
+                type : 'basic',
+                icon : 'policy',
+                link : '/pep/pep',
+                disabled: isDisabled(),
+            },
+            {
+                id : 'aml',
+                title: 'AML Sanctions Screenings',
+                type : 'basic',
+                icon : 'web',
+                link : '/aml/aml',
+                disabled: isDisabled(),
+            },
+            {
+                id : 'logs',
+                title: 'Logs',
+                type : 'basic',
+                icon : 'visibility',
+                link : '/karza-logs',
+                disabled: isDisabled(),
+            }
+        ]
     }
 ];
 export const compactNavigation: FuseNavigationItem[] = [

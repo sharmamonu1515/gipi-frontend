@@ -1,0 +1,64 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Loading Overlay -->
+    <div *ngIf="isLoading" class="fixed inset-0 bg-black bg-opacity-10 flex items-center justify-center z-50">
+        <mat-spinner></mat-spinner>
+    </div>
+
+    <!-- Header -->
+    <div 
+        class="relative bg-white flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-center py-8 px-6 md:px-8 border-b"
+        *ngIf="dataSource.data[0]">
+        
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">PEP Details ({{ dataSource.data[0].name }})</div>
+        <!-- Actions -->
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10" *ngIf="dataSource.data[0]">
+        <div class="example-container">
+
+            <div class="example-table-container my-4" *ngFor="let dataKey of dataKeysToShow">
+                <div class="text-4xl font-extrabold tracking-tight">{{ utils.humanizeCamelCase(dataKey) }}</div>
+
+                <div class="table-responsive">
+                    <table class="mat-table cdk-table mat-sort w-100">
+                        <thead>
+                            <tr>
+                                <th class="mat-header-cell cdk-header-cell" *ngFor="let col of getObjectKeys(dataKey)">
+                                    {{ utils.humanizeCamelCase(col) }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of dataSource.data[0][dataKey]; let i = index;">
+                                <td class="mat-cell cdk-cell" *ngFor="let col of getObjectKeys(dataKey)">
+                                    <ng-container *ngIf="utils.isLink(getColumnValue(data, col)); else checkNested">
+                                        <a [href]="getColumnValue(data, col)" download target="_blank" rel="noopener noreferrer">
+                                        Download
+                                        </a>
+                                    </ng-container>
+                                    
+                                    <ng-template #checkNested>
+                                        <ng-container *ngIf="utils.isNested(getColumnValue(data, col)); else normalText">
+                                        <a href="javascript:void(0);" (click)="openDialog(getColumnValue(data, col))">View</a>
+                                        </ng-container>
+                                    </ng-template>
+                                    
+                                    <ng-template #normalText>
+                                        {{ getColumnValue(data, col) }}
+                                    </ng-template>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+        
+            </div>
+
+        </div>
+    </div>
+</div>

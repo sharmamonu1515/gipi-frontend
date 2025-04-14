@@ -1,0 +1,23 @@
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    white-space: nowrap;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+}
+
+th.mat-header-cell,
+td.mat-cell {
+    padding: 8px 12px;
+    text-align: left;
+    border: 1px solid #ccc;
+}
+
+th {
+    background: #f5f5f5;
+    font-weight: bold;
+}

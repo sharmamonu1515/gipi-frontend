@@ -93,6 +93,15 @@ export const appRoutes: Route[] = [
             {path: 'entity', loadChildren: () => import('app/modules/admin/entity-search/entity-search.module').then(m => m.EntitySearchModule)},
             {path: 'ubo', loadChildren: () => import('app/modules/admin/ubo/ubo.module').then(m => m.UBOModule)},
             {path: 'sbo', loadChildren: () => import('app/modules/admin/sbo/sbo.module').then(m => m.SBOModule)},
+            {path: 'pep', loadChildren: () => import('app/modules/admin/pep/pep.module').then(m => m.PEPModule)},
+            {path: 'aml', loadChildren: () => import('app/modules/admin/aml/aml.module').then(m => m.AMLModule)},
+            {path: 'director', loadChildren: () => import('app/modules/admin/director/director.module').then(m => m.DirectorModule)},
+            {path: 'peer-comparison', loadChildren: () => import('app/modules/admin/peer-comparison/peer-comparison.module').then(m => m.PeerComparisonModule)},
+            {path: 'llp', loadChildren: () => import('app/modules/admin/llp/llp.module').then(m => m.LLPModule)},
+            {path: 'basic-udyam', loadChildren: () => import('app/modules/admin/basic-udyam/basic-udyam.module').then(m => m.BasicUdyamModule)},
+            {path: 'karza-settings', loadChildren: () => import('app/modules/admin/karza-settings/karza-settings.module').then(m => m.KarzaSettingsModule)},
+            {path: 'karza-logs', loadChildren: () => import('app/modules/admin/karza-logs/karza-logs.module').then(m => m.KarzaLogsModule)},
         ]
     }
 ];
+ 

@@ -17,7 +17,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgbActiveModal, NgbModule, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import { SanctionDetailsComponent } from './modules/admin/sanction-details/sanction-details.component';
 import { ProgressBarModule } from 'angular-progress-bar';
-// import { LitigationBiComponent } from './modules/admin/litigation-bi/litigation-bi.component';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy       : PreloadAllModules,
@@ -28,7 +27,6 @@ const routerConfig: ExtraOptions = {
     declarations: [
         AppComponent,
         SanctionDetailsComponent,
-        // LitigationBiComponent
     ],
     imports     : [
         BrowserModule,

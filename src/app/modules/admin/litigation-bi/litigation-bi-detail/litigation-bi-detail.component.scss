@@ -1,0 +1,58 @@
+.table-responsive {
+    width: 100%;
+    overflow-x: auto; /* Enables horizontal scrolling */
+}
+
+table {
+    width: 100%;
+    white-space: nowrap; /* Prevents text wrapping */
+    border-collapse: collapse; /* Ensures clean borders */
+    border: 1px solid #ccc; /* Outer border */
+}
+
+th.mat-header-cell,
+td.mat-cell {
+    padding: 8px 12px !important;
+    text-align: left;
+    border: 1px solid #ccc; /* Borders for all cells */
+}
+
+th {
+    background: #f5f5f5; /* Light background for headers */
+    font-weight: bold;
+}
+
+tr.example-element-row {
+    cursor: pointer;
+}
+
+.example-element-row td {
+    border-bottom-width: 0;
+}
+
+.example-element-detail-wrapper {
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 0fr;
+    grid-template-columns: 100%;
+    transition: grid-template-rows 225ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.example-element-symbol {
+    font-weight: bold;
+    font-size: 40px;
+    line-height: normal;
+}
+
+.custom-tabs {
+    margin-bottom: 20px;
+}
+
+.custom-tabs .mat-tab-body-wrapper {
+    display: none !important;
+}
+
+.mat-tab-group .mat-tab-header .mat-tab-label-container .mat-tab-list .mat-tab-labels .mat-tab-label.mat-tab-label-active {
+    background: #e0f2fe !important;
+    border: 1px solid #0184c7;
+}

@@ -1,24 +1,45 @@
-<h1 mat-dialog-title>Enter CIN Number</h1>
+<h1 mat-dialog-title>Litigation BI</h1>
 <!-- <div mat-dialog-content> -->
 
-<form class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden" [formGroup]="litigationBiDetailsByCinForm"
-    #litigationBiDetailsByCinNgForm="ngForm">
+<form [formGroup]="litigationBiDetailsByCinForm" (ngSubmit)="submitLitigationBiDetails()">
+
     <div class="flex">
-        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
-            <mat-label>CIN Number</mat-label>
-            <input matInput [placeholder]="'Enter CIN Number'" [formControlName]="'companyId'">
-            <mat-hint>CIN Number</mat-hint>
-            <mat-error *ngIf="litigationBiDetailsByCinForm.get('companyId').hasError('required')">
-                CIN number is required
-            </mat-error>
+        <mat-form-field appearance="outline" class="full-width flex-auto">
+            <mat-label>Search Entity by Name, CIN, LLPIN, PAN, etc.</mat-label>
+            <input type="text" matInput formControlName="entityName" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCompanySelected($event)">
+                <mat-option *ngFor="let company of filteredCompanies$ | async" [value]="company.primaryName" [attr.data-id]="company.entityId" [attr.data-kid]="company.kid">
+                    {{ company.primaryName }}{{ company.entityId ? ' (' + company.entityId + ')' : '' }}
+                </mat-option>
+            </mat-autocomplete>
         </mat-form-field>
     </div>
+
+    <!-- Entity Relation Dropdown -->
+    <div class="flex mt-4">
+        <mat-form-field class="flex-auto">
+            <mat-label>Entity Relation</mat-label>
+            <mat-select formControlName="entityRelation">
+                <mat-option value="b">Both</mat-option>
+                <mat-option value="p">Petitioner</mat-option>
+                <mat-option value="r">Respondent</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <!-- Fuzzy Latest Data Toggle -->
+    <div class="flex items-center gap-5 mt-4">
+        <mat-slide-toggle formControlName="fuzzy">Fuzzy</mat-slide-toggle>
+        <mat-slide-toggle formControlName="latestData">Latest Data</mat-slide-toggle>
+    </div>
+
 </form>
+
 
 <!-- </div>  ADD Tool tip Suggestion-->
 <div mat-dialog-actions>
     <button mat-button mat-dialog-close>Close</button>
-    <button mat-button cdkFocusInitial color="primary"
-        [disabled]="litigationBiDetailsByCinForm.invalid" (click)="submitLitigationBiDetails()">Proceed</button>
+    <button mat-button cdkFocusInitial color="primary" 
+        [disabled]="litigationBiDetailsByCinForm.invalid || isSubmitting"
+        (click)="submitLitigationBiDetails()">Proceed</button>
 </div>
-

@@ -1,0 +1,71 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">Karza Settings</div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10 w-full sm:w-1/2">
+        <form [formGroup]="karzaSettingsForm" (ngSubmit)="saveSettings()" class="p-4 bg-white rounded shadow">
+            <!-- Test Mode Toggle -->
+             <div class="mb-3">
+                <mat-slide-toggle formControlName="testMode">Test Mode</mat-slide-toggle>
+             </div>
+        
+            <!-- Test Username -->
+            <mat-form-field appearance="fill" class="w-full">
+                <mat-label>Test Username</mat-label>
+                <input matInput formControlName="testUsername" type="text" placeholder="Enter Test Username">
+            </mat-form-field>
+        
+            <!-- Test Password -->
+            <mat-form-field appearance="fill" class="w-full">
+                <mat-label>Test Password</mat-label>
+                <input matInput [type]="hideTest ? 'password' : 'text'" formControlName="testPassword" placeholder="Enter Test Password">
+                <button mat-icon-button matSuffix (click)="hideTest = !hideTest" type="button">
+                    <mat-icon>{{ hideTest ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <!-- Test API Key -->
+            <mat-form-field appearance="fill" class="w-full">
+                <mat-label>Test API Key</mat-label>
+                <input matInput [type]="hideTestApiKey ? 'password' : 'text'" formControlName="testApiKey" placeholder="Enter Test API Key">
+                <button mat-icon-button matSuffix (click)="hideTestApiKey = !hideTestApiKey" type="button">
+                    <mat-icon>{{ hideTestApiKey ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+            </mat-form-field>
+        
+            <!-- Live Username -->
+            <mat-form-field appearance="fill" class="w-full">
+                <mat-label>Live Username</mat-label>
+                <input matInput formControlName="liveUsername" type="text" placeholder="Enter Live Username">
+            </mat-form-field>
+        
+            <!-- Live Password -->
+            <mat-form-field appearance="fill" class="w-full">
+                <mat-label>Live Password</mat-label>
+                <input matInput [type]="hideLive ? 'password' : 'text'" formControlName="livePassword" placeholder="Enter Live Password">
+                <button mat-icon-button matSuffix (click)="hideLive = !hideLive" type="button">
+                    <mat-icon>{{ hideLive ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <!-- Live API Key -->
+            <mat-form-field appearance="fill" class="w-full">
+                <mat-label>Live API Key</mat-label>
+                <input matInput [type]="hideLiveApiKey ? 'password' : 'text'" formControlName="liveApiKey" placeholder="Enter Live API Key">
+                <button mat-icon-button matSuffix (click)="hideLiveApiKey = !hideLiveApiKey" type="button">
+                    <mat-icon>{{ hideLiveApiKey ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+            </mat-form-field>
+        
+            <!-- Save Button -->
+            <button mat-button type="submit" color="primary" [disabled]="karzaSettingsForm.invalid">
+                Save
+            </button>
+        </form>
+    </div>
+</div>
