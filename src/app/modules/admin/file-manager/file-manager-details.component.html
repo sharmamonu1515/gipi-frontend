@@ -48,6 +48,23 @@
         </div> -->
     </div>
 
+    <!-- Expiry Time in Hours -->
+    <div class="mt-8">
+        <div class="text-lg font-medium mb-2">Expiry Time in Hours</div>
+        <div class="flex items-center">
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Expiry Time (hours)</mat-label>
+                <input 
+                    matInput 
+                    type="number" 
+                    min="1" 
+                    [(ngModel)]="expiryTimeHours" 
+                    (blur)="validateExpiryTime()">
+                <mat-error *ngIf="expiryTimeInvalid">Expiry time must be at least 1 hour</mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+
     <!-- Actions -->
     <div class="grid grid-cols-3 gap-4 w-full mt-8">
         <!-- <button
@@ -99,10 +116,10 @@
                             Copy
                         </button>
                     </div>
-                     <!-- 🕒 Expiry Info -->
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                    ⚠️ Link expires in 1 hour
-                </p>
+                     <!-- Expiry Info -->
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                        ⚠️ Link expires in {{expiryTimeHours}} hour(s)
+                    </p>
                 </div>
                 
                 <button

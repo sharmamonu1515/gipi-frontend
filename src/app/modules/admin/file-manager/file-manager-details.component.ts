@@ -17,6 +17,10 @@ export class FileManagerDetailsComponent implements OnInit, OnDestroy {
   url: string = '';
   showSharePopup: boolean = false;
   shareableUrl: string = '';
+  
+  // Added for expiry time functionality
+  expiryTimeHours: number = 1; // Default value
+  expiryTimeInvalid: boolean = false;
 
   constructor(
     private _route: ActivatedRoute,
@@ -47,13 +51,34 @@ export class FileManagerDetailsComponent implements OnInit, OnDestroy {
         }
     });
   }
+
+  // Validate expiry time input
+  validateExpiryTime(): void {
+    if (this.expiryTimeHours < 1) {
+      this.expiryTimeHours = 1;
+      this.expiryTimeInvalid = true;
+    } else {
+      this.expiryTimeInvalid = false;
+    }
+  }
+
   shareFile(file: any): void {
     if (!file) return;
+    
+    // Validate expiry time before proceeding
+    this.validateExpiryTime();
+    if (this.expiryTimeInvalid) {
+      this._snackBar.open('Expiry time must be at least 1 hour', 'Close', { duration: 3000 });
+      return;
+    }
     
     const folderPath = file.folder ? file.folder.replace(/^\/|\/$/g, '') : '';
     const filePath = folderPath ? `${folderPath}/${file.name}.${file.type}` : `${file.name}.${file.type}`;
     
-    this._fileManagerService.getPreSignedURL(filePath, 3600).subscribe(
+    // Convert hours to seconds for the API
+    const expiryTimeSeconds = this.expiryTimeHours * 3600;
+    
+    this._fileManagerService.getPreSignedURL(filePath, expiryTimeSeconds).subscribe(
       (res) => {
         const awsUrl = new URL(res.data);
         const params = new URLSearchParams(awsUrl.search);
@@ -71,30 +96,7 @@ export class FileManagerDetailsComponent implements OnInit, OnDestroy {
         this._snackBar.open('Error generating share link', 'Close', { duration: 3000 });
       }
     );
-}
-//   shareFile(file: any): void {
-//     if (!file) return;
-    
-//     // Remove any leading/trailing slashes and construct the path
-//     const folderPath = file.folder ? file.folder.replace(/^\/|\/$/g, '') : '';
-//     const filePath = folderPath ? `${folderPath}/${file.name}.${file.type}` : `${file.name}.${file.type}`;
-    
-//     // Get the pre-signed URL to include in the share link
-//     this._fileManagerService.getPreSignedURL(filePath, 3600).subscribe(
-//       (res) => {
-//         // Get base URL
-//         const baseUrl = window.location.origin;
-        
-//         // Create a direct download URL through our application
-//         this.shareableUrl = `${baseUrl}/files/file-manager?fileName=${encodeURIComponent(file.name)}&fileType=${encodeURIComponent(file.type)}&folder=${encodeURIComponent(folderPath)}&shared=true&download=true`;
-        
-//         this.showSharePopup = true;
-//       },
-//       (error) => {
-//         this._snackBar.open('Error generating share link', 'Close', { duration: 3000 });
-//       }
-//     );
-// }
+  }
 
   copyShareUrl(inputEl: HTMLInputElement): void {
     inputEl.select();
