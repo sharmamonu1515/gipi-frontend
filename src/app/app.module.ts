@@ -17,6 +17,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgbActiveModal, NgbModule, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import { SanctionDetailsComponent } from './modules/admin/sanction-details/sanction-details.component';
 import { ProgressBarModule } from 'angular-progress-bar';
+import { FileShareHandlerComponent } from './components/file-share-handler/file-share-handler.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy       : PreloadAllModules,
@@ -27,8 +29,10 @@ const routerConfig: ExtraOptions = {
     declarations: [
         AppComponent,
         SanctionDetailsComponent,
+        FileShareHandlerComponent,
     ],
     imports     : [
+        MatSnackBarModule,
         BrowserModule,
         BrowserAnimationsModule,
         RouterModule.forRoot(appRoutes, routerConfig),

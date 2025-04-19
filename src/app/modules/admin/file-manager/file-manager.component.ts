@@ -1,12 +1,13 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ChangeDetectorRef, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FileDetailComponent } from './file-detail.component';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup } from '@angular/forms';
 import { FileManagerService } from './file-manager.service';
 import { FileUploaderComponent } from './file-uploader.component';
 import { FileListComponent } from './file-list.component';
-import { NavigationExtras, Router } from '@angular/router';
+import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-file-manager',
@@ -17,48 +18,142 @@ export class FileManagerComponent implements OnInit {
     folders: Array<any> = [];
     files: Array<any> = [];
     folderObj: any = {};
+    
+    @ViewChild('matDrawer') matDrawer: any;
+    drawerMode: 'over' = 'over'; // Always use 'over' mode
+    drawerOpened = false;
 
-    gstByPanForm: FormGroup;
     constructor(
+        private _activatedRoute: ActivatedRoute,
         public dialog: MatDialog,
         public FileService: FileManagerService,
         private _router: Router,
-        private _fuseConfirmationService:FuseConfirmationService
+        private _route: ActivatedRoute,
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _fuseConfirmationService: FuseConfirmationService,
+        private _snackBar: MatSnackBar
     ) {
-
-        FileService.getBucketObjectList('',20).subscribe((res) => {
+        FileService.getBucketObjectList('', 20).subscribe((res) => {
             this.processFilesAndFolders(res.data);
-            console.log(this.folders);
         });
     }
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        // Check if this is a shared download link
+        if (this._route.snapshot.queryParamMap.has('download') && 
+            this._route.snapshot.queryParamMap.has('fileName') && 
+            this._route.snapshot.queryParamMap.has('fileType') && 
+            this._route.snapshot.queryParamMap.has('folder')) {
+          
+            // Extract file information from URL parameters
+            const fileName = this._route.snapshot.queryParamMap.get('fileName');
+            const fileType = this._route.snapshot.queryParamMap.get('fileType');
+            const folder = this._route.snapshot.queryParamMap.get('folder');
+            
+            // Create file object
+            const file = {
+                name: fileName,
+                fileType: fileType,
+                type: fileType,
+                folder: folder
+            };
+            
+            // Download the file
+            this.downloadSharedFile(file);
+        }
+    }
 
-    openDialog(file: any): void {
-        this.dialog.open(FileDetailComponent, {
-            width: '33.33%',
-            // height: '68%',
-            enterAnimationDuration: '500ms',
-            exitAnimationDuration: '500ms',
-            disableClose: true,
-            data: {
-                file: file// Passing the file data to the dialog
+    downloadSharedFile(file: any): void {
+        if (!file) return;
+      
+        // Remove any leading/trailing slashes and construct the path
+        const folderPath = file.folder ? file.folder.replace(/^\/|\/$/g, '') : '';
+        const filePath = folderPath ? `${folderPath}/${file.name}.${file.type}` : `${file.name}.${file.type}`;
+        
+        this.FileService.getPreSignedURL(filePath, 3600).subscribe(
+            (res) => {
+                this.forceFileDownload(res.data, `${file.name}.${file.type}`);
             },
+            (error) => {
+                this._snackBar.open('Error downloading file', 'Close', { duration: 3000 });
+            }
+        );
+    }
+    private forceFileDownload(url: string, fileName: string): void {
+        // Ensure URL doesn't have double slashes
+        const cleanUrl = url.replace(/([^:]\/)\/+/g, '$1');
+        
+        fetch(cleanUrl)
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error('File not found');
+                    } else {
+                        throw new Error(`Network error: ${response.statusText}`);
+                    }
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                if (blob.size === 0) {
+                    throw new Error('Empty file received');
+                }
+                const blobUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(blobUrl);
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                console.error('Download error:', error);
+                this._snackBar.open(`Failed to download file: ${error.message}`, 'Close', { duration: 3000 });
+            });
+    }
+
+    onBackdropClicked(): void {
+        // Go back to the list
+        this._router.navigate(['./'], {relativeTo: this._activatedRoute});
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
+
+    handleSidebarClose(): void {
+        this.drawerOpened = false;
+        this.matDrawer.close();
+        this._router.navigate([{ outlets: { sidebar: null } }], {
+            relativeTo: this._route.parent,
+            queryParamsHandling: 'preserve'
         });
     }
+    
+    openDetails(file: any): void {
+        this._router.navigate([{ 
+            outlets: { 
+                sidebar: ['details', file.name] 
+            } 
+        }], { 
+            relativeTo: this._route.parent,
+            queryParams: {
+                type: file.type,
+                folder: file.folder
+            }
+        });
+        this.drawerOpened = true; // Set to true when opening
+        this.matDrawer.open();
+    }
+    
     openFolders(folder: any): void {
-      
         localStorage.setItem('folder', JSON.stringify(folder));
-        // const navigationExtras = {
-        //     queryParams: { folder: folder }
-        //   };
-      
         this._router.navigate(['/folders/folder-manager']);
-      }
+    }
+    
     fileUploader() {
         this.dialog.open(FileUploaderComponent, {
             width: '33.33%',
-            // height: '68%',
             enterAnimationDuration: '500ms',
             exitAnimationDuration: '500ms',
             disableClose: true,
@@ -66,30 +161,27 @@ export class FileManagerComponent implements OnInit {
         this.dialog.afterAllClosed.subscribe(() => {
             this.FileService.getBucketObjectList('', 20).subscribe(
               (res) => {
-                // Reset files and folders before reprocessing the data
                 this.files = [];
                 this.folders = [];
-                this.processFilesAndFolders(res.data); // Process the updated list
-                console.log("Folders:", this.folders, "Files:", this.files);
+                this.processFilesAndFolders(res.data);
               },
               (err) => {
                 console.error("Error retrieving bucket object list:", err);
               }
             );
-          });
-          
-
+        });
     }
+    
     viewAll(type) {
         this.dialog.open(FileListComponent, {
             width: '50%',
-            // height: '68%',
             enterAnimationDuration: '500ms',
             exitAnimationDuration: '500ms',
             disableClose: true,
-            data:{type}
+            data: {type}
         });
     }
+    
     getFileType(file) {
         const lastDotIndex = file.lastIndexOf('.');
 
@@ -170,7 +262,7 @@ export class FileManagerComponent implements OnInit {
                 const newFolder = {
                     name: part,
                     subfolders: [],
-                    folderPath:folderPath,
+                    folderPath: folderPath,
                     files: [],
                 };
                 currentFolder.push(newFolder);
@@ -192,6 +284,7 @@ export class FileManagerComponent implements OnInit {
             name: nameWithoutExtension, // Name without extension
             folder: folderPath, // Include folder path
             type: fileType, // File extension/type
+            fileType: fileType
         };
     
         // If there are no subfolders, it's the correct place to add the file
@@ -209,6 +302,7 @@ export class FileManagerComponent implements OnInit {
         // Add the file to the global file array
         this.files.push(fileWithDetails);
     }
+    
     deleteFile(file): void {
         const dialogRef = this._fuseConfirmationService.open({
           title: "Remove File",
@@ -260,21 +354,10 @@ export class FileManagerComponent implements OnInit {
             );
           }
         });
-      }
-      
-    // convertFoldersToArray(folders: any): Array<any> {
-    //   const folderArray: Array<any> = [];
-
-    //   for (const folder in folders) {
-    //     if (folders.hasOwnProperty(folder)) {
-    //       const folderData = folders[folder];
-    //       const subfolders = folderData.subfolders ? Object.keys(folderData.subfolders) : [];
-    //       const files = folderData.files || [];
-
-    //       folderArray.push({ name: folderName, subfolders, files });
-    //     }
-    //   }
-
-    //   return folderArray;
-    // }
+    }
+    
+    // Helper function for tracking ngFor loops
+    trackByFn(index: number, item: any): any {
+        return item.id || index;
+    }
 }

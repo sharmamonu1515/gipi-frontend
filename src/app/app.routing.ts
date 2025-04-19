@@ -3,6 +3,7 @@ import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
+import { FileShareHandlerComponent } from './components/file-share-handler/file-share-handler.component';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -63,7 +64,14 @@ export const appRoutes: Route[] = [
             {path: 'home', loadChildren: () => import('app/modules/landing/home/home.module').then(m => m.LandingHomeModule)},
         ]
     },
-
+    // {
+    //     path: 'file/share',
+    //     component: FileShareHandlerComponent,
+    //     data: { 
+    //       title: 'File Share',
+    //       animation: 'sharePage' 
+    //     }
+    //   },
     // Admin routes
     {
         path       : '',
@@ -74,6 +82,7 @@ export const appRoutes: Route[] = [
             initialData: InitialDataResolver,
         },
         children   : [
+            {path: 'file/share', component: FileShareHandlerComponent, data: { title: 'File Share', animation: 'sharePage' }},
             {path: 'mca', loadChildren: () => import('app/modules/admin/example/example.module').then(m => m.ExampleModule)},
             {path: 'mca-individual', loadChildren: () => import('app/modules/admin/mca-details/mca-details.module').then(m => m.McaDetailsModule)},
             {path: 'gst', loadChildren: () => import('app/modules/admin/gst/gst.module').then(m => m.GstModule)},
@@ -88,7 +97,15 @@ export const appRoutes: Route[] = [
             {path: 'custom-report', loadChildren: () => import('app/modules/admin/custom-report/custom-report.module').then(m => m.CustomReportModule)},
             {path: 'sanctions', loadChildren: () => import('app/modules/admin/sanctions/sanctions.module').then(m => m.SanctionsModule)},
             {path: 'sanctions', loadChildren: () => import('app/modules/admin/sanction-uploader/sanction-uploader.module').then(m => m.SanctionUploaderModule)},
-            {path: 'files', loadChildren: () => import('app/modules/admin/file-manager/file-manager.module').then(m => m.FileManagerModule)},
+            {
+                path: 'files',
+                children: [
+                  {
+                    path: 'file-manager',
+                    loadChildren: () => import('app/modules/admin/file-manager/file-manager.module').then(m => m.FileManagerModule)
+                  }
+                ]
+              },
             {path: 'folders', loadChildren: () => import('app/modules/admin/folder-manager/folder-manager.module').then(m => m.FolderManagerModule)},
             {path: 'entity', loadChildren: () => import('app/modules/admin/entity-search/entity-search.module').then(m => m.EntitySearchModule)},
             {path: 'ubo', loadChildren: () => import('app/modules/admin/ubo/ubo.module').then(m => m.UBOModule)},

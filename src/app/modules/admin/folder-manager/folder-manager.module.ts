@@ -1,5 +1,3 @@
-
-
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Route, RouterModule } from '@angular/router';
@@ -12,30 +10,44 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FuseAlertModule } from '@fuse/components/alert';
 import { FuseCardModule } from '@fuse/components/card';
 import { SharedModule } from 'app/shared/shared.module';
-import { MaterialManualModule } from 'material.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { FolderManagerComponent } from './folder-manager.component';
-
-
+import { FileManagerDetailsComponent } from '../file-manager/file-manager-details.component';
+import { FolderDetailComponent } from './folder-detail.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 const FolderManagerRoutes: Route[] = [
   {
     path: 'folder-manager',
-    component: FolderManagerComponent
+    component: FolderManagerComponent,
+    children: [
+      {
+        path: 'file-details/:name',
+        component: FileManagerDetailsComponent,
+        outlet: 'sidebar'
+      },
+      {
+        path: 'folder-details/:name',
+        component: FolderDetailComponent,
+        outlet: 'sidebar'
+      }
+    ]
   }
 ];
 
 @NgModule({
   declarations: [
-FolderManagerComponent
+    FolderManagerComponent,
+    FolderDetailComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(FolderManagerRoutes),
-    MaterialManualModule,
-    
     MatButtonModule,
     MatCheckboxModule,
     MatFormFieldModule,
@@ -47,11 +59,11 @@ FolderManagerComponent
     FuseAlertModule,
     SharedModule,
     MatCardModule,
-    MatIconModule,
     MatGridListModule,
-    MatButtonModule,
-
-    
+    MatSnackBarModule,
+    MatTooltipModule,
+    MatDialogModule,
+    MatSidenavModule
   ]
 })
 export class FolderManagerModule { }

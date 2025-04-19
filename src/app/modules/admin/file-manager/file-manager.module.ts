@@ -1,5 +1,3 @@
-
-
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Route, RouterModule } from '@angular/router';
@@ -20,26 +18,38 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { FileDetailComponent } from './file-detail.component';
 import { FileListComponent } from './file-list.component';
 import { FileUploaderComponent } from './file-uploader.component';
-
-
+import { FileManagerDetailsComponent } from './file-manager-details.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 const FileManagerRoutes: Route[] = [
   {
-    path: 'file-manager',
-    component: FileManagerComponent
+    path: '',
+    component: FileManagerComponent,
+    children: [
+      {
+        path: 'details/:name',  // Changed from :id to :name to match the navigation
+        component: FileManagerDetailsComponent,
+        outlet: 'sidebar'
+      }
+    ]
   }
 ];
 
 @NgModule({
   declarations: [
-    FileManagerComponent,FileDetailComponent,FileListComponent, FileUploaderComponent
-
+    FileManagerComponent,
+    FileDetailComponent,
+    FileListComponent, 
+    FileUploaderComponent,
+    FileManagerDetailsComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(FileManagerRoutes),
     MaterialManualModule,
-    
     MatButtonModule,
     MatCheckboxModule,
     MatFormFieldModule,
@@ -51,11 +61,11 @@ const FileManagerRoutes: Route[] = [
     FuseAlertModule,
     SharedModule,
     MatCardModule,
-    MatIconModule,
     MatGridListModule,
-    MatButtonModule,
-
-    
+    MatSnackBarModule,
+    MatTooltipModule,
+    MatDialogModule,
+    MatSidenavModule
   ]
 })
 export class FileManagerModule { }

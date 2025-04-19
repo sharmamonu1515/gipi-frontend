@@ -1,262 +1,267 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog,MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FileDetailComponent } from '../file-manager/file-detail.component';
 import { FileManagerService } from '../file-manager/file-manager.service';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { Location } from '@angular/common';
 import { FileListComponent } from '../file-manager/file-list.component';
+import { MatDrawer } from '@angular/material/sidenav';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-    selector: 'app-folder-manager',
-    templateUrl: './folder-manager.component.html',
-    styleUrls: ['./folder-manager.component.scss'],
+  selector: 'app-folder-manager',
+  templateUrl: './folder-manager.component.html',
+  styleUrls: ['./folder-manager.component.scss'],
 })
 export class FolderManagerComponent implements OnInit {
-    folders: any = [];
-    files: Array<any> = [];
-    folderObj: any = {};
-    folder: any = {};
-    storedFolder:any={};
-    constructor(
-        public dialog: MatDialog,
-        public FileService: FileManagerService,
-private _fuseConfirmationService:FuseConfirmationService,
-        private _router: Router,
-        private route:ActivatedRoute,
-        private location: Location,
-        
-    ) {
-        // this.route.queryParams.subscribe((params) => {
-        //     this.folder = JSON.parse(params['folder']);
-        //     console.log(this.folder);
-        // });
-       
-        this.storedFolder= localStorage.getItem('folder');
-        if (this.storedFolder) {
-            this.storedFolder = JSON.parse(this.storedFolder);
-            // console.log(this.folder);
-            FileService.getBucketObjectList(this.storedFolder?.folderPath,50).subscribe((res) => {
-                this.processFilesAndFolders(res.data);
-               console.log(this.folders)
-            });
-          }
-    }
+  folders: any = [];
+  files: Array<any> = [];
+  folderObj: any = {};
+  folder: any = {};
+  storedFolder: any = {};
+  
+  @ViewChild('matDrawer') matDrawer: MatDrawer;
+  drawerMode: 'over' = 'over'; // Always use 'over' mode
+  drawerOpened = false;
 
-    ngOnInit(): void {}
-    viewAll(type) {
-        this.dialog.open(FileListComponent, {
-            width: '50%',
-            // height: '68%',
-            enterAnimationDuration: '500ms',
-            exitAnimationDuration: '500ms',
-            disableClose: true,
-            data:{folderPath:this.storedFolder?.folderPath,
-                type:type}
-        });
+  constructor(
+    public dialog: MatDialog,
+    public FileService: FileManagerService,
+    private _fuseConfirmationService: FuseConfirmationService,
+    private _router: Router,
+    private _route: ActivatedRoute,
+    private location: Location,
+    private _snackBar: MatSnackBar,
+    private _changeDetectorRef: ChangeDetectorRef
+  ) {
+    this.storedFolder = localStorage.getItem('folder');
+    if (this.storedFolder) {
+      this.storedFolder = JSON.parse(this.storedFolder);
+      this.loadFolderContents();
     }
-    openDialog(file: any): void {
-        this.dialog.open(FileDetailComponent, {
-            width:  '33.33%',
-            // height: '68%',
-            enterAnimationDuration: '500ms',
-            exitAnimationDuration: '500ms',
-            disableClose: true,
-            data: {
-                file: file,
-            },
-        });
-    }
-    openFolders(folder: any): void {
+  }
 
-        localStorage.setItem('folder', JSON.stringify(folder));
-        this.storedFolder= folder;
-        if (this.storedFolder) {
-  //          this.storedFolder = JSON.parse(this.storedFolder);
-            // console.log(this.folder);
-            this.FileService.getBucketObjectList(this.storedFolder?.folderPath,50).subscribe((res) => {
-                this.files=[];
-                this.folders=[];
-                this.processFilesAndFolders(res.data);
-           this.folders=this.folders[0];
-            });
-          }
-       
-      
-        this._router.navigate(['/folders/folder-manager']);
-    }
-    processFilesAndFolders(data: string[]): void {
-        
-        data.forEach((item) => {
-            if (item.endsWith('/')) {
-                this.addFolder(item); // Add folder path
-            } else if(!item.endsWith('/') && /\.[0-9a-z]+$/i.test(item)) {
-                this.addFile(item); // Add file path
-            }
-        });
-    }
+  ngOnInit(): void {}
 
-    // Add a folder to the structure
-    addFolder(folderPath: string): void {
-        console.log(folderPath)
-        const parts = folderPath
-            .split('/')
-            .filter((part) => part.trim() !== ''); // Clean up any empty parts
-        let currentFolder = this.folders;
+  loadFolderContents(): void {
+    this.FileService.getBucketObjectList(this.storedFolder?.folderPath, 50).subscribe(
+      (res) => {
+        this.files = [];
+        this.folders = [];
+        this.processFilesAndFolders(res.data);
+        this._changeDetectorRef.markForCheck();
+      },
+      (err) => {
+        this._snackBar.open('Error loading folder contents', 'Close', { duration: 3000 });
+      }
+    );
+  }
 
-        parts.forEach((part) => {
-            let folderIndex = currentFolder.findIndex(
-                (folder: any) => folder.name === part
-            );
-            if (folderIndex === -1) {
-                // Folder doesn't exist, create new
-                const newFolder = {
-                    name: part,
-                    subfolders: [],
-                    files: [], // Initialize an empty files array
-                };
-                currentFolder.push(newFolder);
-                currentFolder = newFolder.subfolders; // Move to the newly created folder
-            } else {
-                // Move into the existing folder
-                currentFolder = currentFolder[folderIndex].subfolders;
-            }
-        });
-    }
+  onBackdropClicked(): void {
+    this.closeSidebar();
+  }
 
-    // Add a file to the folder structure
-    addFile(filePath: string): void {
-        const parts = filePath.split('/').filter((part) => part.trim() !== ''); // Clean up empty parts
-        const fullFileName = parts.pop(); // Get the last part as the file name
-    
-        // Ensure we have a valid file name
-        if (!fullFileName || !fullFileName.includes('.')) {
-            console.warn(`File name "${fullFileName}" does not have an extension. Skipping...`);
-            return;
-        }
-    
-        // Get the file name and extension
-        const nameWithoutExtension = fullFileName.substring(0, fullFileName.lastIndexOf('.'));
-        const fileType = fullFileName.split('.').pop(); // File extension
-    
-        let currentFolder = this.folders;
-        let mainFolder: any = null; // To store the reference of the main folder
-        let folderPath = '';
-    
-        // Traverse the folder structure
-        for (let i = 0; i < parts.length; i++) {
-            const part = parts[i];
-            folderPath += (i > 0 ? '/' : '') + part; // Construct the folder path
-    
-            let folderIndex = currentFolder.findIndex((folder: any) => folder.name === part);
-            if (folderIndex === -1) {
-                // Folder doesn't exist, create new
-                const newFolder = {
-                    name: part,
-                    subfolders: [],
-                    folderPath: folderPath,
-                    files: [],
-                };
-                currentFolder.push(newFolder);
-                currentFolder = newFolder.subfolders; // Move to the newly created folder
-    
-                if (i === 0) {
-                    mainFolder = newFolder; // Capture the main folder (e.g., 'test')
-                }
-            } else {
-                if (i === 0) {
-                    mainFolder = currentFolder[folderIndex]; // Capture the main folder (e.g., 'test')
-                }
-                currentFolder = currentFolder[folderIndex].subfolders; // Move into the existing subfolder
-            }
-        }
-    
-        // Add the file to the last folder found
-        const fileWithDetails = {
-            name: nameWithoutExtension, // Name without extension
-            folder: folderPath, // Include folder path
-            type: fileType, // File extension/type
+  closeSidebar(): void {
+    this.drawerOpened = false;
+    this._router.navigate([{ outlets: { sidebar: null } }], {
+      relativeTo: this._route.parent
+    });
+    this._changeDetectorRef.markForCheck();
+  }
+
+  openFileDetails(file: any): void {
+    this._router.navigate([{ 
+      outlets: { 
+        sidebar: ['file-details', file.name] 
+      } 
+    }], { 
+      relativeTo: this._route,
+      queryParams: {
+        type: file.type,
+        folder: file.folder
+      }
+    });
+    this.drawerOpened = true;
+    this._changeDetectorRef.markForCheck();
+  }
+
+  openFolders(folder: any): void {
+    localStorage.setItem('folder', JSON.stringify(folder));
+    this.storedFolder = folder;
+    this.loadFolderContents();
+    this._router.navigate(['/folders/folder-manager']);
+  }
+
+  fileUploader(): void {
+    const dialogRef = this.dialog.open(FileDetailComponent, {
+      width: '33.33%',
+      enterAnimationDuration: '500ms',
+      exitAnimationDuration: '500ms',
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.loadFolderContents();
+    });
+  }
+
+  viewAll(type: string): void {
+    this.dialog.open(FileListComponent, {
+      width: '50%',
+      enterAnimationDuration: '500ms',
+      exitAnimationDuration: '500ms',
+      disableClose: true,
+      data: {
+        folderPath: this.storedFolder?.folderPath,
+        type: type
+      }
+    });
+  }
+
+  processFilesAndFolders(data: string[]): void {
+    data.forEach((item) => {
+      if (item.endsWith('/')) {
+        this.addFolder(item);
+      } else if (!item.endsWith('/') && /\.[0-9a-z]+$/i.test(item)) {
+        this.addFile(item);
+      }
+    });
+  }
+
+  addFolder(folderPath: string): void {
+    const parts = folderPath.split('/').filter((part) => part.trim() !== '');
+    let currentFolder = this.folders;
+
+    parts.forEach((part) => {
+      let folderIndex = currentFolder.findIndex(
+        (folder: any) => folder.name === part
+      );
+      if (folderIndex === -1) {
+        const newFolder = {
+          name: part,
+          subfolders: [],
+          files: [],
         };
-    
-        // Find the folder where the file should be added (the last folder in the path)
-        if (mainFolder) {
-            // Check if there are no subfolders left, meaning this is where the file belongs
-            if (parts.length === 0) {
-                mainFolder.files.push(fileWithDetails); // Add to the main folder
-            } else {
-                let targetFolder = mainFolder;
-                for (let part of parts) {
-                    const folderIndex = targetFolder.subfolders.findIndex((subfolder: any) => subfolder.name === part);
-                    if (folderIndex !== -1) {
-                        targetFolder = targetFolder.subfolders[folderIndex];
-                    }
-                }
-                // Add the file to the appropriate subfolder
-                targetFolder.files.push(fileWithDetails);
-            }
+        currentFolder.push(newFolder);
+        currentFolder = newFolder.subfolders;
+      } else {
+        currentFolder = currentFolder[folderIndex].subfolders;
+      }
+    });
+  }
+
+  addFile(filePath: string): void {
+    const parts = filePath.split('/').filter((part) => part.trim() !== '');
+    const fullFileName = parts.pop();
+  
+    if (!fullFileName || !fullFileName.includes('.')) {
+      console.warn(`File name "${fullFileName}" does not have an extension. Skipping...`);
+      return;
+    }
+  
+    const nameWithoutExtension = fullFileName.substring(0, fullFileName.lastIndexOf('.'));
+    const fileType = fullFileName.split('.').pop();
+  
+    let currentFolder = this.folders;
+    let mainFolder: any = null;
+    let folderPath = '';
+  
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      folderPath += (i > 0 ? '/' : '') + part;
+  
+      let folderIndex = currentFolder.findIndex((folder: any) => folder.name === part);
+      if (folderIndex === -1) {
+        const newFolder = {
+          name: part,
+          subfolders: [],
+          folderPath: folderPath,
+          files: [],
+        };
+        currentFolder.push(newFolder);
+        currentFolder = newFolder.subfolders;
+  
+        if (i === 0) {
+          mainFolder = newFolder;
         }
-        
-        // Optionally, you can also add the file to the global file array if needed
-        this.files.push(fileWithDetails);
+      } else {
+        if (i === 0) {
+          mainFolder = currentFolder[folderIndex];
+        }
+        currentFolder = currentFolder[folderIndex].subfolders;
+      }
+    }
+  
+    const fileWithDetails = {
+      name: nameWithoutExtension,
+      folder: folderPath,
+      type: fileType,
+    };
+  
+    if (mainFolder) {
+      if (parts.length === 0) {
+        mainFolder.files.push(fileWithDetails);
+      } else {
+        let targetFolder = mainFolder;
+        for (let part of parts) {
+          const folderIndex = targetFolder.subfolders.findIndex((subfolder: any) => subfolder.name === part);
+          if (folderIndex !== -1) {
+            targetFolder = targetFolder.subfolders[folderIndex];
+          }
+        }
+        targetFolder.files.push(fileWithDetails);
+      }
     }
     
-    goBack(): void {
-       // localStorage.setItem('folder', JSON.stringify(folder));
-   
-        this.location.back(); // Navigate to the previous page
-      }
+    this.files.push(fileWithDetails);
+  }
 
-    deleteFile(file): void {
-        const dialogRef = this._fuseConfirmationService.open({
-          title: "Remove File",
-          message: "Are you sure you want to remove this file permanently? <span class=\"font-medium\">This action cannot be undone!</span>",
-          icon: {
-            show: true,
-            name: "heroicons_outline:exclamation",
-            color: "warn",
+  deleteFile(file: any): void {
+    const dialogRef = this._fuseConfirmationService.open({
+      title: "Remove File",
+      message: "Are you sure you want to remove this file permanently? <span class=\"font-medium\">This action cannot be undone!</span>",
+      icon: {
+        show: true,
+        name: "heroicons_outline:exclamation",
+        color: "warn",
+      },
+      actions: {
+        confirm: {
+          show: true,
+          label: "Remove",
+          color: "warn",
+        },
+        cancel: {
+          show: true,
+          label: "Cancel",
+        },
+      },
+      dismissible: false,
+    });
+  
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'confirmed') {
+        const payload = { fileName: file.folder + "/" + file.name + "." + file.type };
+        
+        this.FileService.deleteBucketObject(payload).subscribe(
+          (res) => {
+            this._snackBar.open('File deleted successfully', 'Close', { duration: 3000 });
+            this.loadFolderContents();
           },
-          actions: {
-            confirm: {
-              show: true,
-              label: "Remove",
-              color: "warn",
-            },
-            cancel: {
-              show: true,
-              label: "Cancel",
-            },
-          },
-          dismissible: false,
-        });
-      
-        dialogRef.afterClosed().subscribe((result) => {
-          if (result === 'confirmed') {
-            // Prepare payload for deletion
-            const payload = { fileName: file.folder + "/" + file.name + "." + file.type };
-            
-            // Call the delete API to remove the file
-            this.FileService.deleteBucketObject(payload).subscribe(
-              (res) => {
-                // After successful deletion, refresh the file/folder list
-                this.FileService.getBucketObjectList(this.storedFolder?.name, 50).subscribe(
-                  (res) => {
-                    // Reset files and folders before reprocessing the data
-                    this.files = [];
-                    this.folders = [];
-                    this.processFilesAndFolders(res.data); // Process the updated list
-                    console.log("Folders:", this.folders, "Files:", this.files);
-                  },
-                  (err) => {
-                    console.error("Error retrieving bucket object list:", err);
-                  }
-                );
-              },
-              (err) => {
-                console.error("Error deleting file:", err);
-              }
-            );
+          (err) => {
+            this._snackBar.open('Error deleting file', 'Close', { duration: 3000 });
           }
-        });
+        );
       }
-      
+    });
+  }
+
+  goBack(): void {
+    this.location.back();
+  }
+
+  trackByFn(index: number, item: any): any {
+    return item.id || index;
+  }
 }

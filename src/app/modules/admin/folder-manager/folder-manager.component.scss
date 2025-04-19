@@ -1,101 +1,20 @@
-.grid-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-  }
-  
-  .section-card {
-    margin: 20px 0;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  
-  .grid-item {
-    flex: 1 1 calc(25% - 20px); /* 4 columns layout with 20px gap */
-    max-width: calc(25% - 20px);
-    min-width: 220px;
-    margin: 10px; 
-  }
-  
-  .mat-card {
-    padding: 16px;
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    display: flex;
-  }
-  
-  mat-card-header {
-    padding: 8px 0;
-  }
-  
-  mat-card-title {
-    font-size: 18px;
-  }
-  .fileFolderName{
-    text-align: left;
-    flex: 1;
-  }
-  mat-icon {
-    font-size: 24px;
-  }
-  .fileIcon{
-  font-size: 80px;
-  }
-  p {
-    margin: 8px 0 0;
-  }
-  
-  button {
-    margin-left: auto;
-  }
-  .grid-container {
-    display: grid;
-    gap: 20px; /* Space between cards */
-  }
-  
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid */
-  }
-  
-  .grid-item .mat-card {
-    margin: 10px; /* Optional spacing for individual grid items */
-    display: flex;
-    flex-direction: column;
-  }
-  ::ng-deep .grid-item .mat-card-header-text{
-    display: flex;
-    flex-direction: row;
-    margin: 0;
-    justify-content: space-between;
-    width: 100%;
-  }
-  ::ng-deep .grid-item .mat-card-header-text .mat-icon{
-    margin: 0 !important;
-  }
-  ::ng-deep .mat-card-content {
-    text-align: center;
-  }
-  .fileIcon {
-    width: 80px;
-    height: 80px;
-   
-    border-radius: 50%; /* Optional: to make the icon circular */
-  }
-  
-  @media (max-width: 600px) {
-    .grid {
-      grid-template-columns: 1fr; /* Stacks items in a single column on mobile */
-    }
-  }
-  
+// Add or update these styles in file-manager.component.scss
+.mat-drawer {
+  width: 100% !important;
+  max-width: 450px !important; // You can adjust this width as needed
+  box-shadow: -8px 0 10px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+// Ensure backdrop works properly
+.mat-drawer-backdrop.mat-drawer-shown {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+// Prevent the main content from resizing
+.mat-drawer-container.mat-drawer-container-has-open {
+  overflow: hidden !important;
+}
+
+.mat-drawer-content {
+  overflow-x: hidden !important;
+}
