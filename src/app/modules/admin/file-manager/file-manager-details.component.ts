@@ -77,17 +77,20 @@ export class FileManagerDetailsComponent implements OnInit, OnDestroy {
     
     // Convert hours to seconds for the API
     const expiryTimeSeconds = this.expiryTimeHours * 3600;
-    
+    console.log(expiryTimeSeconds);
+    // Pass the custom expiry time to the service
     this._fileManagerService.getPreSignedURL(filePath, expiryTimeSeconds).subscribe(
       (res) => {
         const awsUrl = new URL(res.data);
         const params = new URLSearchParams(awsUrl.search);
+        // Make sure we're using the actual expiry time from the response
+        const expiresParam = params.get('X-Amz-Expires') || (expiryTimeSeconds.toString());
         
         this.shareableUrl = `${window.location.origin}/file/share?` +
           `file=${encodeURIComponent(filePath)}&` +
           `key=${encodeURIComponent(params.get('X-Amz-Credential'))}&` +
           `date=${encodeURIComponent(params.get('X-Amz-Date'))}&` +
-          `expires=${encodeURIComponent(params.get('X-Amz-Expires'))}&` +
+          `expires=${encodeURIComponent(expiresParam)}&` +
           `signature=${encodeURIComponent(params.get('X-Amz-Signature'))}`;
         
         this.showSharePopup = true;
@@ -109,6 +112,7 @@ export class FileManagerDetailsComponent implements OnInit, OnDestroy {
   
     const filePath = `${file.folder}/${file.name}.${file.type}`.replace(/\/+/g, '/');
     
+    // Use the default expiry time for downloads (1 hour)
     this._fileManagerService.getPreSignedURL(filePath, 3600).subscribe(
       (res) => {
         this.forceFileDownload(res.data, `${file.name}.${file.type}`);
