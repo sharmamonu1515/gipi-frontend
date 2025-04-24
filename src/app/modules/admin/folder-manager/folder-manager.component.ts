@@ -31,6 +31,7 @@ export class FolderManagerComponent implements OnInit, OnDestroy, AfterViewInit 
 
   constructor(
     public dialog: MatDialog,
+    private _activatedRoute: ActivatedRoute,
     public FileService: FileManagerService,
     private _fuseConfirmationService: FuseConfirmationService,
     private _router: Router,
@@ -111,7 +112,11 @@ export class FolderManagerComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onBackdropClicked(): void {
-    this.closeSidebar();
+      // Go back to the list
+      this._router.navigate(['./'], { relativeTo: this._activatedRoute });
+
+      // Mark for check
+      this._changeDetectorRef.markForCheck();
   }
 
   closeSidebar(): void {
