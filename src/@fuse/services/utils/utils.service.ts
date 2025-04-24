@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IsActiveMatchOptions } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import moment from 'moment';
 
 @Injectable({
@@ -9,7 +11,7 @@ export class FuseUtilsService {
     /**
      * Constructor
      */
-    constructor() {}
+    constructor(private http: HttpClient) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -114,5 +116,9 @@ export class FuseUtilsService {
         } else {
             return input.format('MMM D, YYYY h:mm A');
         }
+    }
+    shortenUrl(longUrl: string): Observable<string> {
+        const apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`;
+        return this.http.get(apiUrl, { responseType: 'text' });
     }
 }

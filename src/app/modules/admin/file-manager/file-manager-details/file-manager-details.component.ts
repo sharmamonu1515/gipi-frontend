@@ -5,6 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FileManagerService } from '../file-manager.service';
+import { FuseUtilsService } from '@fuse/services/utils/utils.service';
 
 @Component({
     selector: 'app-file-manager-details',
@@ -22,7 +23,14 @@ export class FileManagerDetailsComponent implements OnInit, OnDestroy {
     expiryTimeHours: number = 1; // Default value
     expiryTimeInvalid: boolean = false;
 
-    constructor(private _route: ActivatedRoute, private _router: Router, private _fileManagerService: FileManagerService, private _fuseConfirmationService: FuseConfirmationService, private _snackBar: MatSnackBar) {}
+    constructor(
+        private _route: ActivatedRoute, 
+        private _router: Router, 
+        private _fileManagerService: FileManagerService, 
+        private _fuseConfirmationService: FuseConfirmationService, 
+        private _snackBar: MatSnackBar,
+        private _fuseUtilsService: FuseUtilsService
+    ) {}
 
     ngOnInit(): void {
         this._route.params.pipe(takeUntil(this._unsubscribeAll)).subscribe((params) => {
@@ -56,6 +64,7 @@ export class FileManagerDetailsComponent implements OnInit, OnDestroy {
         }
     }
 
+    // Modify the shareFile method
     shareFile(file: any): void {
         if (!file) return;
 
@@ -80,7 +89,7 @@ export class FileManagerDetailsComponent implements OnInit, OnDestroy {
                 // Make sure we're using the actual expiry time from the response
                 const expiresParam = params.get('X-Amz-Expires') || expiryTimeSeconds.toString();
 
-                this.shareableUrl =
+                const longUrl =
                     `${window.location.origin}/files/file-manager/share?` +
                     `file=${encodeURIComponent(filePath)}&` +
                     `key=${encodeURIComponent(params.get('X-Amz-Credential'))}&` +
@@ -88,7 +97,19 @@ export class FileManagerDetailsComponent implements OnInit, OnDestroy {
                     `expires=${encodeURIComponent(expiresParam)}&` +
                     `signature=${encodeURIComponent(params.get('X-Amz-Signature'))}`;
 
-                this.showSharePopup = true;
+                // Get shortened URL
+                this._fuseUtilsService.shortenUrl(longUrl).subscribe({
+                    next: (shortUrl) => {
+                        this.shareableUrl = shortUrl;
+                        this.showSharePopup = true;
+                    },
+                    error: (error) => {
+                        console.error('Error shortening URL:', error);
+                        // Fallback to long URL if shortening fails
+                        this.shareableUrl = longUrl;
+                        this.showSharePopup = true;
+                    }
+                });
             },
             error: (error) => {
                 this._snackBar.open('Error generating share link', 'Close', { duration: 3000 });
