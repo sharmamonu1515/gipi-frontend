@@ -1,0 +1,32 @@
+<h2 mat-dialog-title *ngIf="!downloadRequestSent">Report</h2>
+
+<mat-dialog-content class="mat-typography">
+    <mat-form-field appearance="fill" class="w-full" *ngIf="!downloadRequestSent">
+        <mat-label>Select Template</mat-label>
+        <mat-select [(ngModel)]="selectedTemplate" (selectionChange)="onTemplateChange()">
+            <mat-option *ngFor="let tpl of templates" [value]="tpl.templateName">
+                {{ tpl.templateName }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <div class="text-center" *ngIf="downloadRequestSent">
+        <mat-icon color="primary"
+            class="text-green-600 text-7xl w-full h-full min-h-full min-w-full leading-none">check_circle</mat-icon>
+        <h2 class="text-2xl font-semibold mb-1">
+            Your request to download the report has been raised successfully
+        </h2>
+        <p class="text-lg">
+            The report will be sent to your registered email ID<br>
+            Due to the size of the report, it will take approximately 5 minutes
+        </p>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" *ngIf="!downloadRequestSent">
+    <button mat-button class="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition"
+        mat-dialog-close>Cancel</button>
+
+    <button mat-button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
+        (click)="generateReport()" [disabled]="isLoading">Generate Report</button>
+</mat-dialog-actions>

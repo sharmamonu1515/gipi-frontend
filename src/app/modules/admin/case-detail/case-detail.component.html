@@ -1,0 +1,539 @@
+<h2 mat-dialog-title>Case Details</h2>
+
+<mat-dialog-content id="printSection" class="mat-typography">
+    <div class="card divider-card no-shadow mt-0 ng-star-inserted">
+        <div class="card-header flex-row-vertical-center justify-center">
+            <h2 class="card-title m-0 text-center">
+                <b>{{ court }} - {{ caseDetails.cino }} - {{ caseDetails.caseStatus }}</b><small
+                    class="ng-star-inserted">
+                    As On:
+                    {{ caseDetails.updatedDate_ }}</small>
+            </h2>
+        </div>
+    </div>
+
+    <!-- Petitioner and Advocate Details and Respondent and Advocate Details -->
+    <ng-container *ngFor="let party of parties">
+        <mat-accordion>
+            <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+                <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                    <mat-panel-title>
+                        <h4 class="card-title m-0">{{ party.title }}</h4>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <table mat-table [dataSource]="party.data" class="mat-elevation-z1 p-0" multiTemplateDataRows>
+
+                    <ng-container matColumnDef="sr_no">
+                        <th mat-header-cell *matHeaderCellDef> Sr. No </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.serialNo }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef> Name </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.name || '-' }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="advocate">
+                        <th mat-header-cell *matHeaderCellDef> Advocate </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.advocate || '-' }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="address">
+                        <th mat-header-cell *matHeaderCellDef> Address </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.address || '-' }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="others">
+                        <th mat-header-cell *matHeaderCellDef> Others </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.others || '-' }} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="['sr_no', 'name', 'advocate', 'address', 'others']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['sr_no', 'name', 'advocate', 'address', 'others'];">
+                    </tr>
+                </table>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </ng-container>
+
+    <!-- Case Details and Case Status Tables -->
+    <ng-container *ngFor="let config of tableConfigs">
+        <mat-accordion>
+            <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+                <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                    <mat-panel-title>
+                        <h4 class="card-title m-0">{{ config.title }}</h4>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="table-responsive">
+                    <table mat-table [dataSource]="config.dataSource" class="mat-elevation-z1 m-2">
+                        <!-- Field 1 Column -->
+                        <ng-container matColumnDef="field1">
+                            <td mat-cell *matCellDef="let element" class="wrap-text bg-gray-50"> {{ element.field1 }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Value 1 Column -->
+                        <ng-container matColumnDef="value1">
+                            <td mat-cell *matCellDef="let element" class="wrap-text"> {{ element.value1 || '-' }} </td>
+                        </ng-container>
+
+                        <!-- Field 2 Column -->
+                        <ng-container matColumnDef="field2">
+                            <td mat-cell *matCellDef="let element" class="wrap-text bg-gray-50">
+                                {{ element.field2 || '-' }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Value 2 Column -->
+                        <ng-container matColumnDef="value2">
+                            <td mat-cell *matCellDef="let element" class="wrap-text"> {{ element.value2 || '-' }} </td>
+                        </ng-container>
+
+                        <!-- Header and Row Definitions -->
+                        <tr mat-row *matRowDef="let row; columns: ['field1', 'value1', 'field2', 'value2'];"></tr>
+                    </table>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </ng-container>
+
+    <!-- Risk Summary -->
+    <mat-accordion>
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0">Risk Summary</h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <table class="mat-elevation-z1 m-2 mat-table cdk-table mat-sort w-100">
+                <!-- Field 1 Column -->
+                <tbody>
+                    <tr>
+                        <td class="mat-cell cdk-cell bg-gray-50">Severity</td>
+                        <td class="mat-cell cdk-cell">{{ caseDetails.standardTags && caseDetails.standardTags[0] ?
+                            caseDetails.standardTags[0].tagValue_ : '-' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <ng-container *ngIf="caseDetails.standardTags; else noRecords">
+                <table mat-table [dataSource]="caseDetails.standardTags" class="mat-elevation-z1 p-0"
+                    multiTemplateDataRows>
+                    <ng-container matColumnDef="keyword">
+                        <th mat-header-cell *matHeaderCellDef> Risk Tag </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.keyword || '-' }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="description">
+                        <th mat-header-cell *matHeaderCellDef> Risk Rationale </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.description || '-' }} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="['keyword', 'description']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['keyword', 'description'];"></tr>
+                </table>
+            </ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Application Details -->
+    <mat-accordion>
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0">Application Details</h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <table class="mat-elevation-z1 m-2 mat-table cdk-table mat-sort w-100">
+                <!-- Field 1 Column -->
+                <tbody>
+                    <tr>
+                        <td class="mat-cell cdk-cell bg-gray-50">Application Number</td>
+                        <td class="mat-cell cdk-cell">{{ caseDetails.applicationDetails || '-' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Standard Disposal Remark  -->
+    <mat-accordion>
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0"> Standard Disposal Remark </h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngIf="caseDetails.standardDisposalRemark; else noRecords">
+                <table class="mat-elevation-z1 m-2 mat-table cdk-table mat-sort w-100">
+                    <!-- Field 1 Column -->
+                    <tbody>
+                        <tr>
+                            <td class="mat-cell cdk-cell bg-gray-50">In Favour</td>
+                            <td class="mat-cell cdk-cell">{{ caseDetails.standardDisposalRemark.inFavour || '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="mat-cell cdk-cell bg-gray-50">In Against</td>
+                            <td class="mat-cell cdk-cell">{{ caseDetails.standardDisposalRemark.inAgainst || '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="mat-cell cdk-cell bg-gray-50">Remark</td>
+                            <td class="mat-cell cdk-cell">{{ caseDetails.standardDisposalRemark.remark || '-' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Standard Act -->
+    <mat-accordion>
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0">Standard Act</h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngIf="caseDetails.standardAct; else noRecords">
+                <table class="mat-elevation-z1 m-2 mat-table cdk-table mat-sort w-100">
+                    <!-- Field 1 Column -->
+                    <tbody>
+                        <tr *ngFor="let act of caseDetails.standardAct">
+                            <td class="mat-cell cdk-cell bg-gray-50">{{ act }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Standard Section -->
+    <mat-accordion>
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0">Standard Section</h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngIf="caseDetails.standardSection; else noRecords">
+                <table class="mat-elevation-z1 m-2 mat-table cdk-table mat-sort w-100">
+                    <!-- Field 1 Column -->
+                    <tbody>
+                        <tr *ngFor="let section of caseDetails.standardSection">
+                            <td class="mat-cell cdk-cell bg-gray-50">{{ section }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- FIR Details -->
+    <mat-accordion>
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0">FIR Details</h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngIf="caseDetails.firDetails; else noRecords">
+                <table class="mat-elevation-z1 m-2 mat-table cdk-table mat-sort w-100">
+                    <tbody>
+                        <tr *ngFor="let section of caseDetails.standardSection">
+                            <td class="mat-cell cdk-cell bg-gray-50">{{ section }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Acts -->
+    <mat-accordion>
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0">Acts</h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngIf="caseDetails.acts; else noRecords">
+                <table mat-table [dataSource]="caseDetails.acts" class="mat-elevation-z1 p-0" multiTemplateDataRows>
+
+                    <ng-container matColumnDef="act">
+                        <th mat-header-cell *matHeaderCellDef> Act </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.underActs || '-' }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="section">
+                        <th mat-header-cell *matHeaderCellDef> Section </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.underSections || '-' }} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="['act', 'section']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['act', 'section'];"></tr>
+                </table>
+            </ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!--  Subordinate Court Information  -->
+    <mat-accordion>
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0"> Subordinate Court Information </h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngIf="caseDetails.subordinateCourtInfo; else noRecords">
+                <div class="table-responsive">
+                    <table mat-table [dataSource]="caseDetails.subordinateCourtInfo" class="example-table" matSort
+                        matSortActive="created" matSortDisableClear matSortDirection="desc" class="w-100">
+
+                        <ng-container *ngFor="let column of subordinateColumns" [matColumnDef]="column">
+                            <th mat-header-cell *matHeaderCellDef> {{ utils.humanizeCamelCase(column) }} </th>
+                            <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }} </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="subordinateColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: subordinateColumns;"></tr>
+                    </table>
+                </div>
+            </ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!--  History of Case Hearing  -->
+    <mat-accordion>
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0"> History of Case Hearing </h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngIf="caseDetails.historyOfCaseHearing; else noRecords">
+                <div class="table-responsive">
+                    <table mat-table [dataSource]="caseDetails.historyOfCaseHearing" class="example-table" matSort
+                        matSortActive="created" matSortDisableClear matSortDirection="desc" class="w-100">
+
+                        <ng-container *ngFor="let column of historyOfCaseHearingsColumns" [matColumnDef]="column">
+                            <th mat-header-cell *matHeaderCellDef> {{ utils.humanizeCamelCase(column) }} </th>
+                            <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }} </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="historyOfCaseHearingsColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: historyOfCaseHearingsColumns;"></tr>
+                    </table>
+                </div>
+            </ng-container>
+
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!--  IA Details  -->
+    <mat-accordion>
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0"> IA Details </h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngIf="caseDetails.iaDetails; else noRecords">
+                <div class="table-responsive">
+                    <table mat-table [dataSource]="caseDetails.iaDetails" class="mat-elevation-z1 p-0"
+                        multiTemplateDataRows>
+
+                        <ng-container matColumnDef="iaNumber">
+                            <th mat-header-cell *matHeaderCellDef> IA Number </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.iaNumber || '-' }} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="iaStatus">
+                            <th mat-header-cell *matHeaderCellDef> IA Status </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.iaStatus || '-' }} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="party">
+                            <th mat-header-cell *matHeaderCellDef> Party </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.party || '-' }} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="purpose">
+                            <th mat-header-cell *matHeaderCellDef> Purpose </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.purpose || '-' }} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="dateOfFiling">
+                            <th mat-header-cell *matHeaderCellDef> Date of Filing </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.dateOfFiling || '-' }} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="nextDate">
+                            <th mat-header-cell *matHeaderCellDef> Next Date </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.nextDate || '-' }} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="nextDatePurpose">
+                            <th mat-header-cell *matHeaderCellDef> Next Date Purpose </th>
+                            <td mat-cell *matCellDef="let element"> {{ element.nextDatePurpose || '-' }} </td>
+                        </ng-container>
+
+                        <tr mat-header-row
+                            *matHeaderRowDef="['iaNumber', 'iaStatus', 'party', 'purpose', 'dateOfFiling', 'nextDate', 'nextDatePurpose']">
+                        </tr>
+                        <tr mat-row
+                            *matRowDef="let row; columns: ['iaNumber', 'iaStatus', 'party', 'purpose', 'dateOfFiling', 'nextDate', 'nextDatePurpose'];">
+                        </tr>
+                    </table>
+                </div>
+            </ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!--  Matters Main Information  -->
+    <!-- ! NOT DONE -->
+    <mat-accordion>
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0"> Matters Main Information </h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngIf="caseDetails.mattersMainInfo; else noRecords">
+                <table class="mat-elevation-z1 m-2 mat-table cdk-table mat-sort w-100">
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!--  Orders  -->
+    <mat-accordion>
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0"> Orders </h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngIf="caseDetails.orders; else noRecords">
+                <table mat-table [dataSource]="caseDetails.orders" class="mat-elevation-z1 p-0" multiTemplateDataRows>
+
+                    <ng-container matColumnDef="orderNo">
+                        <th mat-header-cell *matHeaderCellDef> Order No </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.orderNo || '-' }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="orderDate">
+                        <th mat-header-cell *matHeaderCellDef> Order Date </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.orderDate || '-' }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="type">
+                        <th mat-header-cell *matHeaderCellDef> Type </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.type || '-' }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="orderDetails">
+                        <th mat-header-cell *matHeaderCellDef> Order Details </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.orderDetails || '-' }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="pdfLink">
+                        <th mat-header-cell *matHeaderCellDef> Download </th>
+                        <td mat-cell *matCellDef="let element">
+                            <a *ngIf="element.pdfLink" [href]="element.pdfLink" target="_blank" download>Download</a>
+                            <span *ngIf="!element.pdfLink">-</span>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="['orderNo', 'orderDate', 'type', 'orderDetails', 'pdfLink']">
+                    </tr>
+                    <tr mat-row
+                        *matRowDef="let row; columns: ['orderNo', 'orderDate', 'type', 'orderDetails', 'pdfLink'];">
+                    </tr>
+                </table>
+            </ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- PDF Documents -->
+    <mat-accordion>
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0">PDF Documents</h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngIf="caseDetails.pdfDocumentsLink; else noRecords">
+                <table class="mat-elevation-z1 m-2 mat-table cdk-table mat-sort w-100">
+                    <!-- Field 1 Column -->
+                    <tbody>
+                        <tr *ngFor="let pdfLink of caseDetails.pdfDocumentsLink; let i = index">
+                            <td class="mat-cell cdk-cell bg-gray-50">
+                                <a [href]="pdfLink" target="_blank" download>Document {{ i + 1 }}</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Additional Tables  -->
+    <mat-accordion *ngFor="let table of additionalTablesToShow">
+        <mat-expansion-panel class="rounded-none mt-4" [expanded]="true">
+            <mat-expansion-panel-header class="border-b-2 border-b-sky-600">
+                <mat-panel-title>
+                    <h4 class="card-title m-0"> {{ utils.humanizeCamelCase(table) }} </h4>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngIf="caseDetails[table]; else noRecords">
+                <div class="table-responsive">
+                    <table mat-table [dataSource]="caseDetails[table]" class="example-table" matSort
+                        matSortActive="created" matSortDisableClear matSortDirection="desc" class="w-100">
+
+                        <ng-container *ngFor="let column of getColumnsToDisplay(table)" [matColumnDef]="column">
+                            <th mat-header-cell *matHeaderCellDef> {{ utils.humanizeCamelCase(column) }} </th>
+                            <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }} </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="getColumnsToDisplay(table)"></tr>
+                        <tr mat-row *matRowDef="let row; columns: getColumnsToDisplay(table);"></tr>
+                    </table>
+                </div>
+            </ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <div class="p-2"></div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
+        (click)="printDialogContent()">Print</button>
+    <button mat-button class="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition"
+        mat-dialog-close>Close</button>
+</mat-dialog-actions>
+
+<ng-template #noRecords>
+    <div class="text-center mat-cell cdk-cell">No Records Found</div>
+</ng-template>

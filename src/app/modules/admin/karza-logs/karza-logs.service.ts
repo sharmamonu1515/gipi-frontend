@@ -4,7 +4,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 
-const BASE_URI = environment.newBaseURI;
+const BASE_URI = environment.baseURI;
 
 @Injectable({
     providedIn: 'root',

@@ -23,6 +23,14 @@
     border-top: 1px solid #e0e0e0;
 }
 
+:host ::ng-deep .mat-select .mat-select-arrow-wrapper {
+  color: white !important;
+  transform: translateY(0) !important;
+
+  .mat-select-arrow{
+    color: balck !important;
+  }
+}
 
 .mat-form-field.risk-low {
     background-color: #22c55e !important; 
@@ -94,7 +102,7 @@
     }
 
     .mat-select-trigger {
-      height: 60px;
+      height: 52px;
     }
 
     .mat-select-value {

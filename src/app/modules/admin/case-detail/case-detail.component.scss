@@ -1,0 +1,21 @@
+.mat-expansion-panel-header,
+.mat-expansion-panel-header:hover {
+    border-radius: 0;
+    background: #f8f8f8;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+::ng-deep .mat-expansion-panel-body {
+    padding: 10px !important;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto; /* Enables horizontal scrolling */
+}
+
+.mat-dialog-content {
+    height: 80vh;
+    max-height: 80vh;
+}

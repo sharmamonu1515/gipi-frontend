@@ -1,13 +1,13 @@
 <mat-accordion class="container custom-accordion dark:bg-gray-900">
     <div class="flex justify-end pb-2 border-b border-gray-200 items-center">
-        <button 
+        <button
             mat-flat-button
             (click)="saveData()"
             [disabled]="!hasUnsavedChanges()"
             class="report-button flex items-center space-x-2 py-2 px-4 rounded-md shadow-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 gap-2"
         >
-          <span class="text-white font-medium m-2">Save</span>
-          <mat-icon class="text-white">save</mat-icon>
+            <span class="text-white font-medium m-2">Save</span>
+            <mat-icon class="text-white">save</mat-icon>
         </button>
     </div>
     <mat-expansion-panel
@@ -23,94 +23,186 @@
         </mat-expansion-panel-header>
 
         <form [formGroup]="executiveForm" class="mt-4">
-            <div class="flex gap-4 items-center">
-                <label>Risk Band</label>
-                <mat-form-field
-                    appearance="outline"
-                    class="flex-1 custom-form-field"
-                >
-                    <mat-select
-                        formControlName="riskBand"
-                        (selectionChange)="updateRiskBandColor($event.value)"
-                        [ngClass]="riskBandColor"
+            <div class="mb-8 border-b pb-6">
+                <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                    <label class="font-medium text-gray-700 w-32">Risk Band</label>
+                    <div class="flex-1">
+                        <mat-form-field appearance="outline" class="w-full custom-form-field">
+                            <mat-select
+                                formControlName="riskBand"
+                                (selectionChange)="updateRiskBandColor($event.value)"
+                                [ngClass]="riskBandColor"
+                                [ngStyle]="{
+                                    'background-color': riskBandColor,
+                                    color: riskBandColor === '#ffffff' ? '#000000' : '#ffffff'
+                                }"
+                                class="risk-select px-2 h-[52px] rounded-md">
+                                <mat-option *ngFor="let option of riskOptions" [value]="option.value">
+                                    {{ option.label }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+        
+                    <button
+                        mat-flat-button
+                        (click)="getSuggestiveBand()"
+                        class="report-button bg-[#9C211E] hover:bg-[#801B18] flex items-center py-4 px-3 rounded-md shadow-sm gap-1">
+                        <span class="text-white font-medium">Get Suggestive Band</span>
+                        <mat-icon class="text-white">lightbulb</mat-icon>
+                    </button>
+                </div>
+        
+                <div class="flex flex-col md:flex-row gap-4 items-start md:items-center mt-4" *ngIf="suggestiveBand">
+                    <label class="font-medium text-gray-700 w-32">Suggested Risk Band</label>
+                    <div
+                        class="flex-1 px-4 py-3 rounded-md shadow-sm border text-white font-medium"
                         [ngStyle]="{
-                            'background-color': riskBandColor,
-                            'color': riskBandColor === '#ffffff' ? '#000000' : '#ffffff'
-                        }"
-                        class="risk-select"
-                    >
-                        <mat-option
-                            *ngFor="let option of riskOptions"
-                            [value]="option.value"
-                        >
-                            {{ option.label }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                            'background-color': getBandColor(suggestiveBand),
+                            color: getBandColor(suggestiveBand) === '#ffffff' ? '#000000' : '#ffffff'
+                        }">
+                        {{ suggestiveBand }}
+                    </div>
+                </div>
             </div>
+        
             <h3 class="font-bold text-lg text-center pt-2">Analyst Comment</h3>
             <div class="mt-4">
                 <mat-label class="font-bold text-lg">About Entity</mat-label>
-                <angular-editor
-                    formControlName="aboutEntity"
-                    [config]="editorConfig"
-                    class="w-full border bg-white"
-                ></angular-editor>
+                <div class="relative w-full bg-white">
+                    <quill-editor
+                        formControlName="aboutEntity"
+                        [modules]="editorConfig"
+                        class="w-full border bg-white"
+                        (onEditorCreated)="
+                            onEditorCreated($event, 'aboutEntity')
+                        "
+                    ></quill-editor>
+                </div>
             </div>
 
             <div class="mt-4">
                 <mat-label class="font-bold text-lg"
                     >Management Assessment</mat-label
                 >
-                <angular-editor
-                    formControlName="managementAssessment"
-                    [config]="editorConfig"
-                    class="w-full border bg-white"
-                ></angular-editor>
+                <div class="relative w-full bg-white">
+                    <quill-editor
+                        formControlName="managementAssessment"
+                        [modules]="editorConfig"
+                        class="w-full border bg-white"
+                        (onEditorCreated)="
+                            onEditorCreated($event, 'managementAssessment')
+                        "
+                    ></quill-editor>
+                    <button
+                        class="absolute top-8 right-2 flex items-center justify-center rounded-[6px] px-2 py-1 text-[0.7rem] bg-[#9C211E] hover:bg-[#801B18] text-white font-semibold w-fit"
+                        title="Enhance with AI"
+                        (click)="summarizeAssessment('managementAssessment')"
+                        [disabled]="!executiveForm.get('managementAssessment')?.value"
+                    >
+                        <mat-icon class="mr-1 text-[1.3rem] text-white"
+                            >auto_awesome</mat-icon
+                        >
+                        <span class="truncate">Enhance with AI</span>
+                    </button>
+                </div>
             </div>
 
             <div class="mt-4">
                 <mat-label class="font-bold text-lg"
                     >Operational Assessment</mat-label
                 >
-                <angular-editor
-                    formControlName="operationalAssessment"
-                    [config]="editorConfig"
-                    class="w-full border bg-white"
-                ></angular-editor>
+                <div class="relative w-full bg-white">
+                    <quill-editor
+                        formControlName="operationalAssessment"
+                        [modules]="editorConfig"
+                        class="w-full border bg-white"
+                        (onEditorCreated)="
+                            onEditorCreated($event, 'operationalAssessment')
+                        "
+                    ></quill-editor>
+                    <button
+                        class="absolute top-8 right-2 flex items-center justify-center rounded-[6px] px-2 py-1 text-[0.7rem] bg-[#9C211E] hover:bg-[#801B18] text-white font-semibold w-fit"
+                        title="Enhance with AI"
+                        (click)="summarizeAssessment('operationalAssessment')"
+                        [disabled]="!executiveForm.get('operationalAssessment')?.value"
+                    >
+                        <mat-icon class="mr-1 text-[1.3rem] text-white"
+                            >auto_awesome</mat-icon
+                        >
+                        <span class="truncate">Enhance with AI</span>
+                    </button>
+                </div>
             </div>
             <div class="mt-4">
                 <mat-label class="font-bold text-lg"
                     >Financial Assessment</mat-label
                 >
-                <angular-editor
-                    formControlName="financialAssessment"
-                    [config]="editorConfig"
-                    name="financialAssessment"
-                    class="w-full border bg-white"
-                ></angular-editor>
+                <div class="relative w-full bg-white">
+                    <quill-editor
+                        formControlName="financialAssessment"
+                        [modules]="editorConfig"
+                        name="financialAssessment"
+                        class="w-full border bg-white"
+                        (onEditorCreated)="
+                            onEditorCreated($event, 'financialAssessment')
+                        "
+                    ></quill-editor>
+                    <button
+                        class="absolute top-8 right-2 flex items-center justify-center rounded-[6px] px-2 py-1 text-[0.7rem] bg-[#9C211E] hover:bg-[#801B18] text-white font-semibold w-fit"
+                        title="Enhance with AI"
+                        (click)="summarizeAssessment('financialAssessment')"
+                        [disabled]="!executiveForm.get('financialAssessment')?.value"
+                    >
+                        <mat-icon class="mr-1 text-[1.3rem] text-white"
+                            >auto_awesome</mat-icon
+                        >
+                        <span class="truncate">Enhance with AI</span>
+                    </button>
+                </div>
             </div>
             <div class="mt-4">
                 <mat-label class="font-bold text-lg"
                     >Legal/Compliance Assessment</mat-label
                 >
-                <angular-editor
-                    formControlName="complianceAssessment"
-                    [config]="editorConfig"
-                    name="complianceAssessment"
-                    class="w-full border bg-white"
-                ></angular-editor>
+                <div class="relative w-full bg-white">
+                    <quill-editor
+                        formControlName="complianceAssessment"
+                        [modules]="editorConfig"
+                        name="complianceAssessment"
+                        class="w-full border bg-white"
+                        (onEditorCreated)="
+                            onEditorCreated($event, 'complianceAssessment')
+                        "
+                    ></quill-editor>
+                    <button
+                        class="absolute top-8 right-2 flex items-center justify-center rounded-[6px] px-2 py-1 text-[0.7rem] bg-[#9C211E] hover:bg-[#801B18] text-white font-semibold w-fit"
+                        title="Enhance with AI"
+                        (click)="summarizeAssessment('complianceAssessment')"
+                        [disabled]="!executiveForm.get('complianceAssessment')?.value"
+                    >
+                        <mat-icon class="mr-1 text-[1.3rem] text-white"
+                            >auto_awesome</mat-icon
+                        >
+                        <span class="truncate">Enhance with AI</span>
+                    </button>
+                </div>
             </div>
             <div class="mt-4">
                 <mat-label class="font-bold text-lg"
                     >Other Comments & Disclaimer</mat-label
                 >
-                <angular-editor
-                    formControlName="commentsDisclaimer"
-                    [config]="editorConfig"
-                    name="commentsDisclaimer"
-                    class="w-full border bg-white"
-                ></angular-editor>
+                <div class="relative w-full bg-white">
+                    <quill-editor
+                        formControlName="commentsDisclaimer"
+                        [modules]="editorConfig"
+                        name="commentsDisclaimer"
+                        class="w-full border bg-white"
+                        (onEditorCreated)="
+                            onEditorCreated($event, 'commentsDisclaimer')
+                        "
+                    ></quill-editor>
+                </div>
             </div>
         </form>
     </mat-expansion-panel>
@@ -146,7 +238,10 @@
                             class="border p-3 font-semibold text-center"
                             [ngStyle]="{
                                 'background-color': band.color,
-                                'color': band.color === '#ffffff' ? '#000000' : '#ffffff'
+                                color:
+                                    band.color === '#ffffff'
+                                        ? '#000000'
+                                        : '#ffffff'
                             }"
                         >
                             {{ band.label }}
@@ -189,9 +284,12 @@
                     <tr *ngFor="let item of sustainabilityData; let i = index">
                         <td class="p-3 border font-semibold">
                             {{ item.parameter }}
-                            <span *ngIf="item.parameter === 'Overriding Factors'">
-                              * (Comprehensive credit, issuance of shares, significant arbitration proceeding)
-                          </span>
+                            <span
+                                *ngIf="item.parameter === 'Overriding Factors'"
+                            >
+                                * (Comprehensive credit, issuance of shares,
+                                significant arbitration proceeding)
+                            </span>
                         </td>
                         <td
                             *ngIf="item.parameter !== 'Risk Score Range'"
@@ -213,7 +311,11 @@
                                 type="text"
                                 [(ngModel)]="item.score"
                                 name="score{{ item.parameter }}"
-                                (input)="updateSubtotal()"
+                                (input)="
+                                    item.parameter === 'Overriding Factors'
+                                        ? updatePartnerSustainabilityScore()
+                                        : updateSubtotal()
+                                "
                                 class="w-full p-2 border rounded-md focus:ring focus:ring-ring bg-input text-input-foreground text-center"
                             />
 

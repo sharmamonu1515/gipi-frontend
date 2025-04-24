@@ -14,56 +14,54 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { FolderManagerComponent } from './folder-manager.component';
-import { FileManagerDetailsComponent } from '../file-manager/file-manager-details.component';
-import { FolderDetailComponent } from './folder-detail.component';
+
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { FolderDetailComponent } from './folder-detail/folder-detail.component';
+import { FileManagerDetailsComponent } from '../file-manager/file-manager-details/file-manager-details.component';
 
 const FolderManagerRoutes: Route[] = [
-  {
-    path: 'folder-manager',
-    component: FolderManagerComponent,
-    children: [
-      {
-        path: 'file-details/:name',
-        component: FileManagerDetailsComponent,
-        outlet: 'sidebar'
-      },
-      {
-        path: 'folder-details/:name',
-        component: FolderDetailComponent,
-        outlet: 'sidebar'
-      }
-    ]
-  }
+    {
+        path: 'folder-manager',
+        component: FolderManagerComponent,
+        children: [
+            {
+                path: 'file-details/:name',
+                component: FileManagerDetailsComponent,
+                outlet: 'sidebar',
+            },
+            {
+                path: 'folder-details/:name',
+                component: FolderDetailComponent,
+                outlet: 'sidebar',
+            },
+        ],
+    },
 ];
 
 @NgModule({
-  declarations: [
-    FolderManagerComponent,
-    FolderDetailComponent
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(FolderManagerRoutes),
-    MatButtonModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatProgressBarModule,
-    FuseCardModule,
-    FuseAlertModule,
-    SharedModule,
-    MatCardModule,
-    MatGridListModule,
-    MatSnackBarModule,
-    MatTooltipModule,
-    MatDialogModule,
-    MatSidenavModule
-  ]
+    declarations: [FolderManagerComponent, FolderDetailComponent],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(FolderManagerRoutes),
+        MatButtonModule,
+        MatCheckboxModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        MatProgressBarModule,
+        FuseCardModule,
+        FuseAlertModule,
+        SharedModule,
+        MatCardModule,
+        MatGridListModule,
+        MatSnackBarModule,
+        MatTooltipModule,
+        MatDialogModule,
+        MatSidenavModule,
+    ],
 })
-export class FolderManagerModule { }
+export class FolderManagerModule {}

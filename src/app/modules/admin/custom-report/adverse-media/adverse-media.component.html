@@ -1,0 +1,172 @@
+<div class="mx-auto mt-6 p-6 bg-white dark:bg-gray-900 rounded-1xl shadow-lg">
+    <div class="flex items-center justify-between mb-3">
+        <h2 class="text-3xl font-bold text-gray-800 dark:text-white">
+            {{ companyName }}
+        </h2>
+        <button
+            class="flex items-center bg-[#9C211E] hover:bg-[#801B18] gap-2 px-2 py-1 text-white text-sm font-medium rounded-xl shadow transition"
+            (click)="generateContent()"
+        >
+            <mat-icon class="text-white">auto_awesome</mat-icon>
+            Generate Content
+        </button>
+    </div>
+
+    <mat-tab-group class="custom-tab-group" animationDuration="400ms">
+        <mat-tab label="📝 Content">
+            <div
+                class="relative pt-3 pb-3 pr-12 pl-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 mt-1 whitespace-pre-wrap break-words justified-text min-h-[200px]"
+            >
+                <button
+                    mat-icon-button
+                    matTooltip="Copy"
+                    class="absolute top-2 right-2"
+                    (click)="copyText(generatedContent)"
+                    [disabled]="!generatedContent"
+                >
+                    <mat-icon class="text-gray-500 dark:text-white"
+                        >content_copy</mat-icon
+                    >
+                </button>
+
+                <div [innerHTML]="generatedContent || 'Generated content will appear here...'"></div>
+            </div>
+        </mat-tab>
+
+        <mat-tab label="🔗 Reference">
+            <div
+                class="relative pt-3 pb-3 pr-12 pl-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 mt-1 whitespace-pre-wrap min-h-[200px]"
+            >
+                <button
+                    mat-icon-button
+                    matTooltip="Copy"
+                    class="absolute top-2 right-2"
+                    (click)="copyToClipboard(referenceLinks?.join('\n'))"
+                    [disabled]="!referenceLinks?.length"
+                >
+                    <mat-icon class="text-gray-500 dark:text-white"
+                        >content_copy</mat-icon
+                    >
+                </button>
+                <div *ngIf="referenceLinks?.length > 0; else noLinks">
+                    <ul class="list-disc list-inside space-y-1">
+                        <li *ngFor="let link of referenceLinks">
+                            <a
+                                [href]="link"
+                                target="_blank"
+                                class="text-blue-600 hover:underline dark:text-blue-400"
+                            >
+                                {{ link }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <ng-template #noLinks>
+                    References and sources will appear here...
+                </ng-template>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+
+    <div class="mt-3">
+        <h3 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
+            Directors
+        </h3>
+
+        <mat-form-field appearance="outline" class="w-full mb-1">
+            <mat-label>Select Directors</mat-label>
+            <mat-select
+                multiple
+                [(ngModel)]="selectedDirectors"
+                (selectionChange)="onDirectorsSelected()"
+            >
+                <mat-option
+                    *ngFor="let director of directorList"
+                    [value]="director"
+                >
+                    {{ director.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div
+            *ngFor="let director of selectedDirectors"
+            class="mt-2 p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-md"
+        >
+            <div class="flex items-center justify-between mt-2 mb-2">
+                <h4
+                    class="text-xl font-semibold text-gray-700 dark:text-gray-100"
+                >
+                    {{ director.name }}
+                </h4>
+            </div>
+
+            <mat-tab-group class="custom-tab-group" animationDuration="300ms">
+                <mat-tab label="📝 Content">
+                    <div
+                        class="relative pt-3 pb-3 pr-12 pl-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 mt-1 whitespace-pre-wrap min-h-[150px]"
+                    >
+                        <button
+                            mat-icon-button
+                            matTooltip="Copy"
+                            class="absolute top-2 right-2"
+                            (click)="copyText(director.content)"
+                            [disabled]="!director.content"
+                        >
+                            <mat-icon class="text-gray-500 dark:text-white"
+                                >content_copy</mat-icon
+                            >
+                        </button>
+                        <div [innerHTML]="director.content|| 'Director content will appear here...'"></div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="🔗 Reference">
+                    <div
+                        class="relative pt-3 pb-3 pr-12 pl-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 mt-1 whitespace-pre-wrap min-h-[150px]"
+                    >
+                        <button
+                            mat-icon-button
+                            matTooltip="Copy"
+                            class="absolute top-2 right-2"
+                            (click)="
+                                copyToClipboard(
+                                    director.referenceLinks?.join('\n')
+                                )
+                            "
+                            [disabled]="!director.referenceLinks?.length"
+                        >
+                            <mat-icon class="text-gray-500 dark:text-white"
+                                >content_copy</mat-icon
+                            >
+                        </button>
+                        <div
+                            *ngIf="
+                                director.referenceLinks?.length > 0;
+                                else noDirectorLinks
+                            "
+                        >
+                            <ul class="list-disc list-inside space-y-1">
+                                <li
+                                    *ngFor="let link of director.referenceLinks"
+                                >
+                                    <a
+                                        [href]="link"
+                                        target="_blank"
+                                        class="text-blue-600 hover:underline dark:text-blue-400"
+                                    >
+                                        {{ link }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <ng-template #noDirectorLinks>
+                            Director references will appear here...
+                        </ng-template>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </div>
+</div>

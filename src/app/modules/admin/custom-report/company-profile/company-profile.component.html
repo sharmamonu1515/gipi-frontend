@@ -33,8 +33,9 @@
                     <input matInput formControlName="reportNo" />
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="w-full">
-                    <mat-label>CIN</mat-label>
-                    <input matInput formControlName="cin" />
+                    <mat-label>{{companyType === 'llps' ? 'LLPIN' : 'CIN'}}</mat-label>
+                    <input *ngIf="companyType === 'company'" matInput formControlName="cin" />
+                    <input *ngIf="companyType === 'llps'" matInput formControlName="llpin" />
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="w-full">
                     <mat-label>Age</mat-label>
@@ -100,7 +101,7 @@
                     <textarea
                         matInput
                         rows="2"
-                        formControlName="companyAddress"
+                        formControlName="companyAddress" 
                     ></textarea>
                 </mat-form-field>
                 <!-- <mat-form-field appearance="outline" class="col-span-2 w-full">
@@ -133,14 +134,6 @@
                         matInput
                         formControlName="contactNo"
                         rows="1"
-                    ></textarea>
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="col-span-2 w-full">
-                    <mat-label>Description</mat-label>
-                    <textarea
-                        matInput
-                        rows="3"
-                        formControlName="description"
                     ></textarea>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="col-span-2 w-full">
@@ -197,13 +190,13 @@
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="w-full">
                     <mat-label>Type of Customers</mat-label>
-                    <input matInput formControlName="cuatomerTypes" />
+                    <input matInput formControlName="customerTypes" />
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="w-full">
                     <mat-label>Other Entities in Group</mat-label>
                     <input
                         matInput
-                        formControlName="otherentities"
+                        formControlName="otherEntities"
                         type="email"
                     />
                 </mat-form-field>
@@ -338,14 +331,14 @@
                                 <input
                                     type="number"
                                     [(ngModel)]="detail.no_of_employees"
-                                    class="w-full p-1 border rounded text-right"
+                                    class="w-full p-1 border rounded"
                                 />
                             </td>
                             <td class="border border-gray-300 p-2">
                                 <input
                                     type="number"
                                     [(ngModel)]="detail.amount"
-                                    class="w-full p-1 border rounded text-right"
+                                    class="w-full p-1 border rounded"
                                 />
                             </td>
                         </tr>
@@ -870,6 +863,43 @@
     </div>
 </mat-expansion-panel>
 
+<mat-expansion-panel class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100">
+    <mat-expansion-panel-header class="custom-header dark:bg-gray-700 dark:text-gray-300">
+      <span class="text-lg font-semibold text-primary">
+        Director Shareholding Details
+      </span>
+    </mat-expansion-panel-header>
+  
+    <div class="overflow-y-auto max-h-80">
+      <ng-container *ngFor="let yearGroup of directorShareholdingsByYear">
+        <div>
+          <div class="bg-red-800 text-white p-2 font-semibold">
+            Financial Year: {{ yearGroup.year }}
+          </div>
+  
+          <table class="w-full border-collapse border border-gray-300 mb-4">
+            <thead class="bg-red-800 text-white">
+              <tr>
+                <th class="border border-gray-300 p-2">DIN/PAN</th>
+                <th class="border border-gray-300 p-2">Director Name</th>
+                <th class="border border-gray-300 p-2">No of Shares</th>
+                <th class="border border-gray-300 p-2">Shareholding %</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let director of yearGroup.shareholdings" class="odd:bg-gray-100 even:bg-white dark:odd:bg-gray-700 dark:even:bg-gray-800">
+                <td class="border border-gray-300 p-2">{{ director.din_pan }}</td>
+                <td class="border border-gray-300 p-2">{{ director.full_name }}</td>
+                <td class="border border-gray-300 p-2">{{ director.no_of_shares }}</td>
+                <td class="border border-gray-300 p-2">{{ director.percentage_holding || '' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+    </div>
+  </mat-expansion-panel>
+
     <mat-expansion-panel
         class="custom-expansion-panel dark:bg-gray-800 dark:text-gray-100"
     >
@@ -1005,18 +1035,20 @@
                                 class="w-full p-2 border border-gray-300 rounded-md"
                             />
                         </td>
-                        <td *ngFor="let year of displayedMcaYears; let last = last" class="border border-gray-400 px-4 py-2 relative">
+                        <td *ngFor="let year of displayedMcaYears; let last = last" 
+                            class="border border-gray-400 px-4 py-2 relative">
                             <div class="flex items-center justify-between">
-                                <input type="text" [(ngModel)]="charge.data[year]" class="w-full p-2 border border-gray-300 rounded-md" />
-        
-                                <button *ngIf="last" matTooltip="Delete Row" (click)="openDeleteDialog(i,'mca')" 
-                                class="ml-4 text-red-600 hover:text-red-800 transition">
+                                <input type="text" [(ngModel)]="charge.data[year]" 
+                                    class="w-full p-2 border border-gray-300 rounded-md" />
+                
+                                <button *ngIf="last" matTooltip="Delete Row" (click)="openDeleteDialog(i, 'mca')" 
+                                    class="ml-4 text-red-600 hover:text-red-800 transition">
                                     <mat-icon class="text-red-600">close</mat-icon>
                                 </button>
                             </div>
                         </td>
                     </tr>
-                </tbody>
+                </tbody>                
             </table>
         </div>
     </mat-expansion-panel>
@@ -1254,7 +1286,9 @@
                             class="border border-gray-300 px-4 py-2"
                         >
                             <input
-                                [(ngModel)]="auditData[year].auditor_firm_name"
+                            [(ngModel)]="companyType === 'llps' 
+                            ? auditData[year].firm_name 
+                            : auditData[year].auditor_firm_name"
                                 class="w-full p-1 border border-gray-300 rounded"
                             />
                         </td>
@@ -1268,8 +1302,9 @@
                             class="border border-gray-300 px-4 py-2"
                         >
                             <input
-                                [(ngModel)]="
-                                    auditData[year].firm_registration_number
+                                [(ngModel)]="companyType === 'llps' 
+                                    ? auditData[year].firm_id
+                                    : auditData[year].firm_registration_number
                                 "
                                 class="w-full p-1 border border-gray-300 rounded"
                             />
@@ -1284,7 +1319,9 @@
                             class="border border-gray-300 px-4 py-2"
                         >
                             <input
-                                [(ngModel)]="auditData[year].auditor_name"
+                                [(ngModel)]="companyType === 'llps'
+                                ? auditData[year].name
+                                : auditData[year].auditor_name"
                                 class="w-full p-1 border border-gray-300 rounded"
                             />
                         </td>
@@ -1298,7 +1335,9 @@
                             class="border border-gray-300 px-4 py-2"
                         >
                             <input
-                                [(ngModel)]="auditData[year].membership_number"
+                                [(ngModel)]="companyType === 'llps'
+                                ? auditData[year].id
+                                : auditData[year].membership_number"
                                 class="w-full p-1 border border-gray-300 rounded"
                             />
                         </td>

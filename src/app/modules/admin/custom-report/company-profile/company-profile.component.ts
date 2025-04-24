@@ -1,6 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { CustomReportService } from '../custom-report.service';
 import {
     IBankCharge,
     ICreditRating,
@@ -9,10 +8,12 @@ import {
     IFilteredRating,
     IKeyManagerPeron,
 } from 'app/interfaces/custom-report';
-import { DeletePopupComponent } from '../delete-popup/delete-popup.component';
+import { DeletePopupComponent } from '../components/delete-popup/delete-popup.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { ReportDataService } from '../services/report-data.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'environments/environment';
 
 @Component({
     selector: 'app-company-profile',
@@ -44,7 +45,7 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
     directorsData: any;
     bankCharges: IBankCharge[] = [];
     mcaFilingColumns: string[] = [];
-    mcaFiling = [{ particulars: '', data: [] }];
+    mcaFiling = [{ particulars: '', data: {} }];
     mcaYears: any;
     displayedMcaYears: string[] = [];
     epfoDataList: IEPFOData[] = [];
@@ -55,14 +56,20 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
     totalUniqueCharges: number = 0;
     keyManagerialPersonsCount = 0;
     pastDirectorsCount = 0;
-    selectedOwnershipYears:string[]=[];
+    selectedOwnershipYears: string[] = [];
     private originalData: string = '';
+    directorShareholdingsByYear: any[] = [];
+    allYears: any[] = [];
+    totalEpfo : number = 0;
+
+    companyType: string = 'company';
     
     constructor(
         private fb: FormBuilder,
         private dialog: MatDialog,
         private dataService: ReportDataService,
-        private toastr: ToastrService
+        private toastr: ToastrService,
+        private http: HttpClient
     ) {}
 
     get formControls() {
@@ -71,11 +78,13 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
 
     ngOnInit(): void {
         this.initializeForms();
-        
+
         const savedData = this.dataService.getData('company-profile');
-        
+
         this.companyData = this.dataService.getCompanyData();
-    
+
+        this.companyType = this.dataService.getCompanyType();
+        
         if (savedData) {
             this.loadFromSavedData(savedData);
         } else if (this.companyData) {
@@ -83,7 +92,7 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
         }
 
         this.originalData = JSON.stringify(this.getData());
-    }    
+    }
 
     hasUnsavedChanges(): boolean {
         const currentData = JSON.stringify(this.getData());
@@ -93,58 +102,63 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
     private loadFromSavedData(savedData: any): void {
         this.companyForm.patchValue(savedData.companyForm);
         this.operationalForm.patchValue(savedData.operationalForm);
-        
+
         this.gstDetails = savedData.gstDetails;
         this.keyManagerialPersons = savedData.keyManagerialPersons;
         this.pastDirectors = savedData.pastDirectors;
         this.directorsData = savedData.directorsData;
         this.auditData = savedData.auditData;
-        
+
         this.allAuditorYears = savedData.allAuditorYears || [];
         this.auditorYears = savedData.auditorYears || [];
         this.displayedAuditorYears = savedData.auditorYears || [];
-        
+
         this.allMcaYears = savedData.allMcaYears || [];
         this.mcaYears = savedData.mcaYears || [];
         this.displayedMcaYears = savedData.mcaYears || [];
-        
-        this.allShareholdingSummaryYears = savedData.allShareholdingSummaryYears || [];
-        this.shareholdingSummaryYears = savedData.shareholdingSummaryYears || [];
-        this.displayedshareholdingSummaryYears = savedData.shareholdingSummaryYears || [];
-        
+
+        this.allShareholdingSummaryYears =
+            savedData.allShareholdingSummaryYears || [];
+        this.shareholdingSummaryYears =
+            savedData.shareholdingSummaryYears || [];
+        this.displayedshareholdingSummaryYears =
+            savedData.shareholdingSummaryYears || [];
+
         this.allShareholdingYears = savedData.allShareholdingYears || [];
         this.shareholdingYears = savedData.shareholdingYears || [];
         this.displayedshareholdingYears = savedData.shareholdingYears || [];
-        
+
         this.selectedOwnershipYears = savedData.selectedOwnershipYears || [];
-        
+
         this.creditRatings = savedData.creditRating;
         this.mcaFiling = savedData.mcaFiling;
         this.filteredCharges = savedData.bankCharges;
-        this.bankCharges = savedData.bankCharges; 
+        this.bankCharges = savedData.bankCharges;
         this.epfoDataList = savedData.epfoDataList;
         this.entityTypes = savedData.entityTypes;
         this.shareholdingSummaryData = savedData.shareHoldingSummary;
         this.shareholdingData = savedData.shareHolding;
-        
+
         this.keyManagerialPersonsCount = this.keyManagerialPersons.length;
         this.pastDirectorsCount = this.pastDirectors.length;
-        
+
         this.updateTotalUniqueCharges();
-    }
+        }
 
     private ProcessCompanyData(companyData: any) {
+        this.patchFormValues(companyData);
+
         this.getCreditratings(companyData?.credit_ratings);
 
         this.processCharges(companyData?.charge_sequence);
-
-        this.patchFormValues(companyData);
 
         this.epfoDataList =
             companyData?.establishments_registered_with_epfo?.filter(
                 (item: IEPFOData) =>
                     item.filing_details && item.filing_details.length > 0
             );
+        
+        this.mcaFiling = companyData?.mca_filings || this.mcaFiling;
 
         this.entityTypes = [
             {
@@ -175,11 +189,16 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
 
         //auditor
         const latestFinancials = companyData?.financials;
-        const standaloneFinancials = latestFinancials.filter(
-            (item: any) => item.nature === 'STANDALONE'
-        );
+        const standaloneFinancials =
+            this.companyType === 'llps'
+                ? latestFinancials
+                : latestFinancials.filter(
+                    (item: any) => item.nature === 'STANDALONE'
+                );
 
-        const validFinancials = standaloneFinancials?.filter(
+        const validFinancials = this.companyType === 'llps' ? standaloneFinancials?.filter(
+            (entry) => entry.certifiers !== null
+        ) : standaloneFinancials?.filter(
             (entry) => entry.auditor !== null
         );
 
@@ -189,26 +208,48 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
                     new Date(item.year).getFullYear().toString()
                 )
             )
-        );
+        ) || [];
+        // director shareholdings
+        this.allYears = Array.from(
+            new Set(
+                companyData.director_shareholdings.map((item: any) => item.year)
+            )
+        ) || [];
+
+        this.directorShareholdingsByYear = this.allYears.map((year) => {
+            return {
+                year: year,
+                shareholdings: companyData.director_shareholdings.filter(
+                    (item: any) => item.year === year
+                ),
+            };
+        });
 
         //shareholding summary
         const shareholdingSummaryFinancials =
-            companyData?.shareholdings_summary;
+            companyData?.shareholdings_summary || [];
 
         this.allShareholdingSummaryYears = shareholdingSummaryFinancials?.map(
             (item) => item.year
-        );
+        ) || [];
 
         this.allShareholdingSummaryYears = Array.from(
-            new Set([...this.allShareholdingSummaryYears, ...this.allAuditorYears])
+            new Set([
+                ...this.allShareholdingSummaryYears,
+                ...this.allAuditorYears,
+            ])
         );
-        const yearsWithSummaryData = this. allShareholdingSummaryYears.filter(year =>
-            shareholdingSummaryFinancials.some(entry => entry.year === year)
+        const yearsWithSummaryData = this.allShareholdingSummaryYears.filter(
+            (year) =>
+                shareholdingSummaryFinancials.some(
+                    (entry) => entry.year === year
+                )
         );
-        
+
         if (yearsWithSummaryData.length > 2) {
-           
-            this.shareholdingSummaryYears = yearsWithSummaryData.slice(0, 3).reverse();
+            this.shareholdingSummaryYears = yearsWithSummaryData
+                .slice(0, 3)
+                .reverse();
         } else {
             this.shareholdingSummaryYears = yearsWithSummaryData.reverse();
         }
@@ -235,16 +276,15 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
 
         this.allShareholdingYears = Array.from(
             new Set(equityEntries?.map((item) => item.year))
-        );
+        ) || [];
         this.allShareholdingYears = Array.from(
             new Set([...this.allShareholdingYears, ...this.allAuditorYears])
         );
-        const yearsWithData = this.allShareholdingYears.filter(year =>
-            equityEntries.some(entry => entry.year === year)
+        const yearsWithData = this.allShareholdingYears.filter((year) =>
+            equityEntries.some((entry) => entry.year === year)
         );
-        
+
         if (yearsWithData.length > 2) {
-           
             this.shareholdingYears = yearsWithData.slice(0, 3).reverse();
         } else {
             this.shareholdingYears = yearsWithData.reverse();
@@ -280,13 +320,12 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
 
         validFinancials?.forEach((entry) => {
             this.auditData[new Date(entry.year).getFullYear().toString()] =
-                entry?.auditor;
+                this.companyType === 'llps' ? entry?.certifiers : entry?.auditor;
         });
     }
 
     private patchFormValues(companyData: any) {
-        const companyDetails = companyData?.company;
-        const description = companyData?.description;
+        const companyDetails = this.companyType === 'llps' ? companyData?.llp :  companyData?.company;
         this.directorsData = companyData?.director_network;
 
         const fullAddress = [
@@ -299,25 +338,26 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
             ?.filter(Boolean)
             .join(', ');
 
-        const incorporationDate = companyDetails?.incorporation_date;
+        const incorporationDate = this.formatDate(companyDetails?.incorporation_date);
         const incorporationYear = new Date(incorporationDate).getFullYear();
         const currentYear = new Date().getFullYear();
         const age = currentYear - incorporationYear;
         const formattedIncorporationDate = `${age} Years (${incorporationDate})`;
+        this.totalEpfo = companyData?.establishments_registered_with_epfo?.length;
 
         this.companyForm.patchValue({
             legal_name: companyDetails.legal_name,
-            reportNo: companyDetails.reportNo,
+            reportNo: companyDetails.reportNumber,
             cin: companyDetails.cin,
+            llpin : companyDetails?.llpin,
             age: formattedIncorporationDate,
             status: companyDetails.status,
             type: companyDetails.classification,
             subCategory: companyDetails.subCategory,
             email: companyDetails.email,
             website: companyDetails.website,
-            //industry: companyData?.industry_segments[0]?.industry,
-            //sic: companyDetails.sic,
-            description: description.desc_thousand_char,
+            industry: companyData?.industry,
+            sic: companyDetails.sic,
             balanceSheetDate: companyDetails.balanceSheetDate,
             paidUpCapital: companyDetails.paid_up_capital,
             profitLoss: companyDetails.profitLoss,
@@ -325,7 +365,7 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
             directorSignatory: companyDetails.directorSignatory,
             activeCompliance: companyDetails.active_compliance,
             companyAddress: fullAddress,
-            statutoryReg: 'PAN:  ' + companyDetails.pan,
+            statutoryReg: 'PAN:  ' + companyDetails.pan + ', EPFO: ' + this.totalEpfo,
             correspondenceAddress: companyDetails.correspondenceAddress,
             contactNo: `${
                 companyData?.contact_details?.phone[0]?.phoneNumber || ''
@@ -343,10 +383,7 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
             }`.trim(),
         });
 
-        this.operationalForm.patchValue({
-            companyAuditor: companyDetails.auditor_name,
-            employeeAcross: companyDetails.number_of_employees,
-        });
+        this.operationalForm.patchValue(companyData?.operational_form);
     }
 
     private initializeForms() {
@@ -354,6 +391,7 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
             'legal_name',
             'reportNo',
             'cin',
+            'llpin',
             'age',
             'status',
             'type',
@@ -362,7 +400,6 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
             'website',
             'industry',
             'sic',
-            'description',
             'balanceSheetDate',
             'paidUpCapital',
             'profitLoss',
@@ -385,8 +422,8 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
             'businessGroup',
             'employeesLocation',
             'companyAuditor',
-            'cuatomerTypes',
-            'otherentities',
+            'customerTypes',
+            'otherEntities',
         ]);
     }
 
@@ -453,7 +490,7 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
             });
         } else if (tabName === 'shareholding') {
             this.displayedshareholdingYears = [
-                ...this.shareholdingYears
+                ...this.shareholdingYears,
             ].reverse();
 
             this.displayedshareholdingYears.forEach((year) => {
@@ -524,12 +561,14 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
         //         status: '',
         //         property_particulars: '',
         //     });
-        // } 
+        // }
         if (tab == 'mca') {
-            this.mcaFiling.push({
-                particulars: '',
-                data: new Array(this.mcaFilingColumns.length).fill(''),
-            });
+            if (tab === 'mca') {
+                this.mcaFiling.push({
+                    particulars: '',
+                    data: {} 
+                });
+            }
         }
     }
 
@@ -640,15 +679,17 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
             bankCharges: this.filteredCharges,
             epfoDataList: this.epfoDataList,
             entityTypes: this.entityTypes,
-            shareHoldingSummary:this.shareholdingSummaryData,
-            shareholdingSummaryYears:this.displayedshareholdingSummaryYears,
-            shareHolding:this.shareholdingData,
-            shareholdingYears:this.displayedshareholdingYears,
+            shareHoldingSummary: this.shareholdingSummaryData,
+            shareholdingSummaryYears: this.displayedshareholdingSummaryYears,
+            shareHolding: this.shareholdingData,
+            shareholdingYears: this.displayedshareholdingYears,
             allAuditorYears: this.allAuditorYears,
-            allMcaYears: this.allMcaYears, 
+            allMcaYears: this.allMcaYears,
             allShareholdingSummaryYears: this.allShareholdingSummaryYears,
             allShareholdingYears: this.allShareholdingYears,
-            selectedOwnershipYears: this.selectedOwnershipYears
+            selectedOwnershipYears: this.selectedOwnershipYears,
+            directorShareholdingsByYear:this.directorShareholdingsByYear,
+            companyType : this.companyType
         };
         return data;
     }
@@ -675,6 +716,7 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
             }
         });
     }
+    
     deleteRow(index: number, tab: string): void {
         if (tab == 'mca') {
             this.mcaFiling.splice(index, 1);
@@ -692,9 +734,34 @@ export class CompanyProfileComponent implements OnInit, AfterViewInit {
 
     saveData() {
         const data = this.getData();
-        this.dataService.setData('company-profile', data);
-        this.toastr.success('Company Profile data saved successfully');
-        this.originalData = JSON.stringify(data);
+
+        const { companyForm, mcaFiling, operationalForm, ...other} = data;
+
+        const updatePayload = {
+            companyId: this.dataService.getCompanyId(),
+            companyForm,
+            mcaFiling,
+            operationalForm
+        }
+
+        const apiUrl = `${environment.baseURI}/custom-report/company-profile`; 
+  
+        this.http.put(apiUrl, updatePayload).subscribe({
+          next: (response) => {
+            this.dataService.setData('company-profile', data);
+            this.toastr.success('Company Profile data saved successfully');
+            this.originalData = JSON.stringify(data);
+          },
+          error: (error) => {
+            console.error('Error saving data:', error);
+            this.toastr.error('Failed to save Company Profile data');
+          }
+        });
+    }
+    formatDate(dateString: string): string {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0]; 
     }
 
 }

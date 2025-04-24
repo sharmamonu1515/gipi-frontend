@@ -4,8 +4,7 @@
     "cli": {
         "schematicCollections": [
             "@angular-eslint/schematics"
-        ],
-        "analytics": false
+        ]
     },
     "newProjectRoot": "projects",
     "projects": {
@@ -71,7 +70,9 @@
                             "src/styles/tailwind.scss",
                             "node_modules/ngx-toastr/toastr.css",
                             "src/styles/bootstrap.min.css",
-                            "node_modules/@kolkov/angular-editor/themes/default.scss"
+                            "node_modules/@kolkov/angular-editor/themes/default.scss",
+                            "node_modules/quill/dist/quill.snow.css",
+                             "node_modules/quill/dist/quill.bubble.css"
 
                         ],
                         "scripts": []

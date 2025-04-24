@@ -15,41 +15,36 @@ import { MaterialManualModule } from 'material.component';
 import { LitigationBiDetailComponent } from './litigation-bi-detail/litigation-bi-detail.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { CaseDetailComponent } from '../case-detail/case-detail.component';
+import { PdfExportComponent } from './litigation-bi-detail/pdf-export/pdf-export.component';
 
 const litigationBiRoutes: Route[] = [
-  {
-    path: 'litigation-bi',
-    component: LitigationBiComponent
-  },
-  {
-    path: 'litigation-bi/:id',
-    component: LitigationBiDetailComponent
-  }
+    {
+        path: 'litigation-bi',
+        component: LitigationBiComponent,
+    },
+    {
+        path: 'litigation-bi/:id',
+        component: LitigationBiDetailComponent,
+    },
 ];
 
 @NgModule({
-  declarations: [
-    LitigationBiComponent,
-    LitigationBiAddDataComponent,
-    LitigationBiDetailComponent
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(litigationBiRoutes),
-    MaterialManualModule,
-
-    MatButtonModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    FuseCardModule,
-    FuseAlertModule,
-    SharedModule
-  ],
-  entryComponents:[
-    LitigationBiAddDataComponent
-  ]
+    declarations: [LitigationBiComponent, LitigationBiAddDataComponent, LitigationBiDetailComponent, CaseDetailComponent, PdfExportComponent],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(litigationBiRoutes), //
+        MaterialManualModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        FuseCardModule,
+        FuseAlertModule,
+        SharedModule,
+    ],
+    entryComponents: [LitigationBiAddDataComponent],
 })
-export class LitigationBiModule { }
+export class LitigationBiModule {}

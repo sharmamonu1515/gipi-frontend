@@ -1,0 +1,41 @@
+.example-container {
+  position: relative;
+}
+
+.example-table-container {
+  position: relative;
+  min-height: 300px;
+  max-height: 400px;
+  overflow-y: auto; 
+  overflow-x: hidden; 
+}
+
+.example-table {
+  width: 100%;
+}
+
+.mat-paginator {
+  position: sticky; 
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10; 
+  background: white;
+}
+
+// .example-table-container {
+//   padding-bottom: 56px; 
+// }
+
+.mat-header-row {
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  background: white;
+}
+
+.add-data {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 12px 0px 0px;
+}

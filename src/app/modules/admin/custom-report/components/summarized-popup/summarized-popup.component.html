@@ -1,0 +1,60 @@
+<h2
+    mat-dialog-title
+    class="flex items-center text-xl font-semibold text-gray-800 border-b-2 border-gray-400"
+>
+    Enhaced Assessment options
+</h2>
+
+<mat-dialog-content class="mt-4 space-y-4 pb-2">
+    <p *ngIf="data?.length === 0" class="text-gray-500">
+        No summary available.
+    </p>
+
+    <div *ngIf="data?.length > 0">
+        <div class="flex items-center mb-2 text-lg font-medium text-gray-700">
+            <mat-icon class="text-yellow-500 mr-2">star_rate</mat-icon>
+            Recommended Summaries
+        </div>
+
+        <div class="flex flex-col gap-3">
+            <div
+                *ngFor="let option of data"
+                (click)="toggleSelection(option)"
+                class="cursor-pointer p-3 rounded-xl border transition-colors duration-200 flex items-center justify-between"
+                [ngClass]="{
+                    'border-blue-700 ring-2 ring-blue-300': isSelected(option),
+                    'border-gray-200 hover:border-gray-400': !isSelected(option)
+                }"
+            >
+                <mat-checkbox
+                    [checked]="isSelected(option)"
+                    (click)="$event.stopPropagation()"
+                    (change)="toggleSelection(option)"
+                    class="mr-3"
+                ></mat-checkbox>
+                <div class="text-gray-800 flex-1">
+                    {{ option }}
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="mt-2">
+    <button
+        mat-button
+        (click)="closePopup()"
+        class="mr-2 flex items-center gap-1"
+    >
+        <mat-icon>close</mat-icon> Cancel
+    </button>
+    <button
+        mat-raised-button
+        color="primary"
+        [disabled]="selectedSummaries.length === 0"
+        (click)="submit()"
+        class="flex items-center gap-1"
+    >
+        <mat-icon class="mr-1">send</mat-icon> Submit
+    </button>
+</mat-dialog-actions>

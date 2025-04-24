@@ -1,21 +1,25 @@
-<div class="container mt-6 p-6 bg-white shadow-md rounded-lg w-full">
-    <div class="flex justify-between pb-4 border-b border-gray-200 items-center">
-      <h2 class="text-xl font-semibold text-primary mb-2">Risk Assessment Form</h2>
-      <button 
-          mat-flat-button
-          (click)="saveData()"
-          [disabled]="!hasUnsavedChanges()"
-          class="report-button flex items-center space-x-2 py-2 px-4 rounded-md shadow-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 gap-2"
-      >
-        <span class="text-white font-medium m-2">Save</span>
-        <mat-icon class="text-white">save</mat-icon>
-      </button>
+<div
+class="custom-accordion flex justify-end pb-2 border-b border-gray-200 items-center"
+    >
+        <button
+            mat-flat-button
+            (click)="saveData()"
+            [disabled]="!hasUnsavedChanges()"
+            class="report-button flex items-center space-x-2 py-2 px-4 rounded-md shadow-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 gap-2"
+        >
+            <span class="text-white font-medium m-2">Save</span>
+            <mat-icon class="text-white">save</mat-icon>
+        </button>
     </div>
-  
+<div class="container p-6 bg-white shadow-md rounded-lg w-full">
+    <h2 class="text-xl font-semibold text-primary mb-2">
+        Risk Assessment Form
+    </h2>
+
     <div class="p-2 flex items-center justify-end gap-4">
-      <p class="text-lg font-semibold text-gray-700">
-        Match Found: <span class="text-red-600">{{ matchFoundCount }}</span>
-    </p>
+        <p class="text-lg font-semibold text-gray-700">
+            Match Found: <span class="text-red-600">{{ matchFoundCount }}</span>
+        </p>
         <button
             (click)="addRow()"
             class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
@@ -57,7 +61,9 @@
                             [ngClass]="{
                                 'text-red-600': item.result === 'Match Found',
                                 'text-green-600':
-                                    item.result === 'No Match Found'
+                                    item.result === 'No Match Found',
+                                'text-orange-600':
+                                    item.result === 'Partial Match Found'
                             }"
                             (ngModelChange)="updateAction(item)"
                         >
@@ -69,6 +75,12 @@
                                 value="No Match Found"
                             >
                                 No Match Found
+                            </option>
+                            <option
+                                class="text-orange-600"
+                                value="Partial Match Found"
+                            >
+                                Partial Match Found
                             </option>
                         </select>
                     </td>

@@ -18,54 +18,50 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { FileDetailComponent } from './file-detail.component';
 import { FileListComponent } from './file-list.component';
 import { FileUploaderComponent } from './file-uploader.component';
-import { FileManagerDetailsComponent } from './file-manager-details.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { FileShareHandlerComponent } from './file-share-handler/file-share-handler.component';
+import { FileManagerDetailsComponent } from './file-manager-details/file-manager-details.component';
 
 const FileManagerRoutes: Route[] = [
-  {
-    path: '',
-    component: FileManagerComponent,
-    children: [
-      {
-        path: 'details/:name',  // Changed from :id to :name to match the navigation
-        component: FileManagerDetailsComponent,
-        outlet: 'sidebar'
-      }
-    ]
-  }
+    {
+        path: '',
+        component: FileManagerComponent,
+        children: [
+            {
+                path: 'details/:name',
+                component: FileManagerDetailsComponent,
+                outlet: 'sidebar',
+            },
+        ],
+    },
+    { path: 'share', component: FileShareHandlerComponent, data: { title: 'File Share', animation: 'sharePage' } },
 ];
 
 @NgModule({
-  declarations: [
-    FileManagerComponent,
-    FileDetailComponent,
-    FileListComponent, 
-    FileUploaderComponent,
-    FileManagerDetailsComponent
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(FileManagerRoutes),
-    MaterialManualModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatProgressBarModule,
-    FuseCardModule,
-    FuseAlertModule,
-    SharedModule,
-    MatCardModule,
-    MatGridListModule,
-    MatSnackBarModule,
-    MatTooltipModule,
-    MatDialogModule,
-    MatSidenavModule
-  ]
+    declarations: [FileManagerComponent, FileDetailComponent, FileListComponent, FileUploaderComponent, FileManagerDetailsComponent, FileShareHandlerComponent],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(FileManagerRoutes),
+        MaterialManualModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        MatProgressBarModule,
+        FuseCardModule,
+        FuseAlertModule,
+        SharedModule,
+        MatCardModule,
+        MatGridListModule,
+        MatSnackBarModule,
+        MatTooltipModule,
+        MatDialogModule,
+        MatSidenavModule,
+    ],
 })
-export class FileManagerModule { }
+export class FileManagerModule {}

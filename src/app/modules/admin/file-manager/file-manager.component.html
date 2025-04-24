@@ -1,27 +1,21 @@
 <div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
 
-    <mat-drawer-container
-    class="flex-auto h-full bg-card dark:bg-transparent"
-    [hasBackdrop]="true"
-    (backdropClick)="onBackdropClicked()">
-  
-    <mat-drawer
-        class="w-full sm:w-100 dark:bg-gray-900"
-        [mode]="'over'"
-        [opened]="drawerOpened"
-        [position]="'end'"
-        [disableClose]="false"
-        #matDrawer>
-        <router-outlet name="sidebar"></router-outlet>
-    </mat-drawer>
-  
+    <mat-drawer-container class="flex-auto h-full bg-card dark:bg-transparent" [hasBackdrop]="true"
+        (backdropClick)="onBackdropClicked()">
+
+        <mat-drawer class="w-full sm:w-100 dark:bg-gray-900" [mode]="'over'" [opened]="drawerOpened" [position]="'end'"
+            [disableClose]="false" #matDrawer>
+            <router-outlet name="sidebar"></router-outlet>
+        </mat-drawer>
+
         <mat-drawer-content class="flex flex-col bg-gray-100 dark:bg-transparent">
-  
+
             <!-- Main -->
             <div class="flex flex-col flex-auto">
-  
+
                 <!-- Header -->
-                <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between p-6 sm:py-12 md:px-8 border-b bg-card dark:bg-transparent">
+                <div
+                    class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between p-6 sm:py-12 md:px-8 border-b bg-card dark:bg-transparent">
                     <!-- Title -->
                     <div>
                         <div class="text-4xl font-extrabold tracking-tight leading-none">File Manager</div>
@@ -32,16 +26,13 @@
                     <!-- Actions -->
                     <div class="mt-4 sm:mt-0">
                         <!-- Upload button -->
-                        <button
-                            mat-flat-button
-                            [color]="'primary'"
-                            (click)="fileUploader()">
+                        <button mat-flat-button [color]="'primary'" (click)="fileUploader()">
                             <mat-icon>add</mat-icon>
                             <span class="ml-2 mr-1">Upload file</span>
                         </button>
                     </div>
                 </div>
-  
+
                 <!-- Items list -->
                 <ng-container *ngIf="folders.length > 0 || files.length > 0; else noItems">
                     <div class="p-6 md:p-8 space-y-8">
@@ -52,20 +43,18 @@
                                 <div class="flex flex-wrap -m-2 mt-2">
                                     <ng-container *ngFor="let folder of folders | slice:0:4; trackBy:trackByFn">
                                         <div class="relative w-40 h-40 m-2 p-4 shadow rounded-2xl bg-card">
-                                            <a
-                                                class="z-10 absolute inset-0 flex flex-col p-4 cursor-pointer"
+                                            <a class="z-10 absolute inset-0 flex flex-col p-4 cursor-pointer no-underline text-black"
                                                 (click)="openFolders(folder)">
                                                 <div class="aspect-w-9 aspect-h-6">
                                                     <div class="flex items-center justify-center">
                                                         <!-- Icon -->
-                                                        <mat-icon
-                                                            class="icon-size-14 text-hint">folder</mat-icon>
+                                                        <mat-icon class="icon-size-14 text-hint">folder</mat-icon>
                                                     </div>
                                                 </div>
-                                                <div class="flex flex-col flex-auto justify-center text-center text-sm font-medium">
-                                                    <div
-                                                        class="truncate"
-                                                        [matTooltip]="folder.name">{{ folder.name.substring(0,10) }}</div>
+                                                <div
+                                                    class="flex flex-col flex-auto justify-center text-center text-sm font-medium">
+                                                    <div class="truncate" [matTooltip]="folder.name">{{
+                                                        folder.name.substring(0,10) }}</div>
                                                     <div class="text-secondary truncate">
                                                         {{ folder.files?.length || 0 }} files
                                                     </div>
@@ -73,67 +62,60 @@
                                             </a>
                                         </div>
                                     </ng-container>
-                                    <div *ngIf="folders.length > 4" class="relative w-40 h-40 m-2 p-4 shadow rounded-2xl bg-card">
-                                        <button
-                                            class="absolute inset-0 flex items-center justify-center w-full h-full"
-                                            mat-flat-button
-                                            color="primary"
-                                            (click)="viewAll('folder')">
+                                    <div *ngIf="folders.length > 4"
+                                        class="relative w-40 h-40 m-2 p-4 shadow rounded-2xl bg-card">
+                                        <button class="absolute inset-0 flex items-center justify-center w-full h-full"
+                                            mat-flat-button color="primary" (click)="viewAll('folder')">
                                             View More
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </ng-container>
-  
+
                         <!-- Files -->
                         <ng-container *ngIf="files.length > 0">
                             <div>
                                 <div class="font-medium">Files</div>
                                 <div class="flex flex-wrap -m-2 mt-2">
                                     <ng-container *ngFor="let file of files">
-                                        <div class="relative w-40 h-40 m-2 p-4 shadow rounded-2xl bg-card" (click)="openDetails(file); $event.stopPropagation()">
-                                            <a
-                                                class="absolute z-20 top-1.5 right-1.5 w-8 h-8 min-h-8"
-                                                (click)="openDetails(file); $event.stopPropagation()"
-                                                mat-icon-button>
-                                                <mat-icon
-                                                    class="icon-size-5">info</mat-icon>
-                                            </a>
-                                            <a
-                                                class="absolute z-20 top-1.5 right-10 w-8 h-8 min-h-8"
-                                                (click)="deleteFile(file); $event.stopPropagation()"
-                                                mat-icon-button>
-                                                <mat-icon
-                                                    class="icon-size-5">delete</mat-icon>
+                                        <div class="relative w-40 h-40 m-2 p-4 shadow rounded-2xl bg-card"
+                                            (click)="openDetails(file); $event.stopPropagation()">
+                                            <!-- <a class="absolute z-20 top-1.5 right-1.5 w-8 h-8 min-h-8"
+                                                (click)="openDetails(file); $event.stopPropagation()" mat-icon-button>
+                                                <mat-icon class="icon-size-5">info</mat-icon>
+                                            </a> -->
+                                            <a class="absolute z-20 top-1.5 right-1.5 w-8 h-8 min-h-8"
+                                                (click)="deleteFile(file); $event.stopPropagation()" mat-icon-button>
+                                                <mat-icon class="icon-size-5 text-red-500">delete</mat-icon>
                                             </a>
                                             <div class="z-10 absolute inset-0 flex flex-col p-4 cursor-pointer">
                                                 <div class="aspect-w-9 aspect-h-6">
                                                     <div class="flex items-center justify-center">
                                                         <!-- Icons -->
                                                         <div class="relative">
-                                                          <mat-icon class="icon-size-14 text-hint">insert_drive_file</mat-icon>
-                                                          <div
-                                                              class="absolute left-0 bottom-0 px-1.5 rounded text-sm font-semibold leading-5 text-white"
-                                                              [class.bg-red-600]="file.fileType?.toUpperCase() === 'PDF'"
-                                                              [class.bg-blue-600]="file.fileType?.toUpperCase() === 'DOC' || file.fileType?.toUpperCase() === 'DOCX'"
-                                                              [class.bg-green-600]="file.fileType?.toUpperCase() === 'XLS' || file.fileType?.toUpperCase() === 'XLSX'"
-                                                              [class.bg-purple-600]="file.fileType?.toUpperCase() === 'PPT' || file.fileType?.toUpperCase() === 'PPTX'"
-                                                              [class.bg-amber-600]="file.fileType?.toUpperCase() === 'JPG' || file.fileType?.toUpperCase() === 'JPEG' || file.fileType?.toUpperCase() === 'PNG'"
-                                                              [class.bg-indigo-600]="file.fileType?.toUpperCase() === 'ZIP' || file.fileType?.toUpperCase() === 'RAR'"
-                                                              [class.bg-gray-600]="!file.fileType || 
+                                                            <mat-icon
+                                                                class="icon-size-14 text-hint">insert_drive_file</mat-icon>
+                                                            <div class="absolute left-0 bottom-0 px-1.5 rounded text-sm font-semibold leading-5 text-white"
+                                                                [class.bg-red-600]="file.fileType?.toUpperCase() === 'PDF'"
+                                                                [class.bg-blue-600]="file.fileType?.toUpperCase() === 'DOC' || file.fileType?.toUpperCase() === 'DOCX'"
+                                                                [class.bg-green-600]="file.fileType?.toUpperCase() === 'XLS' || file.fileType?.toUpperCase() === 'XLSX'"
+                                                                [class.bg-purple-600]="file.fileType?.toUpperCase() === 'PPT' || file.fileType?.toUpperCase() === 'PPTX'"
+                                                                [class.bg-amber-600]="file.fileType?.toUpperCase() === 'JPG' || file.fileType?.toUpperCase() === 'JPEG' || file.fileType?.toUpperCase() === 'PNG'"
+                                                                [class.bg-indigo-600]="file.fileType?.toUpperCase() === 'ZIP' || file.fileType?.toUpperCase() === 'RAR'"
+                                                                [class.bg-gray-600]="!file.fileType || 
                                                                                   file.fileType?.toUpperCase() === 'TXT' || 
                                                                                   file.fileType?.toUpperCase() === 'CSV' ||
                                                                                   file.fileType?.toUpperCase() === 'FILE'">
-                                                              {{file.fileType?.toUpperCase() || 'FILE'}}
-                                                          </div>
-                                                      </div>
+                                                                {{file.fileType?.toUpperCase() || 'FILE'}}
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="flex flex-col flex-auto justify-center text-center text-sm font-medium">
-                                                    <div
-                                                        class="truncate"
-                                                        [matTooltip]="file.name">{{ file.name.substring(0,10) }}</div>
+                                                <div
+                                                    class="flex flex-col flex-auto justify-center text-center text-sm font-medium">
+                                                    <div class="truncate" [matTooltip]="file.name">{{
+                                                        file.name.substring(0,10) }}</div>
                                                     <div class="text-secondary truncate">{{file.fileType}} file</div>
                                                 </div>
                                             </div>
@@ -144,20 +126,19 @@
                         </ng-container>
                     </div>
                 </ng-container>
-  
+
                 <!-- No items template -->
                 <ng-template #noItems>
                     <div class="flex flex-auto flex-col items-center justify-center bg-gray-100 dark:bg-transparent">
-                        <mat-icon
-                            class="icon-size-24">folder_off</mat-icon>
+                        <mat-icon class="icon-size-24">folder_off</mat-icon>
                         <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">There are no items!</div>
                     </div>
                 </ng-template>
-  
+
             </div>
-  
+
         </mat-drawer-content>
-  
+
     </mat-drawer-container>
-  
-  </div>
+
+</div>

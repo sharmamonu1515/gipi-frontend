@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IsActiveMatchOptions } from '@angular/router';
+import moment from 'moment';
 
 @Injectable({
     providedIn: 'root',
@@ -48,8 +49,7 @@ export class FuseUtilsService {
      * @param length
      */
     randomId(length: number = 10): string {
-        const chars =
-            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let name = '';
 
         for (let i = 0; i < 10; i++) {
@@ -76,17 +76,15 @@ export class FuseUtilsService {
     isDownloadableLink(value: string): boolean {
         const urlPattern = /^(https?:\/\/[^\s]+)$/;
         const fileExtensions = /\.(jpg|jpeg|png|gif|bmp|webp|svg|mp4|mov|avi|mkv|webm|mp3|wav|flac|aac|pdf|docx?|xlsx?|pptx?|zip|rar|7z|tar|gz|exe|dmg|iso)$/i;
-    
+
         return urlPattern.test(value) && fileExtensions.test(value);
     }
-    
 
     isNested(value: any): boolean {
         if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
             return true; // If it's an object, return true
         } else {
-            return Array.isArray(value) && value.length > 0 &&
-                   value.every(item => typeof item === 'object' && item !== null && !Array.isArray(item));
+            return Array.isArray(value) && value.length > 0 && value.every((item) => typeof item === 'object' && item !== null && !Array.isArray(item));
         }
     }
 
@@ -94,7 +92,27 @@ export class FuseUtilsService {
         if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
             return [value];
         }
-        
+
         return value;
+    }
+
+    getDaysAgo(date: string | Date): string {
+        const now = moment();
+        const input = moment(date);
+        const diffInMinutes = now.diff(input, 'minutes');
+        const diffInHours = now.diff(input, 'hours');
+        const diffInDays = now.diff(input, 'days');
+
+        if (diffInMinutes < 1) {
+            return 'Just now';
+        } else if (diffInMinutes < 60) {
+            return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
+        } else if (diffInHours < 24) {
+            return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+        } else if (diffInDays > 1) {
+            return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+        } else {
+            return input.format('MMM D, YYYY h:mm A');
+        }
     }
 }

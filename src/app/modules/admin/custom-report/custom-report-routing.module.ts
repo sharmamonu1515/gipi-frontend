@@ -5,11 +5,13 @@ import { CompanyProfileComponent } from './company-profile/company-profile.compo
 import { FinancialAssessmentComponent } from './financial-assessment/financial-assessment.component';
 import { ForensicAssessmentComponent } from './forensic-assessment/forensic-assessment.component';
 import { EvidenceAnnexureComponent } from './evidence-annexure/evidence-annexure.component';
+import { ReportListComponent } from './report-list/report-list.component';
+import { AdverseMediaComponent } from './adverse-media/adverse-media.component';
 
 
 const routes: Routes = [
   {
-    path: "", component: CustomReportComponent
+    path: "view", component: CustomReportComponent
   },
   {
     path: "company-profile", component: CompanyProfileComponent
@@ -23,6 +25,12 @@ const routes: Routes = [
   {
     path: "evidence-annexure", component: EvidenceAnnexureComponent
   },
+  {
+    path: "", component: ReportListComponent
+  },
+  {
+    path: "adverse-media", component: AdverseMediaComponent
+  }
 ];
 
 @NgModule({

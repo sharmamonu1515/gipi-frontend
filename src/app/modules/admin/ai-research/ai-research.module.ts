@@ -20,7 +20,6 @@ import { SummarizePopupComponent } from './summarize-popup/summarize-popup.compo
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ScrapedPopupComponent } from './scraped-popup/scraped-popup.component';
-import { ResearchSettingComponent } from './research-setting/research-setting.component';
 import { MatTableModule } from '@angular/material/table';
 import { AddKeywordComponent } from './add-keyword/add-keyword.component';
 import { AddUrlComponent } from './add-url/add-url.component';
@@ -32,10 +31,8 @@ import { AddUrlComponent } from './add-url/add-url.component';
     AiResearchComponent,
     SummarizePopupComponent,
     ScrapedPopupComponent,
-    ResearchSettingComponent,
     AddKeywordComponent,
-    AddUrlComponent,
-
+    AddUrlComponent
   ],
   imports: [
     CommonModule,

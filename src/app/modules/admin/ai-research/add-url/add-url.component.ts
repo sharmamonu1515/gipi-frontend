@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AiResearchService } from '../ai-research.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-add-url',
@@ -16,7 +17,8 @@ export class AddUrlComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: any,
         private dialogRef: MatDialogRef<AddUrlComponent>,
         private fb: FormBuilder,
-        private researchService: AiResearchService
+        private researchService: AiResearchService,
+        private toast: ToastrService
     ) {}
 
     ngOnInit(): void {
@@ -35,17 +37,18 @@ export class AddUrlComponent implements OnInit {
                 this.researchService
                     .updateUrlLabel(this.data?.urlLabelData?.id, url, name)
                     .subscribe((response) => {
-                        console.log('Keyword added successfully:', response);
+                        this.toast.success('Url updated successfully'),
                         this.dialogRef.close(true);
                     });
             } else {
                 this.researchService.addUrl(url, name).subscribe(
                     (response) => {
-                        console.log('Url added successfully:', response);
+                        this.toast.success('Url added successfully'),
                         this.dialogRef.close(true);
                     },
                     (error) => {
                         console.error('Error adding keyword:', error);
+                        this.toast.error('Error adding Url')
                     }
                 );
             }

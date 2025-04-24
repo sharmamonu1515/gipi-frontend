@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CustomReportService } from './custom-report.service';
+import { CustomReportService } from './services/custom-report.service';
 
 describe('CustomReportService', () => {
   let service: CustomReportService;

@@ -1,0 +1,41 @@
+<h1 mat-dialog-title class="text-xl font-bold text-gray-900 text-center">Populate Company Details</h1>
+
+<div mat-dialog-content class="p-6">
+  <form [formGroup]="popupForm" class="space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <mat-form-field class="w-full">
+        <mat-label>Company Type</mat-label>
+        <mat-select formControlName="companyType" (selectionChange)="onCompanyTypeChange($event)">
+          <mat-option value="company">Company</mat-option>
+          <mat-option value="llps">LLP</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="flex items-center space-x-6">
+        <label class="text-gray-700 font-medium">Search By:</label>
+        <mat-radio-group formControlName="searchType" class="flex space-x-4">
+          <mat-radio-button value="cin">CIN</mat-radio-button>
+          <mat-radio-button value="pan">PAN</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+
+    <mat-form-field class="w-full">
+      <mat-label>Enter CIN/PAN Number</mat-label>
+      <input matInput formControlName="value" placeholder="Enter CIN/PAN Number">
+      <mat-error *ngIf="popupForm.get('value')?.hasError('required')">
+        This field is required
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions class="flex justify-end space-x-4 p-6 border-t border-gray-200">
+  <button mat-button (click)="onCancel()" class="text-gray-600 hover:text-gray-900">
+    Cancel
+  </button>
+  <button mat-button color="primary" [disabled]="popupForm.invalid" (click)="onSubmit()" 
+    class="bg-[#9C211E] hover:bg-[#801B18] !text-white px-6 py-2 rounded-xl shadow hover:bg-blue-700 transition-all duration-300">
+    Proceed
+  </button>
+</div>

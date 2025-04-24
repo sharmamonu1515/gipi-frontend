@@ -1,0 +1,51 @@
+<div class="prompt-settings-container">
+    <mat-card class="prompt-card">
+        <mat-card-title class="title">Prompt Settings</mat-card-title>
+
+        <div class="field-row">
+            <mat-form-field appearance="outline" class="field">
+                <mat-label>Enter Temperature</mat-label>
+                <input matInput [(ngModel)]="temperature" placeholder="Temperature" />
+            </mat-form-field>
+        
+            <mat-form-field appearance="outline" class="field">
+                <mat-label>Enter Max Output Token</mat-label>
+                <input matInput [(ngModel)]="maxOutputTokens" placeholder="Max Output Tokens" />
+            </mat-form-field>
+        
+            <mat-form-field appearance="outline" class="field">
+                <mat-label>Enter TopP</mat-label>
+                <input matInput [(ngModel)]="topP" placeholder="TopP" />
+            </mat-form-field>
+        
+            <mat-form-field appearance="outline" class="field">
+                <mat-label>EnterTopK</mat-label>
+                <input matInput [(ngModel)]="topK" placeholder="TopK" />
+            </mat-form-field>
+        </div>
+        
+        
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Select Field</mat-label>
+            <mat-select [(ngModel)]="selectedField" (selectionChange)="loadPrompt()" [disabled]="isLoading">
+                <mat-option *ngFor="let field of fields" [value]="field.key">
+                    {{ field.label }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width mt-4">
+            <mat-label>Saved Prompt</mat-label>
+            <textarea matInput [(ngModel)]="promptText" placeholder="Enter your prompt here..." [disabled]="isLoading" rows="10"></textarea>
+            <mat-progress-spinner *ngIf="isLoading" matSuffix diameter="20" mode="indeterminate"></mat-progress-spinner>
+        </mat-form-field>
+
+        <div class="button-group">
+            <button mat-stroked-button color="warn" (click)="resetPrompt()" [disabled]="isLoading">Reset</button>
+            <button mat-flat-button color="primary" (click)="savePrompt()" [disabled]="isLoading">
+                <span *ngIf="!isLoading">Save</span>
+                <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+            </button>
+        </div>
+    </mat-card>
+</div>

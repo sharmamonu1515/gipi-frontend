@@ -1,0 +1,88 @@
+<h2 mat-dialog-title>Litigation Report PDF Download</h2>
+
+<mat-dialog-content id="printSection" class="mat-typography">
+    <div class="bg-white shadow-lg m-3" *ngIf="!addingTemplate">
+        <div class="flex justify-between py-4 px-4 items-center border-b-2 border-sky-600">
+            <h2 class="m-0">Templates</h2>
+            <button class="ml-4 text-blue-500 hover:text-blue-700" (click)="addingTemplate = !addingTemplate">
+                ADD NEW TEMPLATE
+            </button>
+        </div>
+        <div class="flex h-[50vh] bg-gray-100">
+            <!-- Sticky Left Sidebar -->
+            <div class="w-1/4 bg-white sticky top-0 h-full overflow-y-auto">
+                <div class="p-4">
+                    <div class="mt-4 space-y-2">
+                        <button
+                            class="text-blue-600 w-full text-left flex-auto font-bold bg-blue-100 px-2 py-1 rounded hover:bg-blue-200">
+                            DILIP
+                        </button>
+                        <button
+                            class="text-blue-600 w-full text-left flex-auto font-bold bg-blue-100 px-2 py-1 rounded hover:bg-blue-200">
+                            DILIP 2
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scrollable Body -->
+            <div class="w-3/4 p-4 overflow-y-auto">
+                <mat-card class="w-full">
+                    <mat-card-content>
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-semibold mb-4">DILIP</h3>
+                            <div class="flex gap-2 items-center">
+                                <button class="flex items-center text-blue-500 hover:text-blue-700">
+                                    <mat-icon class="text-blue-500 hover:text-blue-700 text-lg">edit</mat-icon>
+                                    <span>Edit</span>
+                                </button>
+                                <button class="flex items-center text-red-500 hover:text-red-700">
+                                    <mat-icon class="text-red-500 hover:text-red-700 text-lg">delete</mat-icon>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                        <h4 class="text-lg font-semibold">Case details columns</h4>
+                        <ul class="space-y-2">
+                            <li class="text-gray-700">CINo</li>
+                            <li class="text-gray-700">Petitioner</li>
+                            <li class="text-gray-700">Respondent</li>
+                            <li class="text-gray-700">Court</li>
+                            <li class="text-gray-700">District</li>
+                            <li class="text-gray-700">State</li>
+                            <li class="text-gray-700">Filing Date</li>
+                            <li class="text-gray-700">Decision Date</li>
+                            <!-- Add more items to test scrolling -->
+                            <li class="text-gray-700" *ngFor="let i of [].constructor(20)">Placeholder Item {{i}}</li>
+                        </ul>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white shadow-lg m-3" *ngIf="addingTemplate">
+        <div class="flex justify-between py-4 px-4 items-center border-b-2 border-sky-600">
+            <h2 class="m-0">New Template</h2>
+            <button class="ml-4 text-blue-500 hover:text-blue-700" (click)="addingTemplate = !addingTemplate">
+                VIEW ALL TEMPLATES
+            </button>
+        </div>
+        <div class="h-[50vh]">
+            <mat-card class="w-full">
+                <mat-card-content>
+
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button class="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition"
+        mat-dialog-close>Cancel</button>
+
+    <button mat-button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
+        (click)="exportPDF()">Generate Report</button>
+</mat-dialog-actions>

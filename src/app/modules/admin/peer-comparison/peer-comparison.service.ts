@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 
-const BASE_URI = environment.newBaseURI;
+const BASE_URI = environment.baseURI;
 
 @Injectable({
     providedIn: 'root',

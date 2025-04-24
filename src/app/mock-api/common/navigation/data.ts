@@ -4,18 +4,18 @@ import { isDisabled } from '../utilities';
 
 export const defaultNavigation: FuseNavigationItem[] = [
     {
-        id   : 'mca_details',
+        id: 'mca_details',
         title: 'MCA',
-        type : 'basic',
-        icon : 'business',
-        link : '/mca/mca-list'
+        type: 'basic',
+        icon: 'business',
+        link: '/mca/mca-list',
     },
     {
-        id   : 'gst_details',
+        id: 'gst_details',
         title: 'GST',
-        type : 'basic',
-        icon : 'fact_check',
-        link : '/gst/gst-list'
+        type: 'basic',
+        icon: 'fact_check',
+        link: '/gst/gst-list',
     },
     {
         id: 'ai_research_api',
@@ -23,13 +23,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type: 'basic',
         icon: 'search',
         link: '/ai-research',
-    },
-    {
-        id: 'research_setting',
-        title: 'RESEARCH SETTING',
-        type: 'basic',
-        icon: 'settings',
-        link: '/ai-research/setting',
+        disabled: isDisabled(),
     },
     {
         id: 'custom_report',
@@ -37,52 +31,88 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type: 'basic',
         icon: 'report',
         link: '/custom-report',
+        disabled: isDisabled()
     },
     {
-        id   : 'user_details',
+        id: 'user_details',
         title: 'USER',
-        type : 'basic',
-        icon : 'person_add',
-        link : '/user/user-list',
-        disabled: isDisabled()
+        type: 'basic',
+        icon: 'person_add',
+        link: '/user/user-list',
+        disabled: isDisabled(),
     },
     {
-        id   : 'setting_list',
-        title: 'SETTING',
-        type : 'basic',
-        icon : 'settings',
-        link : '/setting/setting-list',
-        disabled: isDisabled()
+        id: 'Settings',
+        title: 'SETTINGS',
+        type: 'collapsable',
+        icon: 'settings',
+        disabled: isDisabled(),
+        children: [
+            {
+                id: 'setting_list',
+                title: 'GENERAL',
+                type: 'basic',
+                icon: 'tune',
+                link: '/setting/setting-list',
+                disabled: isDisabled()
+            },
+            {
+                id: 'research_setting',
+                title: 'RESEARCH',
+                type: 'basic',
+                icon: 'analytics',
+                link: '/research-settings',
+                disabled: isDisabled()
+            },
+            {
+                id: 'prompt_setting',
+                title: 'PROMPT',
+                type: 'basic',
+                icon: 'chat',
+                link: '/prompt-settings',
+                disabled: isDisabled()
+            },
+            {
+                id: 'adverse_media_setting',
+                title: 'ADVERSE MEDIA PROMPT',
+                type: 'basic',
+                icon: 'chat',
+                link: '/adverse-media',
+                disabled: isDisabled()
+            },
+        ],
     },
     {
-        id   : 'gipi_api',
+        id: 'gipi_api',
         title: 'GIPI Api',
-        type : 'basic',
-        icon : 'api',
-        link : '/gipi/gipi-api',
-        disabled: isDisabled()
-    },{
-        id   : 'sanction_list',
+        type: 'basic',
+        icon: 'api',
+        link: '/gipi/gipi-api',
+        disabled: isDisabled(),
+    },
+    {
+        id: 'sanction_list',
         title: 'SANCTION SEARCH',
-        type : 'basic',
-        icon : 'search',
-        link : '/sanctions/sanction-list',
-        disabled: isDisabled()
-    }
-    ,{
-        id   : 'sanction_uploader',
+        type: 'basic',
+        icon: 'search',
+        link: '/sanctions/sanction-list',
+        disabled: isDisabled(),
+    },
+    {
+        id: 'sanction_uploader',
         title: 'SANCTIONS UPLOADER',
-        type : 'basic',
-        icon : 'cloud_upload',
-        link : '/sanctions/sanction-uploader',
-        disabled: isDisabled()
-    },{
-        id   : 'file_manager',
+        type: 'basic',
+        icon: 'cloud_upload',
+        link: '/sanctions/sanction-uploader',
+        disabled: isDisabled(),
+    },
+    {
+        id: 'file_manager',
         title: 'FILE MANAGER',
-        type : 'basic',
-        icon : 'list',
-        link : '/files/file-manager',
-        disabled: isDisabled()
+        type: 'basic',
+        icon: 'list',
+        link: '/files/file-manager',
+        disabled: isDisabled(),
     },
     {
         id   : 'karza',

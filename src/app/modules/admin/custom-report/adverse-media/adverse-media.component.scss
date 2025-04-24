@@ -1,0 +1,21 @@
+::ng-deep .custom-tab-group .mat-tab-label {
+  font-weight: 500;
+  font-size: 15px;
+  text-transform: none;
+  padding: 12px 20px;
+}
+
+::ng-deep .custom-tab-group .mat-tab-label-active {
+  color: #2563eb; 
+  border-bottom: 2px solid #2563eb;
+}
+
+::ng-deep .custom-tab-group .mat-ink-bar {
+  height: 3px;
+  background-color: #2563eb;
+}
+.justified-text {
+  text-align: justify;
+  text-justify: inter-word;
+}
+

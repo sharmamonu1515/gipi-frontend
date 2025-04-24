@@ -26,9 +26,18 @@ import { EvidenceAnnexureComponent } from './evidence-annexure/evidence-annexure
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { ExecutiveSummaryComponent } from './executive-summary/executive-summary.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { DeletePopupComponent } from './delete-popup/delete-popup.component';
+import { DeletePopupComponent } from './components/delete-popup/delete-popup.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { MatListModule, MatSelectionList, MatSelectionListChange } from '@angular/material/list';
+import { ExportPopupComponent } from './components/export-popup/export-popup.component';
+import { ReportListComponent } from './report-list/report-list.component';
+import { QuillModule } from 'ngx-quill';
+import { ReportPopupComponent } from './components/report-popup/report-popup.component';
+import { SummarizedPopupComponent } from './components/summarized-popup/summarized-popup.component';
+import { MatCardModule } from '@angular/material/card';
+import { AdverseMediaComponent } from './adverse-media/adverse-media.component';
+import { LitigationPopupComponent } from './components/litigation-popup/litigation-popup.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +49,12 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
   ExecutiveSummaryComponent,
   DeletePopupComponent,
   ConfirmationDialogComponent,
+  ExportPopupComponent,
+  ReportListComponent,
+  ReportPopupComponent,
+  SummarizedPopupComponent,
+  AdverseMediaComponent,
+  LitigationPopupComponent
   ],
   imports: [
     CommonModule,
@@ -65,7 +80,12 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
     MatTabsModule,
     AngularEditorModule,
     MatSlideToggleModule,
-    MatRadioModule
+    MatRadioModule,
+    MatSelectModule,
+    MatListModule,
+    MatCardModule,
+   QuillModule.forRoot()  
+
   ],
   providers: [DatePipe]
 })

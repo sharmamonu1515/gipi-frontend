@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Export Sections</h2>
+<div mat-dialog-content class="dialog-content">
+  <div class="export-container">
+    <div class="tabs-list">
+      <mat-nav-list>
+        <mat-list-item *ngFor="let tab of tabs" 
+          [ngClass]="{'active-tab': selectedTab === tab}"
+          (click)="selectTab(tab)">
+          {{ tab }}
+        </mat-list-item>
+      </mat-nav-list>
+    </div>
+    <div class="sections-list">
+      <mat-selection-list>
+        <mat-list-option *ngFor="let section of sectionsMap[selectedTab]"
+          [selected]="section.selected"
+          (click)="$event.stopPropagation(); toggleSection(section.name)">
+          {{ section.name }}
+        </mat-list-option>
+      </mat-selection-list>
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button class="bg-[#9C211E] hover:bg-[#801B18] text-white" (click)="export()">Export Selected</button>
+</div>

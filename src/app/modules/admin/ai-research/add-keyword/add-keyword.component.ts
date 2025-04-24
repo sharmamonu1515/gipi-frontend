@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AiResearchService } from '../ai-research.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-add-keyword',
@@ -16,7 +17,8 @@ export class AddKeywordComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: any,
         private dialogRef: MatDialogRef<AddKeywordComponent>,
         private fb: FormBuilder,
-        private keywordService: AiResearchService
+        private keywordService: AiResearchService,
+        private toast: ToastrService
     ) {}
 
     ngOnInit(): void {
@@ -36,17 +38,18 @@ export class AddKeywordComponent implements OnInit {
                 this.keywordService
                     .updateKeyword(this.data.keywordData?.id, keyword)
                     .subscribe((response) => {
-                        console.log('Keyword added successfully:', response);
+                        this.toast.success('Keyword updated successfully'),
                         this.dialogRef.close(true);
                     });
             } else {
                 this.keywordService.addKeyword(keyword).subscribe(
                     (response) => {
-                        console.log('Keyword added successfully:', response);
+                        this.toast.success('Keyword added successfully'),
                         this.dialogRef.close(true);
                     },
                     (error) => {
                         console.error('Error adding keyword:', error);
+                        this.toast.error('Error adding keyword:')
                     }
                 );
             }

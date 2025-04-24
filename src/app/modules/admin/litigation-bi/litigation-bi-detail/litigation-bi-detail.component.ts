@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LitigationBiService } from '../litigation-bi.service';
 import { MatTabGroup } from '@angular/material/tabs';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -8,6 +8,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'environments/environment';
 import moment from 'moment';
 import _, { cloneDeep } from 'lodash';
+import { MatDialog } from '@angular/material/dialog';
+import { CaseDetailComponent } from '../../case-detail/case-detail.component';
+import { PdfExportComponent } from './pdf-export/pdf-export.component';
+import { firstValueFrom } from 'rxjs';
+import { ConfirmationDialogComponent } from '../../custom-report/components/confirmation-dialog/confirmation-dialog.component';
+import { FuseUtilsService } from '@fuse/services/utils';
+import { LitigationPopupComponent } from '../../custom-report/components/litigation-popup/litigation-popup.component';
 
 interface Director {
     din: string;
@@ -33,20 +40,22 @@ export class LitigationBiDetailComponent implements OnInit {
     entityId: string;
     isLoading: boolean = true;
     errorMessage: string = '';
+    primaryEntityData: any; // needed for regenerate
     data: any;
     originalData: any;
 
-    filters = {
+    filters: any = {
         caseStatus: '',
         caseTypeCategory: '',
         severity: [] as string[],
         relevance: '',
         upcomingHearing: '',
     };
+    litigationData: any;
 
     dataSource = new MatTableDataSource([]);
 
-    courtsToDisplay = [
+    courtsToDisplay: any = [
         {
             key: 'districtCourts',
             label: 'District Courts',
@@ -68,7 +77,7 @@ export class LitigationBiDetailComponent implements OnInit {
     ];
 
     activeCourtType: number = 0;
-    activeCaseType: string = 'all'; // Default tab
+    activeCaseType: string = 'all';
     displayedColumns: string[] = [
         'cino',
         'casetypeCaseNoCaseYr',
@@ -92,16 +101,19 @@ export class LitigationBiDetailComponent implements OnInit {
     ];
 
     directors: any[] = [];
+    selectedEntity: string = '';
     primaryEntityName: string = '';
-    selectedDirector: string = '';
 
     entityType: 'company' | 'director' = 'company';
+
+    expired: boolean = false;
+    expiredDate: Date | null = null;
 
     currentPageIndex: number = 0;
     pageSize: number = 20;
     resultsLength: number = 0;
 
-    constructor(private route: ActivatedRoute, private _snackBar: MatSnackBar, private apiService: LitigationBiService) {}
+    constructor(private route: ActivatedRoute, private _snackBar: MatSnackBar, private apiService: LitigationBiService, public dialog: MatDialog, private router: Router, private utils: FuseUtilsService) {}
 
     ngOnInit(): void {
         this._id = this.route.snapshot.paramMap.get('id');
@@ -157,7 +169,7 @@ export class LitigationBiDetailComponent implements OnInit {
         }
 
         this.resultsLength = caseData.length; // Update total records count
-
+        this.litigationData = caseData;
         // Implement pagination
         const startIndex = this.currentPageIndex * this.pageSize;
         const endIndex = startIndex + this.pageSize;
@@ -172,9 +184,13 @@ export class LitigationBiDetailComponent implements OnInit {
                 if (response && response.data) {
                     this.data = response.data;
                     this.primaryEntityName = response.data.entityName;
+                    this.selectedEntity = response.data.entityName;
                     this.originalData = _.cloneDeep(response.data); // save the copy of original data for clear filters
+                    this.primaryEntityData = _.cloneDeep(response.data); // save the copy of original data for clear filters
                     this.entityId = response.data.entityId;
+                    this.entityType = 'company';
                     this.filterCases();
+                    this.setExpiry();
                 } else {
                     this.data = null;
                 }
@@ -383,6 +399,7 @@ export class LitigationBiDetailComponent implements OnInit {
 
         this.filters = updatedFilters;
 
+        // ! NOTE - Remove temp delay
         const delay = 0; // Math.floor(Math.random() * (2000 - 500 + 1)) + 500;
         setTimeout(() => {
             this.isLoading = false;
@@ -390,10 +407,23 @@ export class LitigationBiDetailComponent implements OnInit {
         }, delay);
     }
 
-    onDirectorChange(selectedValue: string): void | boolean {
-        this.selectedDirector = selectedValue;
+    setExpiry() {
+        const updatedAt = moment(this.data.updatedAt || this.data.createdAt);
+        const expiryDate = updatedAt.clone().add(30, 'days');
+        this.expired = moment().isAfter(expiryDate);
+        this.expiredDate = expiryDate.toDate();
+    }
 
-        const director = this.getDirectorByName(this.selectedDirector);
+    onDirectorChange(selectedValue: string): void {
+        this.selectedEntity = selectedValue;
+
+        // if its primary entity
+        if (this.selectedEntity === this.primaryEntityName) {
+            this.getLitigationBiDetails();
+            return;
+        }
+
+        const director = this.getDirectorByName(this.selectedEntity);
 
         if (!director) {
             this._snackBar.open('Director not found!', 'Close', {
@@ -402,7 +432,7 @@ export class LitigationBiDetailComponent implements OnInit {
                 panelClass: ['mat-toolbar', 'mat-warn'],
             });
 
-            return false;
+            return;
         }
 
         this.isLoading = true;
@@ -419,7 +449,7 @@ export class LitigationBiDetailComponent implements OnInit {
                         this.data = response.data;
                         this.originalData = _.cloneDeep(response.data); // save the copy of original data for clear filters
                         this.entityId = response.data.entityId;
-                        this.selectedDirector = response.data.entityName;
+                        this.selectedEntity = response.data.entityName;
                         this.filterCases();
 
                         this.entityType = 'director';
@@ -437,7 +467,43 @@ export class LitigationBiDetailComponent implements OnInit {
             });
     }
 
+    getCaseDetails(cino: string) {
+        this.isLoading = true;
+        this.apiService.getCaseDetails(this._id, cino).subscribe({
+            next: (response) => {
+                if (response && response.data) {
+                    this.dialog.open(CaseDetailComponent, {
+                        width: '95vw',
+                        height: '95vh',
+                        data: {
+                            caseDetails: response.data,
+                            court: this.courtsToDisplay[this.activeCourtType].label,
+                        },
+                    });
+                } else {
+                }
+            },
+            error: (err) => {
+                console.error('Error fetching Case details:', err);
+                this.errorMessage = 'Failed to fetch Case details.';
+            },
+            complete: () => {
+                this.isLoading = false;
+            },
+        });
+    }
+
     exportExcel(fileType: 'lite' | 'advanced'): void | boolean {
+        if (this.expired) {
+            this._snackBar.open('Expired reports can not be expored.', 'Close', {
+                horizontalPosition: 'center',
+                verticalPosition: 'top',
+                panelClass: ['mat-toolbar', 'mat-warn'],
+            });
+
+            return;
+        }
+
         this.isLoading = true;
         this.apiService.exportExcel(this.data._id, fileType, this.entityType, this.filters).subscribe({
             next: (resolve) => {
@@ -449,6 +515,7 @@ export class LitigationBiDetailComponent implements OnInit {
                     verticalPosition: 'top',
                     panelClass: ['mat-toolbar', 'mat-warn'],
                 });
+                this.isLoading = false;
             },
             complete: () => {
                 this.isLoading = false;
@@ -456,12 +523,126 @@ export class LitigationBiDetailComponent implements OnInit {
         });
     }
 
+    async getPDFTemplates(): Promise<any> {
+        try {
+            const response = await firstValueFrom(this.apiService.getPDFTemplates());
+            if (response && response.templates) {
+                return response.templates;
+            } else {
+                return false;
+            }
+        } catch (err) {
+            console.error('Failed to fetch PDF templates.', err);
+            this.errorMessage = 'Failed to fetch PDF templates.';
+            return false;
+        }
+    }
+
+    async exportPDF() {
+        if (this.expired) {
+            this._snackBar.open('Expired reports can not be expored.', 'Close', {
+                horizontalPosition: 'center',
+                verticalPosition: 'top',
+                panelClass: ['mat-toolbar', 'mat-warn'],
+            });
+
+            return;
+        }
+
+        const pdfTemplates = await this.getPDFTemplates();
+
+        if (!pdfTemplates) {
+            this._snackBar.open('PDF templates not found!', 'Close', {
+                horizontalPosition: 'center',
+                verticalPosition: 'top',
+                panelClass: ['mat-toolbar', 'mat-warn'],
+            });
+
+            return;
+        }
+
+        this.dialog.open(PdfExportComponent, {
+            width: '500px',
+            data: {
+                templates: pdfTemplates,
+                entityType: this.entityType,
+                filters: this.filters,
+                id: this.data._id,
+            },
+        });
+    }
+
     downloadFile(fileLink: string, fileType: string): void {
         const link = document.createElement('a');
-        link.href = `${environment.newBaseURI}${fileLink}`;
+        // link.href = `${environment.litigationFilePath}${fileLink}`;
+        link.href = fileLink;
         link.download = `${this.entityType}_${this.entityId}_${fileType}.zip`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+
+    regenerate() {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            data: {
+                message: 'Regenerating will cost 2 credits. Do you want to continue?',
+                confirmText: 'Yes',
+                cancelText: 'No',
+            },
+        });
+
+        dialogRef.afterClosed().subscribe({
+            next: (confirmed: boolean) => {
+                if (confirmed) {
+                    this.isLoading = true;
+                    this.apiService
+                        .getLitigationBiDetails({
+                            entityName: this.primaryEntityData.entityName,
+                            entityId: this.primaryEntityData.entityId,
+                            entityRelation: this.primaryEntityData.entityRelation,
+                            fuzzy: this.primaryEntityData.fuzzy,
+                            kid: this.primaryEntityData.kid,
+                            latestData: true,
+                        })
+                        .subscribe({
+                            next: (resolve) => {
+                                this._snackBar.open(resolve.message, 'Close', {
+                                    horizontalPosition: 'center',
+                                    verticalPosition: 'top',
+                                    panelClass: ['mat-toolbar', 'mat-primary'],
+                                });
+                                this.router.navigate(['/litigation-bi/litigation-bi', resolve.data._id]);
+                            },
+                            error: (err) => {
+                                this._snackBar.open(err.message, 'Close', {
+                                    horizontalPosition: 'center',
+                                    verticalPosition: 'top',
+                                    panelClass: ['mat-toolbar', 'mat-warn'],
+                                });
+                            },
+                            complete: () => {
+                                this.isLoading = false;
+                            },
+                        });
+                }
+            },
+        });
+    }
+
+    generateSummary(): void {
+        this.apiService.getLitigationSummary(this.litigationData).subscribe(
+            (summaryResult: any) => {
+                const dialogRef = this.dialog.open(LitigationPopupComponent, {
+                    disableClose: true,
+                    width: '900px',
+                    data: summaryResult.summaryHtml,
+                });
+
+                dialogRef.afterClosed().subscribe((selectedSummaries: string[] | undefined) => {});
+            },
+            (error) => {
+                console.error('Error fetching litigation summary:', error);
+            }
+        );
     }
 }

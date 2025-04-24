@@ -2,23 +2,7 @@
     <div
         class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8"
     >
-        <div class="text-4xl font-extrabold tracking-tight">CUSTOM REPORTS</div>
-        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
-            <mat-radio-group [(ngModel)]="searchType" class="flex items-center">
-                <mat-radio-button value="cin" class="mr-4">CIN</mat-radio-button>
-                <mat-radio-button value="pan">PAN</mat-radio-button>
-            </mat-radio-group>
-
-            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64 ml-4">
-                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                <input
-                    matInput
-                    [formControl]="cinSearchInputControl"
-                    [autocomplete]="'off'"
-                    [placeholder]="searchType === 'cin' ? 'Search By CIN' : 'Search By PAN'"
-                />
-            </mat-form-field>
-        </div>
+        <div class="text-4xl font-extrabold tracking-tight">{{ companyName }}</div>
     </div>
 
     <div class="rounded-lg p-2 w-full h-14 mat-elevation-z1 mb-4">
@@ -30,7 +14,7 @@
             <mat-tab
                 *ngFor="let tab of userTabs; let i = index"
                 label="{{ tab.TabName }}"
-                [disabled]="i === userTabs.length - 1 || !hasSearchedCompany" 
+                [disabled]="i === userTabs.length - 2 || !hasSearchedCompany" 
             >
             </mat-tab>
         </mat-tab-group>
@@ -45,6 +29,17 @@
             </div>
             
             <div class="flex space-x-4">
+                <div class="inline-flex items-center bg-white border border-gray-300 rounded-md shadow-sm h-10 px-2">
+                    <label for="modelSelect" class="text-gray-700 mr-2 font-medium">Model:</label>
+                    <select id="modelSelect" (change)="onModelChange($event)" [(ngModel)]="currentModel"
+                            class="h-8 bg-transparent text-gray-700 font-medium focus:outline-none">
+                            <option value="gemini">Gemini</option>
+                            <option value="chatGpt">ChatGpt</option>
+                            <option *ngIf="userTabs[selectedIndex]?.TabName === 'Adverse Media'" value="perplexity">
+                                Perplexity
+                            </option>
+                    </select>
+                </div>
                 <div class="inline-flex items-center bg-white border border-gray-300 rounded-md shadow-sm h-10 px-2">
                     <label for="unitSelect" class="text-gray-700 mr-2 font-medium">Display in:</label>
                     <select id="unitSelect" (change)="onUnitChange($event)" 

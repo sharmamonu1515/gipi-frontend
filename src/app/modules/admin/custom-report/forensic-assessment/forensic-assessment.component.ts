@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { IRiskCategory } from 'app/interfaces/custom-report';
 import { MatDialog } from '@angular/material/dialog';
-import { DeletePopupComponent } from '../delete-popup/delete-popup.component';
+import { DeletePopupComponent } from '../components/delete-popup/delete-popup.component';
 import { ToastrService } from 'ngx-toastr';
 import { ReportDataService } from '../services/report-data.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'environments/environment';
 
 @Component({
     selector: 'app-forensic-assessment',
@@ -121,17 +123,20 @@ export class ForensicAssessmentComponent implements OnInit {
     constructor(
         private reportService : ReportDataService,
         private toastr: ToastrService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private http:HttpClient,
+        private dataService: ReportDataService
     ) {}
 
     ngOnInit(): void {
-        const savedData = this.reportService.getData('forensic-assesment');
-        if (savedData && savedData.riskCategoriesForm) {
-            this.riskCategories = savedData.riskCategoriesForm;
-        }
-
-        this.originalData = JSON.stringify(this.getData());
-    }    
+        this.reportService.getForensicAssessmentData().subscribe((savedData: any) => {
+            if (savedData && savedData.riskCategories) {
+                this.riskCategories = savedData.riskCategories;
+            }
+    
+            this.originalData = JSON.stringify(this.getData());
+        });
+    }      
 
     hasUnsavedChanges(): boolean {
         const currentData = JSON.stringify(this.getData());
@@ -142,7 +147,7 @@ export class ForensicAssessmentComponent implements OnInit {
 
     getData() {
         const data = {
-            riskCategoriesForm: this.riskCategories,
+            riskCategories: this.riskCategories,
             matchFoundCount:this.matchFoundCount
         };
         return data;
@@ -162,13 +167,19 @@ export class ForensicAssessmentComponent implements OnInit {
 
     saveData() {
         const data = this.getData();
-        this.reportService.setData('forensic-assesment', data);
-        this.toastr.success('Forensic assessment data saved successfully');
-        this.originalData = JSON.stringify(data);
+        const apiUrl = `${environment.baseURI}/custom-report/add-forensic-assessment`;
+        const body = {company_id: this.dataService?.getCompanyId(), ...data};
+        this.http.post(`${apiUrl}`,body).subscribe((response) => {
+            if(response) {
+                this.reportService.setData('forensicAssessment', data);
+                this.toastr.success('Forensic assessment data saved successfully');
+                this.originalData = JSON.stringify(data);
+            }
+        });
     }
 
     updateAction(item: IRiskCategory) {
-        if (item.result === 'Match Found') {
+        if (item.result === 'Match Found' || item.result==='Partial Match Found') {
             item.actions = 'Monitoring is recommended';
         } else {
             item.actions = '';

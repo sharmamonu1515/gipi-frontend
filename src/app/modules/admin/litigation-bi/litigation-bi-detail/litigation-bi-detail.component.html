@@ -1,22 +1,20 @@
 <div class="flex flex-col flex-auto min-w-0">
-
     <!-- Loading Overlay -->
     <div *ngIf="isLoading" class="fixed inset-0 bg-black bg-opacity-10 flex items-center justify-center z-50">
         <mat-spinner></mat-spinner>
     </div>
 
     <!-- Header -->
-    <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b bg-white"
+    <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between pt-4 px-6 md:px-8 border-b bg-white"
         *ngIf="data">
         <div class="flex flex-col gap-2">
             <div class="text-4xl font-extrabold tracking-tight">{{ data.entityName }}</div>
 
             <mat-form-field appearance="outline" class="min-w-[300px] p-0">
                 <mat-label>Select Entity</mat-label>
-                <mat-select [(value)]="entityType === 'director' ? selectedDirector : primaryEntityName"
-                    (selectionChange)="onDirectorChange($event.value)">
-                    <mat-option [value]="data.entityName">
-                        {{ entityType === 'director' ? selectedDirector : primaryEntityName }}
+                <mat-select [(value)]="selectedEntity" (selectionChange)="onDirectorChange($event.value)">
+                    <mat-option [value]="primaryEntityName">
+                        {{ primaryEntityName }}
                     </mat-option>
                     <mat-option *ngFor="let director of directors" [value]="director.name">{{ director.name
                         }}</mat-option>
@@ -26,25 +24,55 @@
 
         <div class="flex flex-col shrink-0 items-end mt-6 sm:mt-0 sm:ml-4">
 
-            <div class="text-secondary mb-2">
-                Last Updated On: {{ (data.updatedAt || data.createdAt) | date:'MMM d, y h:mm a' }}
+            <div class="text-secondary mb-2 text-right" *ngIf="data?.updatedAt || data?.createdAt">
+                <strong>Last Updated On:</strong>&nbsp;
+                {{ (data.updatedAt || data.createdAt) | date:'MMM d, y h:mm a' }} (Since {{
+                utils.getDaysAgo(data.updatedAt ||
+                data.createdAt) }})
             </div>
 
-            <!-- Dropdown Button -->
-            <button mat-button [matMenuTriggerFor]="exportMenu"
-                class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">
-                Export <mat-icon class="text-white">arrow_drop_down</mat-icon>
-            </button>
+            <mat-chip color="warn" selected
+                class="text-white font-semibold mb-2 px-3 py-1 text-sm rounded-full inline-flex w-auto" *ngIf="expired">
+                Expired ({{
+                utils.getDaysAgo(expiredDate) }})
+            </mat-chip>
 
-            <!-- Menu Options -->
-            <mat-menu #exportMenu="matMenu">
-                <button mat-menu-item (click)="exportExcel('lite')">
-                    <mat-icon>table_chart</mat-icon> Excel
+            <!-- Dropdown Button -->
+            <div class="flex flex-row gap-3">
+                <button mat-button
+                    class="bg-blue-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
+                    (click)="generateSummary()">
+                    <mat-icon class="mr-1.5 text-[1.5rem] text-white">auto_awesome</mat-icon>
+                    <span class="truncate">Generate Observations</span>
                 </button>
-                <button mat-menu-item (click)="exportExcel('advanced')">
-                    <mat-icon>insights</mat-icon> Excel (Advanced)
+
+                <button mat-button [matMenuTriggerFor]="exportMenu"
+                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
+                    *ngIf="!expired;">
+                    Export <mat-icon class="text-white">arrow_drop_down</mat-icon>
                 </button>
-            </mat-menu>
+
+                <button mat-button *ngIf="expired"
+                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
+                    (click)="regenerate()">
+                    Regenerate <mat-icon class="text-white">refresh</mat-icon>
+                </button>
+
+                <!-- Menu Options -->
+                <mat-menu #exportMenu="matMenu">
+                    <button mat-menu-item (click)="exportPDF()">
+                        <mat-icon>picture_as_pdf</mat-icon> PDF
+                    </button>
+                    <button mat-menu-item (click)="exportExcel('lite')">
+                        <mat-icon>table_chart</mat-icon> Excel
+                    </button>
+                    <button mat-menu-item (click)="exportExcel('advanced')">
+                        <mat-icon>insights</mat-icon> Excel (Advanced)
+                    </button>
+                </mat-menu>
+            </div>
+
+
 
         </div>
     </div>
@@ -58,7 +86,7 @@
             class="grid w-full min-w-0 grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 ng-star-inserted">
 
             <div
-                class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6 shadow {{ ! data.litigationDetails.totalCases.total ? 'disabled' : '' }}">
+                class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-3 shadow {{ ! data.litigationDetails.totalCases.total ? 'disabled' : '' }}">
                 <div class="flex items-start justify-between lg:gap-1">
                     <div class="truncate text-lg font-medium leading-6 tracking-tight">Total Cases</div>
                 </div>
@@ -71,7 +99,7 @@
                 </div>
             </div>
 
-            <div class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6" [ngClass]="{
+            <div class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-3" [ngClass]="{
                 'shadow cursor-pointer': data.litigationDetails.totalCases.pending,
                 'border-2 border-sky-600': filters.caseStatus === 'pending',
                 'bg-gray-200 text-gray-500 pointer-events-none': !data.litigationDetails.totalCases.pending
@@ -91,7 +119,7 @@
                 </div>
             </div>
 
-            <div class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6" [ngClass]="{
+            <div class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-3" [ngClass]="{
               'shadow cursor-pointer': data.litigationDetails.totalCases.disposed,
               'border-2 border-sky-600': filters.caseStatus === 'disposed',
               'bg-gray-200 text-gray-500 pointer-events-none': !data.litigationDetails.totalCases.disposed
@@ -111,7 +139,7 @@
                 </div>
             </div>
 
-            <div class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6" [ngClass]="{
+            <div class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-3" [ngClass]="{
                 'shadow cursor-pointer': data.litigationDetails.totalCases['not available'],
                 'border-2 border-sky-600': filters.caseStatus === 'not available',
                 'bg-gray-200 text-gray-500 pointer-events-none': !data.litigationDetails.totalCases['not available']
@@ -130,7 +158,7 @@
                 </div>
             </div>
 
-            <div class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6" [ngClass]="{
+            <div class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-3" [ngClass]="{
                 'shadow cursor-pointer': data.litigationDetails.caseTypeCategoryCount.total.criminal,
                 'border-2 border-sky-600': filters.caseTypeCategory === 'criminal',
                 'bg-gray-200 text-gray-500 pointer-events-none': !data.litigationDetails.caseTypeCategoryCount.total.criminal
@@ -149,7 +177,7 @@
                 </div>
             </div>
 
-            <div class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6" [ngClass]="{
+            <div class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-3" [ngClass]="{
                 'shadow cursor-pointer': data.litigationDetails.caseTypeCategoryCount.total.civil,
                 'border-2 border-sky-600': filters.caseTypeCategory === 'civil', 
                 'bg-gray-200 text-gray-500 pointer-events-none': !data.litigationDetails.caseTypeCategoryCount.total.civil
@@ -167,12 +195,11 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         <!-- Categorized Data -->
         <div
-            class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6 shadow sm:col-span-2 md:col-span-4 my-5">
+            class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-3 shadow sm:col-span-2 md:col-span-4 my-5">
             <div class="flex flex-col">
                 <div class="truncate text-2xl font-medium leading-6 tracking-tight">Risk Categorization</div>
                 <div class="mt-6 grid flex-auto grid-cols-1 gap-4 md:grid-cols-3">
@@ -283,7 +310,7 @@
 
         <!-- Court Wise Data -->
         <div
-            class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6 shadow sm:col-span-2 md:col-span-4 my-5">
+            class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-3 shadow sm:col-span-2 md:col-span-4 my-5">
             <div class="flex items-center justify-between">
                 <div class="flex flex-col">
                     <div class="truncate text-2xl font-medium leading-6 tracking-tight">Summary of Court Wise Count
@@ -292,7 +319,7 @@
             </div>
 
             <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 pt-3">
-                <div class="border relative flex flex-auto flex-col overflow-hidden rounded-2xl p-6 pb-3 pr-3"
+                <div class="border relative flex flex-auto flex-col overflow-hidden rounded-2xl p-3 pb-3 pr-3"
                     *ngFor="let court of courtsToDisplay">
                     <div class="flex items-center">
                         <div class="flex flex-col">
@@ -328,7 +355,7 @@
 
         <!-- All Cases -->
         <div
-            class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6 shadow sm:col-span-2 md:col-span-4 my-5">
+            class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-3 shadow sm:col-span-2 md:col-span-4 my-5">
             <div class="example-container">
                 <div class="flex items-center justify-between">
                     <div class="flex flex-col">
@@ -338,32 +365,46 @@
                     </div>
                 </div>
 
-                <mat-tab-group class="custom-tabs pt-3 px-0" (selectedIndexChange)="setActiveCourtType($event)">
+                <mat-tab-group class="custom-tabs border border-gray-50 mt-2 bg-white shadow-md p-3 px-0"
+                    (selectedIndexChange)="setActiveCourtType($event)">
                     <mat-tab *ngFor="let court of courtsToDisplay; let i = index">
                         <ng-template matTabLabel>
                             <mat-icon class="{{ court.color }}">gavel</mat-icon>
-                            {{ court.label }} ({{ data?.litigationDetails?.courtWiseCount?.[court.key]?.total || 0 }})
+                            <strong>{{ court.label }}</strong>&nbsp;({{
+                            data?.litigationDetails?.courtWiseCount?.[court.key]?.total || 0 }})
                         </ng-template>
                     </mat-tab>
                 </mat-tab-group>
 
-                <mat-tab-group #caseTypeTabs class="custom-tabs"
+                <mat-tab-group #caseTypeTabs class="custom-tabs border border-gray-50 bg-white p-3 shadow-md"
                     (selectedIndexChange)="setActiveCaseType($event === 0 ? 'all' : $event === 1 ? 'civil' : 'criminal')">
                     <mat-tab label="All"></mat-tab>
-                    <mat-tab
-                        label="Civil ({{ data.litigationDetails.caseTypeCategoryCount[courtsToDisplay[activeCourtType].key].civil }})"></mat-tab>
-                    <mat-tab
-                        label="Criminal ({{ data.litigationDetails.caseTypeCategoryCount[courtsToDisplay[activeCourtType].key].criminal }})"></mat-tab>
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            <strong>Civil</strong>&nbsp;({{
+                            data.litigationDetails.caseTypeCategoryCount[courtsToDisplay[activeCourtType].key].civil }})
+                        </ng-template>
+                    </mat-tab>
+
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            <strong>Criminal</strong>&nbsp;({{
+                            data.litigationDetails.caseTypeCategoryCount[courtsToDisplay[activeCourtType].key].criminal
+                            }})
+                        </ng-template>
+                    </mat-tab>
                 </mat-tab-group>
 
-                <div class="example-table-container table-responsive">
+                <div class="example-table-container table-responsive h-full">
 
                     <table mat-table [dataSource]="dataSource" class="example-table" matSort matSortActive="created"
                         matSortDisableClear matSortDirection="desc" class="w-100">
 
                         <ng-container matColumnDef="cino">
                             <th mat-header-cell *matHeaderCellDef> CINO </th>
-                            <td mat-cell *matCellDef="let caseItem"> {{ caseItem.cino }} </td>
+                            <td class="text-sky-600 underline cursor-pointer" mat-cell *matCellDef="let caseItem"
+                                (click)="getCaseDetails(caseItem.cino)"> {{
+                                caseItem.cino }} </td>
                         </ng-container>
 
                         <ng-container matColumnDef="casetypeCaseNoCaseYr">

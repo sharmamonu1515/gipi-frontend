@@ -1,0 +1,47 @@
+.prompt-settings-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    width: 100vw; 
+    padding: 20px;
+    margin-top: 0;
+}
+
+.prompt-card {
+    width: 100%; 
+    max-width: 1200px; 
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: var(--mat-elevation-shadow);
+}
+
+
+.title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--mat-primary);
+}
+
+.full-width {
+    width: 100%;
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+.field-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+  }
+  
+  .field {
+    flex: 1 1 calc(25% - 12px); 
+    min-width: 200px;
+  }
+  

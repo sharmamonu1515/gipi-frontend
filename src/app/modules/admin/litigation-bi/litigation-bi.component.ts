@@ -1,20 +1,7 @@
-import {
-    catchError,
-    debounceTime,
-    map,
-    startWith,
-    switchMap,
-    takeUntil,
-} from 'rxjs/operators';
+import { catchError, debounceTime, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { merge, Observable, of as observableOf, of, Subject } from 'rxjs';
-import {
-    NgForm,
-    UntypedFormBuilder,
-    UntypedFormControl,
-    UntypedFormGroup,
-    Validators,
-} from '@angular/forms';
+import { NgForm, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -32,13 +19,7 @@ export class LitigationBiComponent implements OnInit, AfterViewInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
-    displayedColumns: string[] = [
-        'updatedAt',
-        'user',
-        'entityId',
-        'entityName',
-        'action',
-    ];
+    displayedColumns: string[] = ['updatedAt', 'user', 'entityId', 'entityName', 'action'];
     data: any[] = [];
 
     resultsLength = 0;
@@ -49,12 +30,7 @@ export class LitigationBiComponent implements OnInit, AfterViewInit {
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    constructor(
-        public dialog: MatDialog,
-        private apiService: LitigationBiService,
-        private _snackBar: MatSnackBar,
-        private router: Router
-    ) {}
+    constructor(public dialog: MatDialog, private apiService: LitigationBiService, private _snackBar: MatSnackBar, private router: Router) {}
 
     ngOnInit(): void {
         this.searchInputControl.valueChanges
@@ -79,34 +55,20 @@ export class LitigationBiComponent implements OnInit, AfterViewInit {
 
     private fetchLitigationBiList(query = ''): Observable<any[]> {
         this.isLoadingResults = true;
-        return this.apiService
-            .getLitigationBiList(
-                this.sort.active,
-                this.sort.direction,
-                this.paginator.pageIndex + 1,
-                this.pageSize,
-                query
-            )
-            .pipe(
-                catchError(() => observableOf(null)),
-                map((data) => {
-                    this.isLoadingResults = false;
-                    this.isRateLimitReached = !data;
-                    if (!data) return [];
+        return this.apiService.getLitigationBiList(this.sort.active, this.sort.direction, this.paginator.pageIndex + 1, this.pageSize, query).pipe(
+            catchError(() => observableOf(null)),
+            map((data) => {
+                this.isLoadingResults = false;
+                this.isRateLimitReached = !data;
+                if (!data) return [];
 
-                    this.resultsLength =
-                        data.total_count ||
-                        data.data.pagination?.totalRecords ||
-                        0;
-                    return data.data.litigationBIs || [];
-                })
-            );
+                this.resultsLength = data.total_count || data.data.pagination?.totalRecords || 0;
+                return data.data.litigationBIs || [];
+            })
+        );
     }
 
-    openAddLitigationDetailDialog(
-        enterAnimationDuration: string,
-        exitAnimationDuration: string
-    ): void {
+    openAddLitigationDetailDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
         this.dialog
             .open(LitigationBiAddDataComponent, {
                 width: '50%',
@@ -187,13 +149,7 @@ export class LitigationBiAddDataComponent implements OnInit {
     kid: string | null = null;
     isSubmitting: boolean = false;
 
-    constructor(
-        public dialogRef: MatDialogRef<LitigationBiAddDataComponent>,
-        private _formBuilder: UntypedFormBuilder,
-        private apiService: LitigationBiService,
-        private _snackBar: MatSnackBar,
-        private router: Router
-    ) {}
+    constructor(public dialogRef: MatDialogRef<LitigationBiAddDataComponent>, private _formBuilder: UntypedFormBuilder, private apiService: LitigationBiService, private _snackBar: MatSnackBar, private router: Router) {}
 
     ngOnInit() {
         this.litigationBiDetailsByCinForm = this._formBuilder.group({
@@ -203,30 +159,22 @@ export class LitigationBiAddDataComponent implements OnInit {
             latestData: [false],
         });
 
-        this.filteredCompanies$ = this.litigationBiDetailsByCinForm
-            .get('entityName')!
-            .valueChanges.pipe(
-                startWith(''),
-                debounceTime(300),
-                switchMap((value) =>
-                    value ? this.searchCompanies(value) : of([])
-                )
-            );
+        this.filteredCompanies$ = this.litigationBiDetailsByCinForm.get('entityName')!.valueChanges.pipe(
+            startWith(''),
+            debounceTime(300),
+            switchMap((value) => (value ? this.searchCompanies(value) : of([])))
+        );
     }
 
     onCompanySelected(event: MatAutocompleteSelectedEvent) {
         const selectedOption = event.option;
-        this.entityId = selectedOption
-            ._getHostElement()
-            .getAttribute('data-id'); // Store entityId
+        this.entityId = selectedOption._getHostElement().getAttribute('data-id'); // Store entityId
         this.kid = selectedOption._getHostElement().getAttribute('data-kid'); // KID is needed as not all companies will cin, kid will be used to fetch directors
     }
 
     searchCompanies(query: string): Observable<any[]> {
         return this.apiService.searchByNameOrId(query).pipe(
-            map((response) =>
-                Array.isArray(response.result) ? response.result : []
-            ), // Ensure an array is returned
+            map((response) => (Array.isArray(response.result) ? response.result : [])), // Ensure an array is returned
             catchError(() => of([]))
         );
     }
@@ -250,10 +198,7 @@ export class LitigationBiAddDataComponent implements OnInit {
                         panelClass: ['mat-toolbar', 'mat-primary'],
                     });
 
-                    this.router.navigate([
-                        '/litigation-bi/litigation-bi',
-                        resolve.data._id,
-                    ]);
+                    this.router.navigate(['/litigation-bi/litigation-bi', resolve.data._id]);
                     this.dialogRef.close();
                 },
                 error: (err) => {

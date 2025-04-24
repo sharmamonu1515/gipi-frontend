@@ -13,26 +13,28 @@ import { LayoutModule } from 'app/layout/layout.module';
 import { AppComponent } from 'app/app.component';
 import { appRoutes } from 'app/app.routing';
 import { ToastrModule } from 'ngx-toastr';
-
 import { NgbActiveModal, NgbModule, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import { SanctionDetailsComponent } from './modules/admin/sanction-details/sanction-details.component';
 import { ProgressBarModule } from 'angular-progress-bar';
-import { FileShareHandlerComponent } from './components/file-share-handler/file-share-handler.component';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { AdverseMediaPromptComponent } from './modules/admin/settings/adverse-media-prompt/adverse-media-prompt.component';
 
 const routerConfig: ExtraOptions = {
-    preloadingStrategy       : PreloadAllModules,
-    scrollPositionRestoration: 'enabled'
+    preloadingStrategy: PreloadAllModules,
+    scrollPositionRestoration: 'enabled',
 };
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        SanctionDetailsComponent,
-        FileShareHandlerComponent,
-    ],
-    imports     : [
-        MatSnackBarModule,
+    declarations: [AppComponent, SanctionDetailsComponent, AdverseMediaPromptComponent],
+    imports: [
         BrowserModule,
         BrowserAnimationsModule,
         RouterModule.forRoot(appRoutes, routerConfig),
@@ -55,17 +57,22 @@ const routerConfig: ExtraOptions = {
             progressBar: true,
             tapToDismiss: true,
             closeButton: true,
-          }),
+        }),
         // 3rd party modules that require global configuration via forRoot
-        MarkdownModule.forRoot({})
+        MarkdownModule.forRoot({}),
+        MatInputModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatIconModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        FormsModule,
+        MatTooltipModule,
+        MatSelectModule,
+        MatListModule,
+        MatCardModule,
     ],
-    bootstrap   : [
-        AppComponent
-    ],
-    providers: [
-        NgbActiveModal
-    ]
+    bootstrap: [AppComponent],
+    providers: [NgbActiveModal],
 })
-export class AppModule
-{
-}
+export class AppModule {}
