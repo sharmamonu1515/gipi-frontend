@@ -142,20 +142,25 @@ export class FileManagerDetailsComponent implements OnInit, OnDestroy {
 
     closeSidebar(): void {
         // Close the sidebar by navigating to null outlet
-        this._router
-            .navigate([{ outlets: { sidebar: null } }], {
+        this._router.navigate(
+            [{
+                outlets: {
+                    sidebar: null
+                }
+            }],
+            {
                 relativeTo: this._route.parent,
                 queryParamsHandling: 'preserve',
-            })
-            .then(() => {
-                // Tell the parent component to close the drawer
-                if (this._route.parent && this._route.parent.component) {
-                    const parentInstance = this._route.parent.component as any;
-                    if (parentInstance && typeof parentInstance.closeSidebar === 'function') {
-                        parentInstance.closeSidebar();
-                    }
+                replaceUrl: true // This prevents adding to browser history
+            }
+        ).then(() => {
+            if (this._route.parent && this._route.parent.component) {
+                const parentInstance = this._route.parent.component as any;
+                if (parentInstance && typeof parentInstance.handleSidebarClose === 'function') {
+                    parentInstance.handleSidebarClose();
                 }
-            });
+            }
+        });
     }
 
     forceRefresh(): void {

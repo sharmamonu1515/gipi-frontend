@@ -15,21 +15,42 @@ export class FolderDetailComponent implements OnInit, OnDestroy {
     folder: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    constructor(private _route: ActivatedRoute, private _router: Router, private _fileManagerService: FileManagerService, private _fuseConfirmationService: FuseConfirmationService, private _snackBar: MatSnackBar) {}
+    constructor(
+        private _route: ActivatedRoute, 
+        private _router: Router, 
+        private _fileManagerService: FileManagerService, 
+        private _fuseConfirmationService: FuseConfirmationService, 
+        private _snackBar: MatSnackBar
+    ) {}
 
     ngOnInit(): void {
         this._route.params.pipe(takeUntil(this._unsubscribeAll)).subscribe((params) => {
+            const folderName = params.name;
+            const path = this._route.snapshot.queryParamMap.get('path');
+            const filesCount = this._route.snapshot.queryParamMap.get('filesCount');
+            const subfoldersCount = this._route.snapshot.queryParamMap.get('subfoldersCount');
+
             this.folder = {
-                name: params.name,
-                path: this._route.snapshot.queryParamMap.get('path'),
-                filesCount: this._route.snapshot.queryParamMap.get('filesCount'),
-                subfoldersCount: this._route.snapshot.queryParamMap.get('subfoldersCount'),
+                name: folderName,
+                path: path,
+                filesCount: filesCount,
+                subfoldersCount: subfoldersCount
             };
+
+            // If coming from shared link, auto-navigate to folder
+            if (this._route.snapshot.queryParamMap.has('shared')) {
+                setTimeout(() => this.navigateToFolder(), 500);
+            }
         });
     }
 
     navigateToFolder(): void {
         if (this.folder?.path) {
+            localStorage.setItem('folder', JSON.stringify({
+                name: this.folder.name,
+                folderPath: this.folder.path
+            }));
+            
             this._router.navigate(['/folders/folder-manager'], {
                 queryParams: { path: this.folder.path },
             });
@@ -41,6 +62,14 @@ export class FolderDetailComponent implements OnInit, OnDestroy {
         this._router.navigate([{ outlets: { sidebar: null } }], {
             relativeTo: this._route.parent,
             queryParamsHandling: 'preserve',
+            replaceUrl: true
+        }).then(() => {
+            if (this._route.parent && this._route.parent.component) {
+                const parentInstance = this._route.parent.component as any;
+                if (parentInstance && typeof parentInstance.handleSidebarClose === 'function') {
+                    parentInstance.handleSidebarClose();
+                }
+            }
         });
     }
 

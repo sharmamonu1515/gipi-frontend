@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ChangeDetectorRef, ElementRef, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { FileDetailComponent } from './file-detail.component';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup } from '@angular/forms';
@@ -8,6 +8,8 @@ import { FileListComponent } from './file-list.component';
 import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-file-manager',
@@ -22,6 +24,8 @@ export class FileManagerComponent implements OnInit {
     @ViewChild('matDrawer') matDrawer: any;
     drawerMode: 'over' = 'over'; // Always use 'over' mode
     drawerOpened = false;
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
+    private _drawerInitialized = false;
 
     constructor(
         private _activatedRoute: ActivatedRoute,
@@ -37,15 +41,24 @@ export class FileManagerComponent implements OnInit {
             this.processFilesAndFolders(res.data);
         });
     }
-
+    ngAfterViewInit(): void {
+        // Wait for drawer to be initialized
+        setTimeout(() => {
+            this._drawerInitialized = true;
+            this.checkSidebarRoute();
+        });
+    }
     ngOnInit(): void {
         // Check if this is a shared download link
-        if (this._route.snapshot.queryParamMap.has('download') && this._route.snapshot.queryParamMap.has('fileName') && this._route.snapshot.queryParamMap.has('fileType') && this._route.snapshot.queryParamMap.has('folder')) {
+        if (this._route.snapshot.queryParamMap.has('download') && 
+            this._route.snapshot.queryParamMap.has('fileName') && 
+            this._route.snapshot.queryParamMap.has('fileType') && 
+            this._route.snapshot.queryParamMap.has('folder')) {
             // Extract file information from URL parameters
             const fileName = this._route.snapshot.queryParamMap.get('fileName');
             const fileType = this._route.snapshot.queryParamMap.get('fileType');
             const folder = this._route.snapshot.queryParamMap.get('folder');
-
+    
             // Create file object
             const file = {
                 name: fileName,
@@ -53,9 +66,68 @@ export class FileManagerComponent implements OnInit {
                 type: fileType,
                 folder: folder,
             };
-
+    
             // Download the file
             this.downloadSharedFile(file);
+        }
+        this.checkSidebarRoute();
+        this._router.events.pipe(takeUntil(this._unsubscribeAll)).subscribe(() => {
+            this.checkSidebarRoute();
+        });
+        // Check if sidebar outlet is active
+        if (this._route.snapshot.children.some(child => child.outlet === 'sidebar')) {
+            const sidebarRoute = this._route.snapshot.children.find(child => child.outlet === 'sidebar');
+            if (sidebarRoute && sidebarRoute.routeConfig.path === 'details/:name') {
+                const fileName = sidebarRoute.params['name'];
+                const fileType = this._route.snapshot.queryParamMap.get('type');
+                const folder = this._route.snapshot.queryParamMap.get('folder');
+    
+                if (fileName && fileType && folder) {
+                    const file = {
+                        name: fileName,
+                        type: fileType,
+                        fileType: fileType,
+                        folder: folder
+                    };
+                    this.openDetails(file);
+                }
+            }
+        }
+    }
+    checkSidebarRoute(): void {
+        if (!this._drawerInitialized) return;
+    
+        // Check if sidebar outlet is active
+        const sidebarRoute = this._route.snapshot.children.find(child => child.outlet === 'sidebar');
+        
+        if (sidebarRoute && sidebarRoute.routeConfig.path === 'details/:name') {
+            const fileName = sidebarRoute.params['name'];
+            const fileType = this._route.snapshot.queryParamMap.get('type');
+            const folder = this._route.snapshot.queryParamMap.get('folder');
+    
+            // Only require fileName and fileType, folder can be empty
+            if (fileName && fileType) {
+                const file = {
+                    name: fileName,
+                    type: fileType,
+                    fileType: fileType,
+                    folder: folder || '' // Handle empty folder case
+                };
+                
+                // Open drawer if not already opened
+                if (!this.drawerOpened) {
+                    this.drawerOpened = true;
+                    this.matDrawer.open();
+                    this._changeDetectorRef.detectChanges();
+                }
+            }
+        } else {
+            // Close drawer if sidebar route is not active
+            if (this.drawerOpened) {
+                this.drawerOpened = false;
+                this.matDrawer.close();
+                this._changeDetectorRef.detectChanges();
+            }
         }
     }
 
@@ -127,6 +199,12 @@ export class FileManagerComponent implements OnInit {
     }
 
     openDetails(file: any): void {
+        // Ensure drawer is initialized
+        if (!this._drawerInitialized) {
+            setTimeout(() => this.openDetails(file), 100);
+            return;
+        }
+    
         this._router.navigate(
             [
                 {
@@ -139,19 +217,25 @@ export class FileManagerComponent implements OnInit {
                 relativeTo: this._route.parent,
                 queryParams: {
                     type: file.type,
-                    folder: file.folder,
+                    folder: file.folder || null, // Send null if folder is empty
                 },
+                replaceUrl: false
             }
-        );
-        this.drawerOpened = true; // Set to true when opening
-        this.matDrawer.open();
+        ).then(() => {
+            this.drawerOpened = true;
+            this.matDrawer.open();
+            this._changeDetectorRef.detectChanges();
+        });
     }
 
     openFolders(folder: any): void {
         localStorage.setItem('folder', JSON.stringify(folder));
         this._router.navigate(['/folders/folder-manager']);
     }
-
+    ngOnDestroy(): void {
+        this._unsubscribeAll.next(null);
+        this._unsubscribeAll.complete();
+    }
     fileUploader() {
         this.dialog.open(FileUploaderComponent, {
             width: '33.33%',

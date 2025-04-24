@@ -4,8 +4,8 @@
 
 export const environment = {
     production: false,
-    baseURI: 'http://localhost:4000',
-};
+    baseURI: 'https://finder.empliance.in',
+    newBaseURI: 'http://127.0.0.1:4000',};
 
 /*
  * For easier debugging in development mode, you can import the following file

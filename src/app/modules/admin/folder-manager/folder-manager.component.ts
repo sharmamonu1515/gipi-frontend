@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileDetailComponent } from '../file-manager/file-detail.component';
@@ -8,13 +8,15 @@ import { Location } from '@angular/common';
 import { FileListComponent } from '../file-manager/file-list.component';
 import { MatDrawer } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-folder-manager',
   templateUrl: './folder-manager.component.html',
   styleUrls: ['./folder-manager.component.scss'],
 })
-export class FolderManagerComponent implements OnInit {
+export class FolderManagerComponent implements OnInit, OnDestroy, AfterViewInit {
   folders: any = [];
   files: Array<any> = [];
   folderObj: any = {};
@@ -22,8 +24,10 @@ export class FolderManagerComponent implements OnInit {
   storedFolder: any = {};
   
   @ViewChild('matDrawer') matDrawer: MatDrawer;
-  drawerMode: 'over' = 'over'; // Always use 'over' mode
+  drawerMode: 'over' = 'over';
   drawerOpened = false;
+  private _unsubscribeAll: Subject<any> = new Subject<any>();
+  private _drawerInitialized = false;
 
   constructor(
     public dialog: MatDialog,
@@ -42,7 +46,55 @@ export class FolderManagerComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this._router.events.pipe(takeUntil(this._unsubscribeAll)).subscribe(() => {
+      this.checkSidebarRoute();
+    });
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this._drawerInitialized = true;
+      this.checkSidebarRoute();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this._unsubscribeAll.next(null);
+    this._unsubscribeAll.complete();
+  }
+
+  checkSidebarRoute(): void {
+    if (!this._drawerInitialized) return;
+
+    const sidebarRoute = this._route.snapshot.children.find(child => child.outlet === 'sidebar');
+    
+    if (sidebarRoute && sidebarRoute.routeConfig.path === 'file-details/:name') {
+      const fileName = sidebarRoute.params['name'];
+      const fileType = this._route.snapshot.queryParamMap.get('type');
+      const folder = this._route.snapshot.queryParamMap.get('folder');
+
+      if (fileName && fileType) {
+        const file = {
+          name: fileName,
+          type: fileType,
+          folder: folder || ''
+        };
+        
+        if (!this.drawerOpened) {
+          this.drawerOpened = true;
+          this.matDrawer.open();
+          this._changeDetectorRef.detectChanges();
+        }
+      }
+    } else {
+      if (this.drawerOpened) {
+        this.drawerOpened = false;
+        this.matDrawer.close();
+        this._changeDetectorRef.detectChanges();
+      }
+    }
+  }
 
   loadFolderContents(): void {
     this.FileService.getBucketObjectList(this.storedFolder?.folderPath, 50).subscribe(
@@ -65,25 +117,31 @@ export class FolderManagerComponent implements OnInit {
   closeSidebar(): void {
     this.drawerOpened = false;
     this._router.navigate([{ outlets: { sidebar: null } }], {
-      relativeTo: this._route.parent
+      relativeTo: this._route.parent,
+      queryParamsHandling: 'preserve'
     });
     this._changeDetectorRef.markForCheck();
   }
 
   openFileDetails(file: any): void {
-    this._router.navigate([{ 
-      outlets: { 
-        sidebar: ['file-details', file.name] 
-      } 
-    }], { 
-      relativeTo: this._route,
-      queryParams: {
-        type: file.type,
-        folder: file.folder
+    this._router.navigate(
+      [{
+        outlets: { 
+          sidebar: ['file-details', file.name] 
+        } 
+      }], { 
+        relativeTo: this._route,
+        queryParams: {
+          type: file.type,
+          folder: file.folder
+        },
+        replaceUrl: false
       }
+    ).then(() => {
+      this.drawerOpened = true;
+      this.matDrawer.open();
+      this._changeDetectorRef.detectChanges();
     });
-    this.drawerOpened = true;
-    this._changeDetectorRef.markForCheck();
   }
 
   openFolders(folder: any): void {
